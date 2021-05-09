@@ -1,0 +1,84 @@
+
+#
+# Copyright (C) 2021 CloudTruth, Inc.
+#
+
+# the secret values will be redacted by GitHub Actions
+# this contains tests, which is why the secret value we are
+#   testing against are checked into this file
+
+name: 'build-test'
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDTRUTH_TOKEN: "${{ secrets.CLOUDTRUTH_TOKEN }}"
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          npm install
+      - run: |
+          npm run all
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1 
+        with:
+          token: "${{ secrets.CODECOV_TOKEN }}"
+
+  test-default:
+    # tests against an environment named "default"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: save initial state and set expectations
+        run: |
+          printenv| grep -v 'GITHUB_' > env_expected_unsorted
+          echo CTTEST_NOT_A_SECRET=not_a_secret_default >> env_expected_unsorted
+          echo CTTEST_TOTALLY_A_SECRET=totally_a_secret_default >> env_expected_unsorted
+          echo CTTEST_HAS_NO_OVERRIDE=has_no_override_default >> env_expected_unsorted
+          echo cttest.not.posix=not.posix.default >> env_expected_unsorted
+          cat env_expected_unsorted | sort > env_expected
+      - name: run action from repository
+        uses: ./
+        with:
+          token: "${{ secrets.CLOUDTRUTH_TOKEN }}"
+          project: "${{ github.repository }}"
+          environment: default
+      - name: check environment is as expected 
+        run: |
+          printenv | grep -v 'GITHUB_' | sort > env_after
+          diff env_after env_expected
+      - run: |
+          printenv
+
+  test-override:
+    # tests against an environment named "override"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: save initial state and set expectations
+        run: |
+          printenv | grep -v 'GITHUB_' > env_expected_unsorted
+          echo CTTEST_NOT_A_SECRET=not_a_secret_override >> env_expected_unsorted
+          echo CTTEST_TOTALLY_A_SECRET=totally_a_secret_override >> env_expected_unsorted
+          echo CTTEST_HAS_NO_OVERRIDE=has_no_override_default >> env_expected_unsorted
+          echo cttest.not.posix=not.posix.override >> env_expected_unsorted
+          cat env_expected_unsorted | sort > env_expected
+      - name: run action from repository
+        uses: ./
+        with:
+          token: "${{ secrets.CLOUDTRUTH_TOKEN }}"
+          project: "${{ github.repository }}"
+          environment: override
+      - name: check environment is as expected 
+        run: |
+          printenv | grep -v 'GITHUB_' | sort > env_after
+          diff env_after env_expected
+      - run: |
+          printenv
