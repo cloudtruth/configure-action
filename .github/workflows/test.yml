@@ -17,9 +17,15 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: "${{ matrix.os }}"
     env:
       CLOUDTRUTH_TOKEN: "${{ secrets.CLOUDTRUTH_TOKEN }}"
+    strategy:
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
     steps:
       - uses: actions/checkout@v2
       - run: |
@@ -27,39 +33,19 @@ jobs:
       - run: |
           npm run all
       - name: Upload coverage to Codecov
+        if: contains(matrix.os, 'ubuntu')
         uses: codecov/codecov-action@v1 
         with:
           token: "${{ secrets.CODECOV_TOKEN }}"
 
-  test-default:
-    # tests against an environment named "default"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: save initial state and set expectations
-        run: |
-          printenv| grep -v 'GITHUB_' > env_expected_unsorted
-          echo CTTEST_NOT_A_SECRET=not_a_secret_default >> env_expected_unsorted
-          echo CTTEST_TOTALLY_A_SECRET=totally_a_secret_default >> env_expected_unsorted
-          echo CTTEST_HAS_NO_OVERRIDE=has_no_override_default >> env_expected_unsorted
-          echo cttest.not.posix=not.posix.default >> env_expected_unsorted
-          cat env_expected_unsorted | sort > env_expected
-      - name: run action from repository
-        uses: ./
-        with:
-          token: "${{ secrets.CLOUDTRUTH_TOKEN }}"
-          project: "${{ github.repository }}"
-          environment: default
-      - name: check environment is as expected 
-        run: |
-          printenv | grep -v 'GITHUB_' | sort > env_after
-          diff env_after env_expected
-      - run: |
-          printenv
-
-  test-override:
+  test-unixy:
     # tests against an environment named "override"
-    runs-on: ubuntu-latest
+    runs-on: "${{ matrix.os }}"
+    strategy:
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: save initial state and set expectations
@@ -80,5 +66,43 @@ jobs:
         run: |
           printenv | grep -v 'GITHUB_' | sort > env_after
           diff env_after env_expected
-      - run: |
+      - name: dump the environment
+        run: |
           printenv
+      - name: dump the environment
+        shell: pwsh
+        run: |
+          Get-ChildItem Env: | Format-Table -Wrap -AutoSize
+
+  test-windows:
+    # tests against an environment named "override"
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: save initial state and set expectations
+        shell: pwsh
+        run: |
+          [Environment]::SetEnvironmentVariable("CTTEST_NOT_A_SECRET", "not_a_secret_override")
+          [Environment]::SetEnvironmentVariable("CTTEST_TOTALLY_A_SECRET", "not_a_secret_override")
+          [Environment]::SetEnvironmentVariable("CTTEST_HAS_NO_OVERRIDE", "not_a_secret_override")
+          [Environment]::SetEnvironmentVariable("cttest.not.posix", "not_a_secret_override")
+          Get-ChildItem Env: | Sort-Object -Property Name | Out-File -FilePath .\env_expected
+          [Environment]::SetEnvironmentVariable("CTTEST_NOT_A_SECRET", $null)
+          [Environment]::SetEnvironmentVariable("CTTEST_TOTALLY_A_SECRET", $null)
+          [Environment]::SetEnvironmentVariable("CTTEST_HAS_NO_OVERRIDE", $null)
+          [Environment]::SetEnvironmentVariable("cttest.not.posix", $null)
+      - name: run action from repository
+        uses: ./
+        with:
+          token: "${{ secrets.CLOUDTRUTH_TOKEN }}"
+          project: "${{ github.repository }}"
+          environment: override
+      - name: check environment is as expected 
+        shell: pwsh
+        run: |
+          Get-ChildItem Env: | Sort-Object -Property Name | Out-File -FilePath .\env_after
+          Compare-Object -ReferenceObject $(Get-Content .\env_expected) -DifferenceObject $(Get-Content .\env_after)
+      - name: dump the environment
+        shell: pwsh
+        run: |
+          Get-ChildItem Env: | Format-Table -Wrap -AutoSize
