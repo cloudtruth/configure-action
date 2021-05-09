@@ -1,5 +1,5 @@
 ---
-name: 'CloudTruth Configure Action for GitHub'
+name: 'CloudTruth Configure'
 description: 'Securely deliver CloudTruth configuration and secrets into your GitHub Actions workflows.'
 author: 'CloudTruth, Inc.'
 inputs:
