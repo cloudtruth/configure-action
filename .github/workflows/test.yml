@@ -68,7 +68,7 @@ jobs:
           diff env_after env_expected
       - name: dump the environment
         run: |
-          printenv
+          printenv | sort
       - name: dump the environment
         shell: pwsh
         run: |
@@ -105,4 +105,4 @@ jobs:
       - name: dump the environment
         shell: pwsh
         run: |
-          Get-ChildItem Env: | Format-Table -Wrap -AutoSize
+          Get-ChildItem Env: | Sort-Object -Property Name | Format-Table -Wrap -AutoSize

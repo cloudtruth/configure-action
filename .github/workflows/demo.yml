@@ -32,4 +32,4 @@ jobs:
 
       - name: dump the environment
         run: |
-          printenv
+          printenv | sort
