@@ -20,7 +20,7 @@ describe('configure-action tests', () => {
       CTTEST_TOTALLY_A_SECRET: undefined,
       CTTEST_HAS_NO_OVERRIDE: undefined,
       'cttest.not.posix': undefined,
-      INPUT_TOKEN: process.env['CLOUDTRUTH_TOKEN'],
+      INPUT_TOKEN: process.env['CLOUDTRUTH_API_KEY'],
       INPUT_PROJECT: 'cloudtruth/configure-action',
       INPUT_ENVIRONMENT: 'default'
     })

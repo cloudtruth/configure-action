@@ -19,7 +19,7 @@ jobs:
   build:
     runs-on: "${{ matrix.os }}"
     env:
-      CLOUDTRUTH_TOKEN: "${{ secrets.CLOUDTRUTH_TOKEN }}"
+      CLOUDTRUTH_API_KEY: "${{ secrets.CLOUDTRUTH_API_KEY }}"
     strategy:
       matrix:
         os:
@@ -59,7 +59,7 @@ jobs:
       - name: run action from repository
         uses: ./
         with:
-          token: "${{ secrets.CLOUDTRUTH_TOKEN }}"
+          token: "${{ secrets.CLOUDTRUTH_API_KEY }}"
           project: "${{ github.repository }}"
           environment: override
       - name: check environment is as expected 
@@ -94,7 +94,7 @@ jobs:
       - name: run action from repository
         uses: ./
         with:
-          token: "${{ secrets.CLOUDTRUTH_TOKEN }}"
+          token: "${{ secrets.CLOUDTRUTH_API_KEY }}"
           project: "${{ github.repository }}"
           environment: override
       - name: check environment is as expected 

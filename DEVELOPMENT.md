@@ -3,7 +3,7 @@
 To run the tests use a `.env` file with the following content:
 
 ```bash
-CLOUDTRUTH_TOKEN=<token>
+CLOUDTRUTH_API_KEY=<api_key>
 ```
 
 The account must be configured as follows for testing:
