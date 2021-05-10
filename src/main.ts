@@ -13,10 +13,7 @@ interface Configuration {
   keyName: string
 }
 
-async function request<TResponse>(
-  url: string,
-  config: RequestInit
-): Promise<TResponse> {
+async function request<TResponse>(url: string, config: RequestInit): Promise<TResponse> {
   const response = await fetch(url, config)
   const raw = await response.json()
   if (raw['errors']) {
@@ -38,14 +35,10 @@ function inject(response: Configuration[]): void {
   for (const entry of response) {
     const {environmentValue, isSecret, keyName} = entry
     if (!environmentValue) {
-      throw new Error(
-        `Environment "${core.getInput('environment')}" not found.`
-      )
+      throw new Error(`Environment "${core.getInput('environment')}" not found.`)
     }
     if (keyName in process.env && !overwrite) {
-      throw new Error(
-        `The environment variable "${keyName}" already exists and cannot be overwritten.`
-      )
+      throw new Error(`The environment variable "${keyName}" already exists and cannot be overwritten.`)
     }
 
     if (isSecret) {
@@ -65,9 +58,7 @@ export async function run(): Promise<void> {
   const server = core.getInput('server') || 'api.cloudtruth.com'
 
   try {
-    core.debug(
-      `Requesting https://${server}/graphql project="${project}" environment="${environment}"`
-    )
+    core.debug(`Requesting https://${server}/graphql project="${project}" environment="${environment}"`)
 
     const requestOptions: RequestInit = {
       method: 'POST',
@@ -97,10 +88,7 @@ export async function run(): Promise<void> {
       })
     }
 
-    const response = await request<Configuration[]>(
-      `https://${server}/graphql`,
-      requestOptions
-    )
+    const response = await request<Configuration[]>(`https://${server}/graphql`, requestOptions)
     inject(response)
   } catch (error) {
     core.setFailed(error.message)
