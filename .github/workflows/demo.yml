@@ -15,8 +15,6 @@ jobs:
   demo:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-
       - uses: cloudtruth/configure-action@v1
         with:
           token: "${{ secrets.CLOUDTRUTH_API_KEY }}"
