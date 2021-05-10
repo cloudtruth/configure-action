@@ -16,6 +16,31 @@ on:
       - 'releases/*'
 
 jobs:
+  codeql:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: 'javascript'
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+
   build:
     runs-on: "${{ matrix.os }}"
     env:
@@ -38,7 +63,7 @@ jobs:
         with:
           token: "${{ secrets.CODECOV_TOKEN }}"
 
-  test-unixy:
+  test-posix:
     # tests against an environment named "override"
     runs-on: "${{ matrix.os }}"
     strategy:
