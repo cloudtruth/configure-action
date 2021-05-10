@@ -1,0 +1,35 @@
+#
+# this runs against a pre-configured project and envirionment
+# containing some configuration and secrets that are named
+# CTTEST_* and cttest.*
+#
+
+name: 'demo'
+on:
+  pull_request: {}
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: cloudtruth/configure-action@v1
+        with:
+          token: "${{ secrets.CLOUDTRUTH_API_KEY }}"
+          project: "${{ github.repository }}"
+          environment: override
+
+      - name: demonstrate secrets redaction
+        run: |
+          echo CTTEST_NOT_A_SECRET=${CTTEST_NOT_A_SECRET}
+          echo CTTEST_TOTALLY_A_SECRET=${CTTEST_TOTALLY_A_SECRET}
+          [ ! -z "${CTTEST_NOT_A_SECRET}" ] || exit 1
+          [ ! -z "${CTTEST_TOTALLY_A_SECRET}" ] || exit 1
+
+      - name: dump the environment
+        run: |
+          printenv
