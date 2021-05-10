@@ -40,7 +40,7 @@ stored in GitHub as a secret:
 ```yaml
     - uses: cloudtruth/configure-action@v1
       with:
-        token: "${{ secrets.CLOUDTRUTH_TOKEN }}"
+        token: "${{ secrets.CLOUDTRUTH_API_KEY }}"
         project: "<project name>"
         environment: "<environment name>"
 ```
