@@ -1,5 +1,5 @@
 #
-# this runs against a pre-configured project and envirionment
+# this runs against a pre-configured project and environment
 # containing some configuration and secrets that are named
 # CTTEST_* and cttest.*
 #
@@ -12,8 +12,22 @@ on:
       - 'v*'
 
 jobs:
+  secrets-gate:
+    runs-on: ubuntu-latest
+    outputs:
+      ok: ${{ steps.check-secrets.outputs.ok }}
+    steps:
+      - name: check for secrets needed to run demo
+        id: check-secrets
+        run: |
+          if [ ! -z "${{ secrets.CLOUDTRUTH_API_KEY }}" ]; then
+            echo "::set-output name=ok::true"
+          fi
+    
   demo:
-    if: ${{ github.repository_owner == 'cloudtruth' }}
+    needs:
+      - secrets-gate
+    if: ${{ needs.secrets-gate.outputs.ok == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: cloudtruth/configure-action@v1

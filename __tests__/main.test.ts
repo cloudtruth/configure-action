@@ -10,7 +10,7 @@ import {jestPollyConfigService} from '@scaleleap/jest-polly'
 import {run} from '../src/main'
 
 jestPollyConfigService.config = {
-  secrets: [process.env.CLOUDTRUTH_API_KEY]
+  secrets: [process.env.CLOUDTRUTH_API_KEY || 'running-in-a-fork-without-a-key']
 }
 
 describe('configure-action tests', () => {
