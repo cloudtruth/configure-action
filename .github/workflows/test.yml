@@ -65,6 +65,7 @@ jobs:
 
   test-posix:
     # tests against an environment named "override"
+    if: ${{ github.repository_owner == 'cloudtruth' }}
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
@@ -94,13 +95,10 @@ jobs:
       - name: dump the environment
         run: |
           printenv | sort
-      - name: dump the environment
-        shell: pwsh
-        run: |
-          Get-ChildItem Env: | Format-Table -Wrap -AutoSize
 
   test-windows:
     # tests against an environment named "override"
+    if: ${{ github.repository_owner == 'cloudtruth' }}
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2

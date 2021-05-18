@@ -2,10 +2,16 @@
 // Copyright (C) 2021 CloudTruth, Inc.
 //
 
+import '@scaleleap/jest-polly'
 import * as core from '@actions/core'
 import * as process from 'process'
 import mockedEnv, {RestoreFn} from 'mocked-env'
+import {jestPollyConfigService} from '@scaleleap/jest-polly'
 import {run} from '../src/main'
+
+jestPollyConfigService.config = {
+  secrets: [process.env.CLOUDTRUTH_API_KEY]
+}
 
 describe('configure-action tests', () => {
   beforeAll(() => {
@@ -20,7 +26,7 @@ describe('configure-action tests', () => {
       CTTEST_TOTALLY_A_SECRET: undefined,
       CTTEST_HAS_NO_OVERRIDE: undefined,
       'cttest.not.posix': undefined,
-      INPUT_TOKEN: process.env['CLOUDTRUTH_API_KEY'],
+      INPUT_TOKEN: process.env.CLOUDTRUTH_API_KEY,
       INPUT_PROJECT: 'cloudtruth/configure-action',
       INPUT_ENVIRONMENT: 'default'
     })
