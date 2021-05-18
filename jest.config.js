@@ -1,9 +1,9 @@
 module.exports = {
   clearMocks: true,
   moduleFileExtensions: ['js', 'ts'],
-  testEnvironment: 'node',
+  setupFilesAfterEnv: ['@scaleleap/jest-polly'],
+  testEnvironment: 'setup-polly-jest/jest-environment-jsdom',
   testMatch: ['**/*.test.ts'],
-  testRunner: 'jest-circus/runner',
   transform: {
     '^.+\\.ts$': 'ts-jest'
   },
