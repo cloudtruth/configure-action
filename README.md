@@ -1,9 +1,10 @@
 # configure-action
 
- ![test](https://github.com/cloudtruth/configure-action/actions/workflows/test.yml/badge.svg)
+ ![ci](https://github.com/cloudtruth/configure-action/actions/workflows/test.yml/badge.svg)
 [![codecov](https://codecov.io/gh/cloudtruth/configure-action/branch/main/graph/badge.svg?token=CZs9Fqr6k9)](https://codecov.io/gh/cloudtruth/configure-action)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![open issues](https://img.shields.io/github/issues-raw/cloudtruth/configure-action?style=plastic)](https://github.com/cloudtruth/configure-action/issues)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=plastic)](https://github.com/prettier/prettier)
+[![license](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=plastic)](https://opensource.org/licenses/Apache-2.0)
 
 CloudTruth centralizes your configuration and secrets information to make it easier
 to manage.
@@ -46,3 +47,6 @@ stored in GitHub as a secret:
 ```
 
 See our [GitHub Actions workflow](https://github.com/cloudtruth/configure-action/blob/main/.github/workflows/test.yml) for a working example.
+
+We recommend using the `@v1` itag to pick up the latest compatible version,
+however you can also just rely on Dependabot to keep your workflow up to date.
