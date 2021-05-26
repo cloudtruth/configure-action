@@ -69,6 +69,15 @@ jobs:
           npm install
       - run: |
           npm run all
+      - name: Check for changes in dist
+        if: ${{ !contains(matrix.os, 'windows') }}
+        run: |
+          changes=$(git status --porcelain)
+          if [[ *"dist/"* == "${changes}" ]]; then
+            echo "After running a build, dist changed.  Manual intervention is required."
+            echo "${changes}"
+            exit 1
+          fi
       - name: Upload coverage to Codecov
         if: ${{ contains(matrix.os, 'ubuntu') && needs.secrets-gate.outputs.ok == 'true' }}
         uses: codecov/codecov-action@v1 
