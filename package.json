@@ -29,7 +29,7 @@
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
-    "@scaleleap/jest-polly": "^1.5.32",
+    "@scaleleap/jest-polly": "^1.5.33",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.6.1",
     "@types/node-fetch": "^2.5.10",
