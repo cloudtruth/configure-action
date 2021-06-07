@@ -1,6 +1,6 @@
 {
   "name": "configure-action",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Securely deliver CloudTruth configuration and secrets into your GitHub Actions workflows.",
   "main": "lib/main.js",
   "scripts": {
@@ -12,15 +12,21 @@
     "test": "jest -i --coverage",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
   },
+  "homepage": "https://github.com/cloudtruth/configure-action#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cloudtruth/configure-action.git"
+    "url": "https://github.com/cloudtruth/configure-action.git"
+  },
+  "bugs": {
+    "url" : "https://github.com/cloudtruth/configure-action/issues",
+    "email" : "support@cloudtruth.com"
   },
   "keywords": [
     "configuration",
-    "secrets",
     "configuration management",
-    "environment variables"
+    "environment variables",
+    "secrets",
+    "secrets management"
   ],
   "author": "CloudTruth, Inc.",
   "license": "Apache-2.0",
