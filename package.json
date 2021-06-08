@@ -25,7 +25,7 @@
   "author": "CloudTruth, Inc.",
   "license": "Apache-2.0",
   "dependencies": {
-    "@actions/core": "^1.3.0",
+    "@actions/core": "^1.4.0",
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
