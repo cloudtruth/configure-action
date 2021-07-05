@@ -12,6 +12,10 @@
     "test": "jest -i --coverage",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
   },
+  "engines": {
+    "node": ">=12.0.0 <13.0.0",
+    "npm": ">=7.19.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cloudtruth/configure-action.git"
