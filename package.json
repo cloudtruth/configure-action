@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@scaleleap/jest-polly": "^1.5.37",
-    "@types/jest": "^26.0.23",
+    "@types/jest": "^26.0.24",
     "@types/node": "^16.0.0",
     "@types/node-fetch": "^2.5.11",
     "@typescript-eslint/parser": "^4.28.1",
