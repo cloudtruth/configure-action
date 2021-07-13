@@ -13,7 +13,7 @@ on:
   push:
     branches:
       - main
-      - 'releases/*'
+      - 'release/*'
 
 jobs:
   secrets-gate:
@@ -58,13 +58,21 @@ jobs:
       - secrets-gate
     runs-on: "${{ matrix.os }}"
     strategy:
+      fail-fast: false
       matrix:
+        node-version:
+          # all github action execution environments use node12
+          - 12.x
         os:
           - macos-latest
           - ubuntu-latest
           - windows-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
       - run: |
           npm install
       - run: |
@@ -85,7 +93,7 @@ jobs:
           token: "${{ secrets.CODECOV_TOKEN }}"
 
   test-posix:
-    # tests against an environment named "override"
+    # tests against an environment named "staging"
     needs:
       - secrets-gate
     if: ${{ needs.secrets-gate.outputs.ok == 'true' }}
@@ -108,9 +116,9 @@ jobs:
       - name: run action from repository
         uses: ./
         with:
-          token: "${{ secrets.CLOUDTRUTH_API_KEY }}"
+          apikey: "${{ secrets.CLOUDTRUTH_API_KEY }}"
           project: "${{ github.repository }}"
-          environment: override
+          environment: staging
       - name: check environment is as expected 
         run: |
           printenv | grep -v 'GITHUB_' | sort > env_after
@@ -131,9 +139,9 @@ jobs:
         shell: pwsh
         run: |
           [Environment]::SetEnvironmentVariable("CTTEST_NOT_A_SECRET", "not_a_secret_override")
-          [Environment]::SetEnvironmentVariable("CTTEST_TOTALLY_A_SECRET", "not_a_secret_override")
-          [Environment]::SetEnvironmentVariable("CTTEST_HAS_NO_OVERRIDE", "not_a_secret_override")
-          [Environment]::SetEnvironmentVariable("cttest.not.posix", "not_a_secret_override")
+          [Environment]::SetEnvironmentVariable("CTTEST_TOTALLY_A_SECRET", "totally_a_secret_override")
+          [Environment]::SetEnvironmentVariable("CTTEST_HAS_NO_OVERRIDE", "has_no_override_default")
+          [Environment]::SetEnvironmentVariable("cttest.not.posix", "not.posix.override")
           Get-ChildItem Env: | Sort-Object -Property Name | Out-File -FilePath .\env_expected
           [Environment]::SetEnvironmentVariable("CTTEST_NOT_A_SECRET", $null)
           [Environment]::SetEnvironmentVariable("CTTEST_TOTALLY_A_SECRET", $null)
@@ -142,9 +150,9 @@ jobs:
       - name: run action from repository
         uses: ./
         with:
-          token: "${{ secrets.CLOUDTRUTH_API_KEY }}"
+          apikey: "${{ secrets.CLOUDTRUTH_API_KEY }}"
           project: "${{ github.repository }}"
-          environment: override
+          environment: staging
       - name: check environment is as expected 
         shell: pwsh
         run: |

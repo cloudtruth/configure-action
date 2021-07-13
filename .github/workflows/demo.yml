@@ -30,11 +30,11 @@ jobs:
     if: ${{ needs.secrets-gate.outputs.ok == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: cloudtruth/configure-action@v1
+      - uses: cloudtruth/configure-action@v2
         with:
-          token: "${{ secrets.CLOUDTRUTH_API_KEY }}"
+          apikey: "${{ secrets.CLOUDTRUTH_API_KEY }}"
           project: "${{ github.repository }}"
-          environment: override
+          environment: staging
 
       - name: demonstrate secrets redaction
         run: |

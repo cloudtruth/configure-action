@@ -21,34 +21,38 @@ and then accessed those secrets through the `secrets` object in your action.
 This action will modify your `env` object to have values for all the parameters that
 you have stored in your project for the given environment.
 
+## Compatibility
+
+The `@v2` tag is for customers who are using `app.cloudtruth.io`, starting in July 2021.
+The `@v1` tag is for customers who have been using `app.cloudtruth.com`.
+
 ## Prerequisites
 
-You must have a personal access token established in your CloudTruth account.
+You must have an api key established in your CloudTruth account.
 
 ## Action inputs
 
 | name | required | description |
 | ---- | -------- | ----------- |
-| `token` | `yes` | The CloudTruth service account token to use - this defines the Organization. |
-| `project` | `yes` | The CloudTruth project name within the organization. |
-| `environment` | `yes` | The CloudTruth environment lens to apply to the project. |
+| `apikey` | `yes` | (`@v2` only) The CloudTruth Service Account API Key to use. |
+| `project` | `yes` | The CloudTruth project (name or id) within the organization. |
+| `environment` | `yes` | The CloudTruth environment (name or id) view to use. |
 | `overwrite` | `no` | (default: false) Allow existing environment variables to be overwritten. |
-| `server` | `no` | (default: api.cloudtruth.com) The CloudTruth server to execute the query against. |
+| `server` | `no` | (default: `https://api.cloudtruth.io`) The CloudTruth server to execute the query against. |
+| `token` | `yes` | (`@v1` only) The CloudTruth Access Token to use. |
 
 ## Usage
 
-Add a step to your workflow, ensuring that your CloudTruth access token is
+Add a step to your workflow, ensuring that your CloudTruth service account api key is
 stored in GitHub as a secret:
 
 ```yaml
-    - uses: cloudtruth/configure-action@v1
+    - uses: cloudtruth/configure-action@v2
       with:
-        token: "${{ secrets.CLOUDTRUTH_API_KEY }}"
-        project: "<project name>"
-        environment: "<environment name>"
+        apikey: "${{ secrets.CLOUDTRUTH_API_KEY }}"
+        project: "<project name or id>"
+        environment: "<environment name or id>"
 ```
 
-See our [GitHub Actions workflow](https://github.com/cloudtruth/configure-action/blob/main/.github/workflows/test.yml) for a working example.
+See our [GitHub Actions workflow](https://github.com/cloudtruth/configure-action/blob/main/.github/workflows/demo.yml) for a working example.
 
-We recommend using the `@v1` itag to pick up the latest compatible version,
-however you can also just rely on Dependabot to keep your workflow up to date.

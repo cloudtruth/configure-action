@@ -1,8 +1,8 @@
 module.exports = {
+  bail: true,
   clearMocks: true,
   moduleFileExtensions: ['js', 'ts'],
   setupFilesAfterEnv: ['@scaleleap/jest-polly'],
-  testEnvironment: 'setup-polly-jest/jest-environment-jsdom',
   testMatch: ['**/*.test.ts'],
   transform: {
     '^.+\\.ts$': 'ts-jest'
@@ -11,7 +11,8 @@ module.exports = {
   "collectCoverage": true,
   "collectCoverageFrom": [
     "src/**/*.{js,jsx,ts,tsx}",
-    "!<rootDir>/node_modules/"
+    "!<rootDir>/node_modules/",
+    "!src/gen/**"
   ],
   "coverageThreshold": {
     "global": {
