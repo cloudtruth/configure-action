@@ -3,21 +3,21 @@ name: 'CloudTruth Configure'
 description: 'Securely deliver CloudTruth configuration and secrets into your GitHub Actions workflows.'
 author: 'CloudTruth, Inc.'
 inputs:
-  token:
-    description: 'The CloudTruth service account token to use - this defines the Organization.'
+  apikey:
+    description: 'The CloudTruth Service Account API key to use.'
     required: true
   project:
-    description: 'The CloudTruth project name within the organization.'
+    description: 'The CloudTruth project (name or id) within the organization.'
     required: true
   environment:
-    description: 'The CloudTruth environment lens to apply to the project.'
+    description: 'The CloudTruth environment (name or id) to view the project through.'
     required: true
   overwrite:
     description: 'Allow environment variables to be overwritten.'
     default: false
   server:
     description: 'The CloudTruth server to execute the query against.'
-    default: 'api.cloudtruth.com'
+    default: 'https://api.cloudtruth.io'
 runs:
   using: 'node12'
   main: 'dist/index.js'

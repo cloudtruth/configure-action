@@ -1,2 +1,3 @@
 __tests__/__recordings__/** -diff linguist-generated=true 
 dist/** -diff linguist-generated=true 
+src/gen/** -diff linguist-generated=true 
