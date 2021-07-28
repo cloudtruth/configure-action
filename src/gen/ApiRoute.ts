@@ -197,6 +197,7 @@ export namespace Api {
       object_id?: string;
       object_type?: string;
       page?: number;
+      page_size?: number;
       user_id?: string;
     };
     export type RequestBody = never;
@@ -246,7 +247,7 @@ export namespace Api {
    */
   export namespace EnvironmentsList {
     export type RequestParams = {};
-    export type RequestQuery = { name?: string; page?: number; parent__name?: string };
+    export type RequestQuery = { name?: string; page?: number; page_size?: number; parent__name?: string };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PaginatedEnvironmentList;
@@ -322,7 +323,8 @@ export namespace Api {
    * @name EnvironmentsDestroy
    * @request DELETE:/api/v1/environments/{id}/
    * @secure
-   * @response `204` `void` No response body
+   * @response `204` `void` Environment destroyed.
+   * @response `409` `void` The environment has children and cannot be removed.
    */
   export namespace EnvironmentsDestroy {
     export type RequestParams = { id: string };
@@ -342,7 +344,7 @@ export namespace Api {
    */
   export namespace IntegrationsAwsList {
     export type RequestParams = {};
-    export type RequestQuery = { aws_account_id?: string; aws_role_name?: string; page?: number };
+    export type RequestQuery = { aws_account_id?: string; aws_role_name?: string; page?: number; page_size?: number };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PaginatedAwsIntegrationList;
@@ -438,7 +440,6 @@ export namespace Api {
    * @request GET:/api/v1/integrations/explore/
    * @secure
    * @response `200` `PaginatedIntegrationExplorerList` The content at the FQN.
-   * @response `204` `void` No content found at FQN.
    * @response `400` `void` Invalid FQN requested.
    * @response `403` `void` Unable to contact the third-party integration.
    * @response `415` `void` Unsupported content type (usually this means it is binary).
@@ -446,7 +447,7 @@ export namespace Api {
    */
   export namespace IntegrationsExploreList {
     export type RequestParams = {};
-    export type RequestQuery = { fqn?: string; page?: number };
+    export type RequestQuery = { fqn?: string; page?: number; page_size?: number };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PaginatedIntegrationExplorerList;
@@ -462,7 +463,7 @@ export namespace Api {
    */
   export namespace IntegrationsGithubList {
     export type RequestParams = {};
-    export type RequestQuery = { gh_organization_slug?: string; page?: number };
+    export type RequestQuery = { gh_organization_slug?: string; page?: number; page_size?: number };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PaginatedGitHubIntegrationList;
@@ -531,6 +532,7 @@ export namespace Api {
     export type RequestQuery = {
       email?: string;
       page?: number;
+      page_size?: number;
       role?: "ADMIN" | "CONTRIB" | "OWNER" | "VIEWER";
       state?: "accepted" | "bounced" | "pending" | "sent";
     };
@@ -669,7 +671,12 @@ export namespace Api {
    */
   export namespace MembershipsList {
     export type RequestParams = {};
-    export type RequestQuery = { page?: number; role?: "ADMIN" | "CONTRIB" | "OWNER" | "VIEWER"; user?: string };
+    export type RequestQuery = {
+      page?: number;
+      page_size?: number;
+      role?: "ADMIN" | "CONTRIB" | "OWNER" | "VIEWER";
+      user?: string;
+    };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PaginatedMembershipList;
@@ -765,7 +772,7 @@ export namespace Api {
    */
   export namespace OrganizationsList {
     export type RequestParams = {};
-    export type RequestQuery = { name?: string; page?: number };
+    export type RequestQuery = { name?: string; page?: number; page_size?: number };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PaginatedOrganizationList;
@@ -861,7 +868,7 @@ export namespace Api {
    */
   export namespace ProjectsList {
     export type RequestParams = {};
-    export type RequestQuery = { name?: string; page?: number };
+    export type RequestQuery = { name?: string; page?: number; page_size?: number };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PaginatedProjectList;
@@ -965,6 +972,7 @@ export namespace Api {
       mask_secrets?: boolean;
       output?: string;
       page?: number;
+      page_size?: number;
       startswith?: string;
       wrap?: boolean;
     };
@@ -988,6 +996,7 @@ export namespace Api {
       mask_secrets?: boolean;
       name?: string;
       page?: number;
+      page_size?: number;
       wrap?: boolean;
     };
     export type RequestBody = never;
@@ -1022,7 +1031,13 @@ export namespace Api {
    */
   export namespace ProjectsParametersValuesList {
     export type RequestParams = { parameterPk: string; projectPk: string };
-    export type RequestQuery = { environment?: string; mask_secrets?: boolean; page?: number; wrap?: boolean };
+    export type RequestQuery = {
+      environment?: string;
+      mask_secrets?: boolean;
+      page?: number;
+      page_size?: number;
+      wrap?: boolean;
+    };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PaginatedValueList;
@@ -1137,7 +1152,7 @@ export namespace Api {
    * @secure
    * @response `200` `Parameter`
    * @response `400` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `404` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
+   * @response `404` `void` The given project id could not be found, or while checking pre-conditions, a dynamic value was encountered that could not be resolved.
    * @response `415` `void` While checking pre-conditions, a dynamic value was encountered that has an invalid content type.
    * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
    * @response `507` `void` While checking pre-conditions, a dynamic value was encountered that was too large to process.
@@ -1158,7 +1173,7 @@ export namespace Api {
    * @secure
    * @response `200` `Parameter`
    * @response `400` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `404` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
+   * @response `404` `void` The given project id could not be found, or while checking pre-conditions, a dynamic value was encountered that could not be resolved.
    * @response `415` `void` While checking pre-conditions, a dynamic value was encountered that has an invalid content type.
    * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
    * @response `507` `void` While checking pre-conditions, a dynamic value was encountered that was too large to process.
@@ -1177,19 +1192,14 @@ export namespace Api {
    * @name ProjectsParametersDestroy
    * @request DELETE:/api/v1/projects/{project_pk}/parameters/{id}/
    * @secure
-   * @response `200` `Parameter`
-   * @response `400` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `404` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `415` `void` While checking pre-conditions, a dynamic value was encountered that has an invalid content type.
-   * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
-   * @response `507` `void` While checking pre-conditions, a dynamic value was encountered that was too large to process.
+   * @response `204` `void` No response body
    */
   export namespace ProjectsParametersDestroy {
     export type RequestParams = { id: string; projectPk: string };
     export type RequestQuery = {};
     export type RequestBody = never;
     export type RequestHeaders = {};
-    export type ResponseBody = Parameter;
+    export type ResponseBody = void;
   }
 
   /**
@@ -1218,7 +1228,7 @@ export namespace Api {
    */
   export namespace ProjectsTemplatesList {
     export type RequestParams = { projectPk: string };
-    export type RequestQuery = { name?: string; page?: number };
+    export type RequestQuery = { name?: string; page?: number; page_size?: number };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PaginatedTemplateList;
@@ -1314,7 +1324,7 @@ export namespace Api {
    */
   export namespace ServiceaccountsList {
     export type RequestParams = {};
-    export type RequestQuery = { page?: number };
+    export type RequestQuery = { page?: number; page_size?: number };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PaginatedServiceAccountList;
@@ -1411,7 +1421,7 @@ export namespace Api {
    */
   export namespace UsersList {
     export type RequestParams = {};
-    export type RequestQuery = { page?: number; type?: string };
+    export type RequestQuery = { page?: number; page_size?: number; type?: string };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = PaginatedUserList;
