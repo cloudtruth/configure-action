@@ -94,12 +94,21 @@ jobs:
 
   test-posix:
     # tests against an environment named "staging"
+    # runs on ubuntu against production, macos against staging
+    # to detect regressions or breaking changes
     needs:
       - secrets-gate
     if: ${{ needs.secrets-gate.outputs.ok == 'true' }}
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
+        include:
+          - apikey: CLOUDTRUTH_API_KEY
+            os: ubuntu-latest
+            server: "https://api.cloudtruth.io"
+          - apikey: CLOUDTRUTH_STAGING_API_KEY
+            os: macos-latest
+            server: "https://api.staging.cloudtruth.io"
         os:
           - macos-latest
           - ubuntu-latest
@@ -116,9 +125,10 @@ jobs:
       - name: run action from repository
         uses: ./
         with:
-          apikey: "${{ secrets.CLOUDTRUTH_API_KEY }}"
+          apikey: "${{ secrets[matrix.apikey] }}"
           project: "${{ github.repository }}"
           environment: staging
+          server: "${{ matrix.server }}"
       - name: check environment is as expected 
         run: |
           printenv | grep -v 'GITHUB_' | sort > env_after
