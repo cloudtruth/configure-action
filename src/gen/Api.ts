@@ -260,10 +260,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @name EnvironmentsDestroy
    * @request DELETE:/api/v1/environments/{id}/
    * @secure
-   * @response `204` `void` No response body
+   * @response `204` `void` Environment destroyed.
+   * @response `409` `void` The environment has children and cannot be removed.
    */
   environmentsDestroy = (id: string, params: RequestParams = {}) =>
-    this.request<void, any>({
+    this.request<void, void>({
       path: `/api/v1/environments/${id}/`,
       method: "DELETE",
       secure: true,
@@ -389,7 +390,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @request GET:/api/v1/integrations/explore/
    * @secure
    * @response `200` `PaginatedIntegrationExplorerList` The content at the FQN.
-   * @response `204` `void` No content found at FQN.
    * @response `400` `void` Invalid FQN requested.
    * @response `403` `void` Unable to contact the third-party integration.
    * @response `415` `void` Unsupported content type (usually this means it is binary).
@@ -1175,7 +1175,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @secure
    * @response `200` `Parameter`
    * @response `400` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `404` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
+   * @response `404` `void` The given project id could not be found, or while checking pre-conditions, a dynamic value was encountered that could not be resolved.
    * @response `415` `void` While checking pre-conditions, a dynamic value was encountered that has an invalid content type.
    * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
    * @response `507` `void` While checking pre-conditions, a dynamic value was encountered that was too large to process.
@@ -1199,7 +1199,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @secure
    * @response `200` `Parameter`
    * @response `400` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `404` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
+   * @response `404` `void` The given project id could not be found, or while checking pre-conditions, a dynamic value was encountered that could not be resolved.
    * @response `415` `void` While checking pre-conditions, a dynamic value was encountered that has an invalid content type.
    * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
    * @response `507` `void` While checking pre-conditions, a dynamic value was encountered that was too large to process.
@@ -1226,19 +1226,13 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @name ProjectsParametersDestroy
    * @request DELETE:/api/v1/projects/{project_pk}/parameters/{id}/
    * @secure
-   * @response `200` `Parameter`
-   * @response `400` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `404` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `415` `void` While checking pre-conditions, a dynamic value was encountered that has an invalid content type.
-   * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
-   * @response `507` `void` While checking pre-conditions, a dynamic value was encountered that was too large to process.
+   * @response `204` `void` No response body
    */
   projectsParametersDestroy = (id: string, projectPk: string, params: RequestParams = {}) =>
-    this.request<Parameter, void>({
+    this.request<void, any>({
       path: `/api/v1/projects/${projectPk}/parameters/${id}/`,
       method: "DELETE",
       secure: true,
-      format: "json",
       ...params,
     });
   /**

@@ -3,7 +3,7 @@
     "info": {
         "title": "CloudTruth Management API",
         "version": "",
-        "description": "CloudTruth centralizes your parameters and secrets making them easier to manage and use.",
+        "description": "CloudTruth centralizes your configuration parameters and secrets making them easier to manage and use as a team.",
         "contact": {
             "name": "CloudTruth Support",
             "email": "support@cloudtruth.com"
@@ -136,12 +136,6 @@
                     "api"
                 ],
                 "security": [
-                    {
-                        "JWTAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    },
                     {}
                 ],
                 "responses": {
@@ -230,6 +224,15 @@
                         "required": false,
                         "in": "query",
                         "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
                         "schema": {
                             "type": "integer"
                         }
@@ -354,6 +357,15 @@
                         "required": false,
                         "in": "query",
                         "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
                         "schema": {
                             "type": "integer"
                         }
@@ -623,7 +635,10 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "No response body"
+                        "description": "Environment destroyed."
+                    },
+                    "409": {
+                        "description": "The environment has children and cannot be removed."
                     }
                 }
             }
@@ -652,6 +667,15 @@
                         "required": false,
                         "in": "query",
                         "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
                         "schema": {
                             "type": "integer"
                         }
@@ -952,6 +976,15 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "tags": [
@@ -963,7 +996,8 @@
                     },
                     {
                         "ApiKeyAuth": []
-                    }
+                    },
+                    {}
                 ],
                 "responses": {
                     "200": {
@@ -975,9 +1009,6 @@
                             }
                         },
                         "description": "The content at the FQN."
-                    },
-                    "204": {
-                        "description": "No content found at FQN."
                     },
                     "400": {
                         "description": "Invalid FQN requested."
@@ -1011,6 +1042,15 @@
                         "required": false,
                         "in": "query",
                         "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
                         "schema": {
                             "type": "integer"
                         }
@@ -1188,6 +1228,15 @@
                         "required": false,
                         "in": "query",
                         "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
                         "schema": {
                             "type": "integer"
                         }
@@ -1599,6 +1648,15 @@
                         }
                     },
                     {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "in": "query",
                         "name": "role",
                         "schema": {
@@ -1903,6 +1961,15 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "tags": [
@@ -2180,6 +2247,15 @@
                         "required": false,
                         "in": "query",
                         "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
                         "schema": {
                             "type": "integer"
                         }
@@ -2511,6 +2587,15 @@
                         }
                     },
                     {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
                         "in": "path",
                         "name": "project_pk",
                         "schema": {
@@ -2595,6 +2680,15 @@
                         "required": false,
                         "in": "query",
                         "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
                         "schema": {
                             "type": "integer"
                         }
@@ -2727,6 +2821,15 @@
                         "required": false,
                         "in": "query",
                         "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
                         "schema": {
                             "type": "integer"
                         }
@@ -3312,13 +3415,13 @@
                         "description": "While checking pre-conditions, a dynamic value was encountered that could not be resolved."
                     },
                     "404": {
-                        "description": "While checking pre-conditions, a dynamic value was encountered that could not be resolved."
-                    },
-                    "422": {
-                        "description": "A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change."
+                        "description": "The given project id could not be found, or while checking pre-conditions, a dynamic value was encountered that could not be resolved."
                     },
                     "415": {
                         "description": "While checking pre-conditions, a dynamic value was encountered that has an invalid content type."
+                    },
+                    "422": {
+                        "description": "A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change."
                     },
                     "507": {
                         "description": "While checking pre-conditions, a dynamic value was encountered that was too large to process."
@@ -3394,13 +3497,13 @@
                         "description": "While checking pre-conditions, a dynamic value was encountered that could not be resolved."
                     },
                     "404": {
-                        "description": "While checking pre-conditions, a dynamic value was encountered that could not be resolved."
-                    },
-                    "422": {
-                        "description": "A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change."
+                        "description": "The given project id could not be found, or while checking pre-conditions, a dynamic value was encountered that could not be resolved."
                     },
                     "415": {
                         "description": "While checking pre-conditions, a dynamic value was encountered that has an invalid content type."
+                    },
+                    "422": {
+                        "description": "A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change."
                     },
                     "507": {
                         "description": "While checking pre-conditions, a dynamic value was encountered that was too large to process."
@@ -3443,30 +3546,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Parameter"
-                                }
-                            }
-                        },
-                        "description": ""
-                    },
-                    "400": {
-                        "description": "While checking pre-conditions, a dynamic value was encountered that could not be resolved."
-                    },
-                    "404": {
-                        "description": "While checking pre-conditions, a dynamic value was encountered that could not be resolved."
-                    },
-                    "422": {
-                        "description": "A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change."
-                    },
-                    "415": {
-                        "description": "While checking pre-conditions, a dynamic value was encountered that has an invalid content type."
-                    },
-                    "507": {
-                        "description": "While checking pre-conditions, a dynamic value was encountered that was too large to process."
+                    "204": {
+                        "description": "No response body"
                     }
                 }
             }
@@ -3565,6 +3646,15 @@
                         "required": false,
                         "in": "query",
                         "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
                         "schema": {
                             "type": "integer"
                         }
@@ -3918,6 +4008,15 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "tags": [
@@ -4188,6 +4287,15 @@
                         "required": false,
                         "in": "query",
                         "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
                         "schema": {
                             "type": "integer"
                         }
@@ -4613,7 +4721,7 @@
                         "type": "string",
                         "format": "uri",
                         "nullable": true,
-                        "description": "Environments can inherit from a single parent environment which provides values for parameters when specific environments do not have a value set.  Every organization has one default environment that is required to have a value for every parameter in every project."
+                        "description": "Environments can inherit from a single parent environment which provides values for parameters when specific environments do not have a value set.  Every organization has one default environment that cannot be removed."
                     },
                     "created_at": {
                         "type": "string",
@@ -4650,7 +4758,7 @@
                         "type": "string",
                         "format": "uri",
                         "nullable": true,
-                        "description": "Environments can inherit from a single parent environment which provides values for parameters when specific environments do not have a value set.  Every organization has one default environment that is required to have a value for every parameter in every project."
+                        "description": "Environments can inherit from a single parent environment which provides values for parameters when specific environments do not have a value set.  Every organization has one default environment that cannot be removed."
                     }
                 },
                 "required": [
@@ -4777,7 +4885,8 @@
                         "nullable": true
                     },
                     "content_size": {
-                        "type": "integer"
+                        "type": "integer",
+                        "nullable": true
                     },
                     "content_keys": {
                         "type": "array",
@@ -5466,11 +5575,6 @@
                         },
                         "readOnly": true
                     },
-                    "uses_dynamic_values": {
-                        "type": "boolean",
-                        "readOnly": true,
-                        "description": "If `true` then at least one of the values is dynamic."
-                    },
                     "values": {
                         "type": "object",
                         "additionalProperties": {
@@ -5502,7 +5606,6 @@
                     "name",
                     "templates",
                     "url",
-                    "uses_dynamic_values",
                     "values"
                 ]
             },
@@ -5659,7 +5762,7 @@
                         "type": "string",
                         "format": "uri",
                         "nullable": true,
-                        "description": "Environments can inherit from a single parent environment which provides values for parameters when specific environments do not have a value set.  Every organization has one default environment that is required to have a value for every parameter in every project."
+                        "description": "Environments can inherit from a single parent environment which provides values for parameters when specific environments do not have a value set.  Every organization has one default environment that cannot be removed."
                     },
                     "created_at": {
                         "type": "string",
@@ -5858,11 +5961,6 @@
                         },
                         "readOnly": true
                     },
-                    "uses_dynamic_values": {
-                        "type": "boolean",
-                        "readOnly": true,
-                        "description": "If `true` then at least one of the values is dynamic."
-                    },
                     "values": {
                         "type": "object",
                         "additionalProperties": {
@@ -5956,6 +6054,12 @@
                         "type": "string",
                         "format": "date-time",
                         "readOnly": true
+                    },
+                    "last_used_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "description": "The most recent date and time the service account was used."
                     }
                 }
             },
@@ -5994,6 +6098,11 @@
                             "format": "uri"
                         },
                         "readOnly": true
+                    },
+                    "has_secret": {
+                        "type": "boolean",
+                        "readOnly": true,
+                        "description": "If True, this template contains secrets."
                     },
                     "created_at": {
                         "type": "string",
@@ -6058,7 +6167,13 @@
                         "type": "string",
                         "nullable": true,
                         "readOnly": true,
-                        "description": "This is the actual content of the Value for the given parameter in the given environment.  Depending on the settings in the Value, the following things occur to calculate the `value`:\n\nFor values that are not `dynamic` and parameters that are not `secret`, the system will use the content in `static_value` to satisfy the request.\n\nFor values that are not `dynamic` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.\n\nFor values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, or if the parameter is `secret` and the content from the integration is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.\n\nIf you request secret masking, no secret content will be included in the result and instead a series of asterisks will be used instead for the value.  If you request wrapping, the secret content will be wrapped in an envelope that is bound to your JWT token.  For more information about secret wrapping, see the docs.\n\nClients applying this value to a shell environment should set `<parameter_name>=<value>` even if `value` is the empty string.  If `value` is `null`, the client should unset that shell environment variable."
+                        "description": "This is the actual content of the Value for the given parameter in the given environment.  Depending on the settings in the Value, the following things occur to calculate the `value`:\n\nFor values that are not `dynamic` and parameters that are not `secret`, the system will use the content in `static_value` to satisfy the request.\n\nFor values that are not `dynamic` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.\n\nFor values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.\n\nIf you request secret masking, no secret content will be included in the result and instead a series of asterisks will be used instead for the value.  If you request wrapping, the secret content will be wrapped in an envelope that is bound to your JWT token.  For more information about secret wrapping, see the docs.\n\nClients applying this value to a shell environment should set `<parameter_name>=<value>` even if `value` is the empty string.  If `value` is `null`, the client should unset that shell environment variable."
+                    },
+                    "secret": {
+                        "type": "boolean",
+                        "nullable": true,
+                        "readOnly": true,
+                        "description": "Indicates the value content is a secret.  Normally this is `true` when the parameter is a secret, however it is possible for a parameter to be a secret with a dynamic value that is not a secret.  It is not possible to convert a parameter from a secret to a non-secret if any of the values are dynamic and a secret.  Clients can check this condition by leveraging this field."
                     },
                     "created_at": {
                         "type": "string",
@@ -6173,11 +6288,18 @@
                         "type": "string",
                         "format": "date-time",
                         "readOnly": true
+                    },
+                    "last_used_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "description": "The most recent date and time the service account was used."
                     }
                 },
                 "required": [
                     "created_at",
                     "id",
+                    "last_used_at",
                     "modified_at",
                     "url",
                     "user"
@@ -6234,6 +6356,12 @@
                         "format": "date-time",
                         "readOnly": true
                     },
+                    "last_used_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true,
+                        "description": "The most recent date and time the service account was used."
+                    },
                     "apikey": {
                         "type": "string",
                         "readOnly": true,
@@ -6244,6 +6372,7 @@
                     "apikey",
                     "created_at",
                     "id",
+                    "last_used_at",
                     "modified_at",
                     "url",
                     "user"
@@ -6285,6 +6414,11 @@
                         },
                         "readOnly": true
                     },
+                    "has_secret": {
+                        "type": "boolean",
+                        "readOnly": true,
+                        "description": "If True, this template contains secrets."
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
@@ -6298,6 +6432,7 @@
                 },
                 "required": [
                     "created_at",
+                    "has_secret",
                     "id",
                     "modified_at",
                     "name",
@@ -6443,7 +6578,13 @@
                         "type": "string",
                         "nullable": true,
                         "readOnly": true,
-                        "description": "This is the actual content of the Value for the given parameter in the given environment.  Depending on the settings in the Value, the following things occur to calculate the `value`:\n\nFor values that are not `dynamic` and parameters that are not `secret`, the system will use the content in `static_value` to satisfy the request.\n\nFor values that are not `dynamic` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.\n\nFor values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, or if the parameter is `secret` and the content from the integration is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.\n\nIf you request secret masking, no secret content will be included in the result and instead a series of asterisks will be used instead for the value.  If you request wrapping, the secret content will be wrapped in an envelope that is bound to your JWT token.  For more information about secret wrapping, see the docs.\n\nClients applying this value to a shell environment should set `<parameter_name>=<value>` even if `value` is the empty string.  If `value` is `null`, the client should unset that shell environment variable."
+                        "description": "This is the actual content of the Value for the given parameter in the given environment.  Depending on the settings in the Value, the following things occur to calculate the `value`:\n\nFor values that are not `dynamic` and parameters that are not `secret`, the system will use the content in `static_value` to satisfy the request.\n\nFor values that are not `dynamic` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.\n\nFor values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.\n\nIf you request secret masking, no secret content will be included in the result and instead a series of asterisks will be used instead for the value.  If you request wrapping, the secret content will be wrapped in an envelope that is bound to your JWT token.  For more information about secret wrapping, see the docs.\n\nClients applying this value to a shell environment should set `<parameter_name>=<value>` even if `value` is the empty string.  If `value` is `null`, the client should unset that shell environment variable."
+                    },
+                    "secret": {
+                        "type": "boolean",
+                        "nullable": true,
+                        "readOnly": true,
+                        "description": "Indicates the value content is a secret.  Normally this is `true` when the parameter is a secret, however it is possible for a parameter to be a secret with a dynamic value that is not a secret.  It is not possible to convert a parameter from a secret to a non-secret if any of the values are dynamic and a secret.  Clients can check this condition by leveraging this field."
                     },
                     "created_at": {
                         "type": "string",
@@ -6462,6 +6603,7 @@
                     "id",
                     "modified_at",
                     "parameter",
+                    "secret",
                     "url",
                     "value"
                 ]
@@ -6506,7 +6648,7 @@
                 "in": "header",
                 "name": "Authorization",
                 "type": "apiKey",
-                "description": "\nUse your CloudTruth API Key to authenticate to the API.  You can get\nan API Key by creating a Service Account in the UI.  During setup of the Service\nAccount you will generate a long-lived API key intended for use by automation\nand API clients.\n\nIf you are just trying to use the API in a normal workflow, this is likely the\nauthentication mechanism you want to use.\n\nTo use the API Key, place your API Key in the Authorization header as 'Api-Key APIKEY', where\nAPIKEY is your CloudTruth API Key.  For example:\n\n    Authorization: Api-Key fskur.ghlsiudhrg84so938r5u\n        "
+                "description": "\nUse your CloudTruth API Key to authenticate to the API.  You can get\nan API Key by creating a Service Account.  During setup of the Service\nAccount you will generate a long-lived API key intended for use by automation\nand API clients.  Access through the service account will be audited separately\nfrom any other user.\n\nIf you are just trying to use the API in a normal workflow, this is likely the\nauthentication mechanism you want to use.\n\nTo use the API Key, place your API Key in the Authorization header as 'Api-Key APIKEY', where\nAPIKEY is your CloudTruth API Key.  For example:\n\n    Authorization: Api-Key fskur.ghlsiudhrg84so938r5u\n        "
             },
             "JWTAuth": {
                 "in": "header",
@@ -6515,5 +6657,8 @@
                 "description": "\nUse your JWT to authenticate to the API.  This is how the CloudTruth\nWeb UI authenticates to the backend.  It requires a user to have already logged in\nand gotten a JWT from the login process.  This is usually done by an Auth0 authentication\nflow from one of the Auth0 javascript libraries.  Alternatively, you can pull the\nJWT from your browser if you have a logged in session with the CloudTruth UI.\n\nThis authentication mechanism is intended for deeper integrations into the CloudTruth\nsystem, where you want to handle the user logins directly in your application.  For\nnormal API use, you likely want the Api-Key authentication header and not this one.\n\nTo use the JWT, place your JWT in the Authorization header as 'Bearer JWT', where\nJWT is your JWT.  For example:\n\n    Authorization: Bearer eyJhbGciOiJIkuydfy.eyJzdWIiOiIxMjM....\n        "
             }
         }
+    },
+    "externalDocs": {
+        "url": "https://docs.cloudtruth.com/"
     }
 }

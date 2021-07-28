@@ -191,7 +191,7 @@ export interface Environment {
   description?: string;
 
   /**
-   * Environments can inherit from a single parent environment which provides values for parameters when specific environments do not have a value set.  Every organization has one default environment that is required to have a value for every parameter in every project.
+   * Environments can inherit from a single parent environment which provides values for parameters when specific environments do not have a value set.  Every organization has one default environment that cannot be removed.
    * @format uri
    */
   parent?: string | null;
@@ -211,7 +211,7 @@ export interface EnvironmentCreate {
   description?: string;
 
   /**
-   * Environments can inherit from a single parent environment which provides values for parameters when specific environments do not have a value set.  Every organization has one default environment that is required to have a value for every parameter in every project.
+   * Environments can inherit from a single parent environment which provides values for parameters when specific environments do not have a value set.  Every organization has one default environment that cannot be removed.
    * @format uri
    */
   parent?: string | null;
@@ -272,7 +272,7 @@ export interface IntegrationExplorer {
   name?: string;
   content_type?: string | null;
   content_data?: string | null;
-  content_size?: number;
+  content_size?: number | null;
   content_keys?: string[] | null;
 }
 
@@ -692,9 +692,6 @@ export interface Parameter {
   secret?: boolean;
   templates: string[];
 
-  /** If `true` then at least one of the values is dynamic. */
-  uses_dynamic_values: boolean;
-
   /**
    *
    *             Each parameter has an effective value in every environment based on
@@ -821,7 +818,7 @@ export interface PatchedEnvironment {
   description?: string;
 
   /**
-   * Environments can inherit from a single parent environment which provides values for parameters when specific environments do not have a value set.  Every organization has one default environment that is required to have a value for every parameter in every project.
+   * Environments can inherit from a single parent environment which provides values for parameters when specific environments do not have a value set.  Every organization has one default environment that cannot be removed.
    * @format uri
    */
   parent?: string | null;
@@ -952,9 +949,6 @@ export interface PatchedParameter {
   secret?: boolean;
   templates?: string[];
 
-  /** If `true` then at least one of the values is dynamic. */
-  uses_dynamic_values?: boolean;
-
   /**
    *
    *             Each parameter has an effective value in every environment based on
@@ -1022,6 +1016,12 @@ export interface PatchedServiceAccount {
 
   /** @format date-time */
   modified_at?: string;
+
+  /**
+   * The most recent date and time the service account was used.
+   * @format date-time
+   */
+  last_used_at?: string;
 }
 
 /**
@@ -1046,6 +1046,9 @@ export interface PatchedTemplate {
   /** The content of the template.  Use mustache-style templating delimiters of `{{` and `}}` to reference parameter values by name for substitution into the template result. */
   body?: string;
   parameters?: string[];
+
+  /** If True, this template contains secrets. */
+  has_secret?: boolean;
 
   /** @format date-time */
   created_at?: string;
@@ -1098,13 +1101,16 @@ export interface PatchedValue {
    *
    * For values that are not `dynamic` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.
    *
-   * For values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, or if the parameter is `secret` and the content from the integration is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
+   * For values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
    *
    * If you request secret masking, no secret content will be included in the result and instead a series of asterisks will be used instead for the value.  If you request wrapping, the secret content will be wrapped in an envelope that is bound to your JWT token.  For more information about secret wrapping, see the docs.
    *
    * Clients applying this value to a shell environment should set `<parameter_name>=<value>` even if `value` is the empty string.  If `value` is `null`, the client should unset that shell environment variable.
    */
   value?: string | null;
+
+  /** Indicates the value content is a secret.  Normally this is `true` when the parameter is a secret, however it is possible for a parameter to be a secret with a dynamic value that is not a secret.  It is not possible to convert a parameter from a secret to a non-secret if any of the values are dynamic and a secret.  Clients can check this condition by leveraging this field. */
+  secret?: boolean | null;
 
   /** @format date-time */
   created_at?: string;
@@ -1165,6 +1171,12 @@ export interface ServiceAccount {
 
   /** @format date-time */
   modified_at: string;
+
+  /**
+   * The most recent date and time the service account was used.
+   * @format date-time
+   */
+  last_used_at: string;
 }
 
 export interface ServiceAccountCreateRequest {
@@ -1189,6 +1201,12 @@ export interface ServiceAccountCreateResponse {
 
   /** @format date-time */
   modified_at: string;
+
+  /**
+   * The most recent date and time the service account was used.
+   * @format date-time
+   */
+  last_used_at: string;
 
   /** The API Key to use as a Bearer token for the service account. */
   apikey: string;
@@ -1216,6 +1234,9 @@ export interface Template {
   /** The content of the template.  Use mustache-style templating delimiters of `{{` and `}}` to reference parameter values by name for substitution into the template result. */
   body?: string;
   parameters: string[];
+
+  /** If True, this template contains secrets. */
+  has_secret: boolean;
 
   /** @format date-time */
   created_at: string;
@@ -1306,13 +1327,16 @@ export interface Value {
    *
    * For values that are not `dynamic` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.
    *
-   * For values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, or if the parameter is `secret` and the content from the integration is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
+   * For values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
    *
    * If you request secret masking, no secret content will be included in the result and instead a series of asterisks will be used instead for the value.  If you request wrapping, the secret content will be wrapped in an envelope that is bound to your JWT token.  For more information about secret wrapping, see the docs.
    *
    * Clients applying this value to a shell environment should set `<parameter_name>=<value>` even if `value` is the empty string.  If `value` is `null`, the client should unset that shell environment variable.
    */
   value: string | null;
+
+  /** Indicates the value content is a secret.  Normally this is `true` when the parameter is a secret, however it is possible for a parameter to be a secret with a dynamic value that is not a secret.  It is not possible to convert a parameter from a secret to a non-secret if any of the values are dynamic and a secret.  Clients can check this condition by leveraging this field. */
+  secret: boolean | null;
 
   /** @format date-time */
   created_at: string;
@@ -1459,6 +1483,9 @@ export interface AuditListParams {
 
   /** A page number within the paginated result set. */
   page?: number;
+
+  /** Number of results to return per page. */
+  page_size?: number;
   user_id?: string;
 }
 
@@ -1467,6 +1494,9 @@ export interface EnvironmentsListParams {
 
   /** A page number within the paginated result set. */
   page?: number;
+
+  /** Number of results to return per page. */
+  page_size?: number;
   parent__name?: string;
 }
 
@@ -1476,6 +1506,9 @@ export interface IntegrationsAwsListParams {
 
   /** A page number within the paginated result set. */
   page?: number;
+
+  /** Number of results to return per page. */
+  page_size?: number;
 }
 
 export interface IntegrationsAwsRetrieveParams {
@@ -1498,6 +1531,9 @@ export interface IntegrationsExploreListParams {
 
   /** A page number within the paginated result set. */
   page?: number;
+
+  /** Number of results to return per page. */
+  page_size?: number;
 }
 
 export interface IntegrationsGithubListParams {
@@ -1505,6 +1541,9 @@ export interface IntegrationsGithubListParams {
 
   /** A page number within the paginated result set. */
   page?: number;
+
+  /** Number of results to return per page. */
+  page_size?: number;
 }
 
 export interface IntegrationsGithubRetrieveParams {
@@ -1524,6 +1563,9 @@ export interface InvitationsListParams {
   /** A page number within the paginated result set. */
   page?: number;
 
+  /** Number of results to return per page. */
+  page_size?: number;
+
   /** The role that the user will have in the organization, should the user accept. */
   role?: "ADMIN" | "CONTRIB" | "OWNER" | "VIEWER";
 
@@ -1534,6 +1576,9 @@ export interface InvitationsListParams {
 export interface MembershipsListParams {
   /** A page number within the paginated result set. */
   page?: number;
+
+  /** Number of results to return per page. */
+  page_size?: number;
 
   /** The role that the user has in the organization. */
   role?: "ADMIN" | "CONTRIB" | "OWNER" | "VIEWER";
@@ -1547,6 +1592,9 @@ export interface OrganizationsListParams {
 
   /** A page number within the paginated result set. */
   page?: number;
+
+  /** Number of results to return per page. */
+  page_size?: number;
 }
 
 export interface ProjectsListParams {
@@ -1554,6 +1602,9 @@ export interface ProjectsListParams {
 
   /** A page number within the paginated result set. */
   page?: number;
+
+  /** Number of results to return per page. */
+  page_size?: number;
 }
 
 export interface ProjectsParameterExportListParams {
@@ -1581,6 +1632,9 @@ export interface ProjectsParameterExportListParams {
   /** A page number within the paginated result set. */
   page?: number;
 
+  /** Number of results to return per page. */
+  page_size?: number;
+
   /** (Optional) Only include parameters whose names start with the provided string. */
   startswith?: string;
 
@@ -1605,6 +1659,9 @@ export interface ProjectsParametersListParams {
   /** A page number within the paginated result set. */
   page?: number;
 
+  /** Number of results to return per page. */
+  page_size?: number;
+
   /** If true, wraps all secrets (defaults to false) - see documentation for more details. */
   wrap?: boolean;
 
@@ -1621,6 +1678,9 @@ export interface ProjectsParametersValuesListParams {
 
   /** A page number within the paginated result set. */
   page?: number;
+
+  /** Number of results to return per page. */
+  page_size?: number;
 
   /** For writes, indicates `static_value` is wrapped; for reads, indicates `value` is wrapped. For more information on secret wrapping, see the documentation.  */
   wrap?: boolean;
@@ -1770,6 +1830,9 @@ export interface ProjectsTemplatesListParams {
   /** A page number within the paginated result set. */
   page?: number;
 
+  /** Number of results to return per page. */
+  page_size?: number;
+
   /** @format uuid */
   projectPk: string;
 }
@@ -1797,10 +1860,16 @@ export interface ProjectsTemplatesRetrieveParams {
 export interface ServiceaccountsListParams {
   /** A page number within the paginated result set. */
   page?: number;
+
+  /** Number of results to return per page. */
+  page_size?: number;
 }
 
 export interface UsersListParams {
   /** A page number within the paginated result set. */
   page?: number;
+
+  /** Number of results to return per page. */
+  page_size?: number;
   type?: string;
 }
