@@ -1128,7 +1128,7 @@ function resolve_environment_id(environment_name_or_id, api) {
         if (!environment_name_or_id) {
             throw new Error(`No environment name or id was specified.`);
         }
-        if (uuid_1.validate(environment_name_or_id)) {
+        if ((0, uuid_1.validate)(environment_name_or_id)) {
             // we look it up to make sure the id is good and we have permission to use it
             try {
                 const response = yield api.environmentsRetrieve(environment_name_or_id);
@@ -1151,7 +1151,7 @@ function resolve_project_id(project_name_or_id, api) {
         if (!project_name_or_id) {
             throw new Error(`No project name or id was specified.`);
         }
-        if (uuid_1.validate(project_name_or_id)) {
+        if ((0, uuid_1.validate)(project_name_or_id)) {
             // we look it up to make sure the id is good and we have permission to use it
             try {
                 const response = yield api.projectsRetrieve(project_name_or_id);
@@ -4163,7 +4163,7 @@ var exports = __webpack_exports__;
 //
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const run_1 = __nccwpck_require__(884);
-run_1.run();
+(0, run_1.run)();
 
 })();
 
