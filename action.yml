@@ -12,12 +12,17 @@ inputs:
   environment:
     description: 'The CloudTruth environment (name or id) to view the project through.'
     required: true
+  tag:
+    description: 'The environment tag name to use.  If not specified, current values are retrieved.'
+    required: false
   overwrite:
     description: 'Allow environment variables to be overwritten.'
-    default: false
+    default: 'false'
+    required: false
   server:
     description: 'The CloudTruth server to execute the query against.'
     default: 'https://api.cloudtruth.io'
+    required: false
 runs:
   using: 'node12'
   main: 'dist/index.js'

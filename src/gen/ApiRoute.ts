@@ -33,22 +33,29 @@ import {
   PaginatedMembershipList,
   PaginatedOrganizationList,
   PaginatedParameterList,
+  PaginatedParameterRuleList,
   PaginatedProjectList,
   PaginatedServiceAccountList,
+  PaginatedTagList,
   PaginatedTemplateList,
   PaginatedUserList,
   PaginatedValueList,
   Parameter,
   ParameterCreate,
   ParameterExport,
+  ParameterRule,
+  ParameterRuleCreate,
+  ParameterTimeline,
   PatchedAwsIntegration,
   PatchedEnvironment,
   PatchedInvitation,
   PatchedMembership,
   PatchedOrganization,
   PatchedParameter,
+  PatchedParameterRule,
   PatchedProject,
   PatchedServiceAccount,
+  PatchedTag,
   PatchedTemplate,
   PatchedValue,
   Project,
@@ -56,9 +63,12 @@ import {
   ServiceAccount,
   ServiceAccountCreateRequest,
   ServiceAccountCreateResponse,
+  Tag,
+  TagCreate,
   Template,
   TemplateCreate,
   TemplatePreview,
+  TemplateTimeline,
   User,
   Value,
   ValueCreate,
@@ -270,6 +280,112 @@ export namespace Api {
   }
 
   /**
+   * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+   * @tags environments
+   * @name EnvironmentsTagsList
+   * @request GET:/api/v1/environments/{environment_pk}/tags/
+   * @secure
+   * @response `200` `PaginatedTagList`
+   */
+  export namespace EnvironmentsTagsList {
+    export type RequestParams = { environmentPk: string };
+    export type RequestQuery = {
+      description__icontains?: string;
+      name?: string;
+      name__icontains?: string;
+      ordering?: string;
+      page?: number;
+      page_size?: number;
+      timestamp?: string;
+      timestamp__gte?: string;
+      timestamp__lte?: string;
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = PaginatedTagList;
+  }
+
+  /**
+   * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+   * @tags environments
+   * @name EnvironmentsTagsCreate
+   * @request POST:/api/v1/environments/{environment_pk}/tags/
+   * @secure
+   * @response `201` `Tag`
+   */
+  export namespace EnvironmentsTagsCreate {
+    export type RequestParams = { environmentPk: string };
+    export type RequestQuery = {};
+    export type RequestBody = TagCreate;
+    export type RequestHeaders = {};
+    export type ResponseBody = Tag;
+  }
+
+  /**
+   * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+   * @tags environments
+   * @name EnvironmentsTagsRetrieve
+   * @request GET:/api/v1/environments/{environment_pk}/tags/{id}/
+   * @secure
+   * @response `200` `Tag`
+   */
+  export namespace EnvironmentsTagsRetrieve {
+    export type RequestParams = { environmentPk: string; id: string };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = Tag;
+  }
+
+  /**
+   * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+   * @tags environments
+   * @name EnvironmentsTagsUpdate
+   * @request PUT:/api/v1/environments/{environment_pk}/tags/{id}/
+   * @secure
+   * @response `200` `Tag`
+   */
+  export namespace EnvironmentsTagsUpdate {
+    export type RequestParams = { environmentPk: string; id: string };
+    export type RequestQuery = {};
+    export type RequestBody = Tag;
+    export type RequestHeaders = {};
+    export type ResponseBody = Tag;
+  }
+
+  /**
+   * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+   * @tags environments
+   * @name EnvironmentsTagsPartialUpdate
+   * @request PATCH:/api/v1/environments/{environment_pk}/tags/{id}/
+   * @secure
+   * @response `200` `Tag`
+   */
+  export namespace EnvironmentsTagsPartialUpdate {
+    export type RequestParams = { environmentPk: string; id: string };
+    export type RequestQuery = {};
+    export type RequestBody = PatchedTag;
+    export type RequestHeaders = {};
+    export type ResponseBody = Tag;
+  }
+
+  /**
+   * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+   * @tags environments
+   * @name EnvironmentsTagsDestroy
+   * @request DELETE:/api/v1/environments/{environment_pk}/tags/{id}/
+   * @secure
+   * @response `204` `void` No response body
+   */
+  export namespace EnvironmentsTagsDestroy {
+    export type RequestParams = { environmentPk: string; id: string };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = void;
+  }
+
+  /**
    * No description
    * @tags environments
    * @name EnvironmentsRetrieve
@@ -420,13 +536,15 @@ export namespace Api {
    * No description
    * @tags integrations
    * @name IntegrationsAwsDestroy
+   * @summary Delete an AWS integration.
    * @request DELETE:/api/v1/integrations/aws/{id}/
    * @secure
-   * @response `204` `void` No response body
+   * @response `204` `void` Integration removed.
+   * @response `409` `void` The integration is used by one (or more) Value(s) and cannot be removed.
    */
   export namespace IntegrationsAwsDestroy {
     export type RequestParams = { id: string };
-    export type RequestQuery = {};
+    export type RequestQuery = { in_use?: "fail" | "leave" | "remove" };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = void;
@@ -507,13 +625,15 @@ export namespace Api {
    * No description
    * @tags integrations
    * @name IntegrationsGithubDestroy
+   * @summary Delete a GitHub integration.
    * @request DELETE:/api/v1/integrations/github/{id}/
    * @secure
-   * @response `204` `void` No response body
+   * @response `204` `void` Integration removed.
+   * @response `409` `void` The integration is used by one (or more) Value(s) and cannot be removed.
    */
   export namespace IntegrationsGithubDestroy {
     export type RequestParams = { id: string };
-    export type RequestQuery = {};
+    export type RequestQuery = { in_use?: "fail" | "leave" | "remove" };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = void;
@@ -965,15 +1085,15 @@ export namespace Api {
   export namespace ProjectsParameterExportList {
     export type RequestParams = { projectPk: string };
     export type RequestQuery = {
+      as_of?: string;
       contains?: string;
       endswith?: string;
       environment?: string;
       explicit_export?: boolean;
       mask_secrets?: boolean;
       output?: string;
-      page?: number;
-      page_size?: number;
       startswith?: string;
+      tag?: string;
       wrap?: boolean;
     };
     export type RequestBody = never;
@@ -992,11 +1112,15 @@ export namespace Api {
   export namespace ProjectsParametersList {
     export type RequestParams = { projectPk: string };
     export type RequestQuery = {
+      as_of?: string;
       environment?: string;
       mask_secrets?: boolean;
       name?: string;
       page?: number;
       page_size?: number;
+      partial_success?: boolean;
+      tag?: string;
+      values?: boolean;
       wrap?: boolean;
     };
     export type RequestBody = never;
@@ -1021,6 +1145,106 @@ export namespace Api {
   }
 
   /**
+   * No description
+   * @tags projects
+   * @name ProjectsParametersRulesList
+   * @request GET:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/
+   * @secure
+   * @response `200` `PaginatedParameterRuleList`
+   */
+  export namespace ProjectsParametersRulesList {
+    export type RequestParams = { parameterPk: string; projectPk: string };
+    export type RequestQuery = {
+      page?: number;
+      page_size?: number;
+      type?: "max" | "max_len" | "min" | "min_len" | "regex";
+    };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = PaginatedParameterRuleList;
+  }
+
+  /**
+   * No description
+   * @tags projects
+   * @name ProjectsParametersRulesCreate
+   * @request POST:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/
+   * @secure
+   * @response `201` `ParameterRule`
+   */
+  export namespace ProjectsParametersRulesCreate {
+    export type RequestParams = { parameterPk: string; projectPk: string };
+    export type RequestQuery = {};
+    export type RequestBody = ParameterRuleCreate;
+    export type RequestHeaders = {};
+    export type ResponseBody = ParameterRule;
+  }
+
+  /**
+   * No description
+   * @tags projects
+   * @name ProjectsParametersRulesRetrieve
+   * @request GET:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/{id}/
+   * @secure
+   * @response `200` `ParameterRule`
+   */
+  export namespace ProjectsParametersRulesRetrieve {
+    export type RequestParams = { id: string; parameterPk: string; projectPk: string };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = ParameterRule;
+  }
+
+  /**
+   * No description
+   * @tags projects
+   * @name ProjectsParametersRulesUpdate
+   * @request PUT:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/{id}/
+   * @secure
+   * @response `200` `ParameterRule`
+   */
+  export namespace ProjectsParametersRulesUpdate {
+    export type RequestParams = { id: string; parameterPk: string; projectPk: string };
+    export type RequestQuery = {};
+    export type RequestBody = ParameterRule;
+    export type RequestHeaders = {};
+    export type ResponseBody = ParameterRule;
+  }
+
+  /**
+   * No description
+   * @tags projects
+   * @name ProjectsParametersRulesPartialUpdate
+   * @request PATCH:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/{id}/
+   * @secure
+   * @response `200` `ParameterRule`
+   */
+  export namespace ProjectsParametersRulesPartialUpdate {
+    export type RequestParams = { id: string; parameterPk: string; projectPk: string };
+    export type RequestQuery = {};
+    export type RequestBody = PatchedParameterRule;
+    export type RequestHeaders = {};
+    export type ResponseBody = ParameterRule;
+  }
+
+  /**
+   * No description
+   * @tags projects
+   * @name ProjectsParametersRulesDestroy
+   * @request DELETE:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/{id}/
+   * @secure
+   * @response `204` `void` No response body
+   */
+  export namespace ProjectsParametersRulesDestroy {
+    export type RequestParams = { id: string; parameterPk: string; projectPk: string };
+    export type RequestQuery = {};
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = void;
+  }
+
+  /**
    * @description Retrieve previously set values of a parameter in one or all environments. To see all the _effective_ values for a parameter across every environment, use the Parameters API (see the `values` field).
    * @tags projects
    * @name ProjectsParametersValuesList
@@ -1032,10 +1256,13 @@ export namespace Api {
   export namespace ProjectsParametersValuesList {
     export type RequestParams = { parameterPk: string; projectPk: string };
     export type RequestQuery = {
+      as_of?: string;
       environment?: string;
       mask_secrets?: boolean;
       page?: number;
       page_size?: number;
+      partial_success?: boolean;
+      tag?: string;
       wrap?: boolean;
     };
     export type RequestBody = never;
@@ -1071,7 +1298,13 @@ export namespace Api {
    */
   export namespace ProjectsParametersValuesRetrieve {
     export type RequestParams = { id: string; parameterPk: string; projectPk: string };
-    export type RequestQuery = { mask_secrets?: boolean; wrap?: boolean };
+    export type RequestQuery = {
+      as_of?: string;
+      mask_secrets?: boolean;
+      partial_success?: boolean;
+      tag?: string;
+      wrap?: boolean;
+    };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = Value;
@@ -1138,7 +1371,15 @@ export namespace Api {
    */
   export namespace ProjectsParametersRetrieve {
     export type RequestParams = { id: string; projectPk: string };
-    export type RequestQuery = { environment?: string; mask_secrets?: boolean; wrap?: boolean };
+    export type RequestQuery = {
+      as_of?: string;
+      environment?: string;
+      mask_secrets?: boolean;
+      partial_success?: boolean;
+      tag?: string;
+      values?: boolean;
+      wrap?: boolean;
+    };
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = Parameter;
@@ -1151,11 +1392,11 @@ export namespace Api {
    * @request PUT:/api/v1/projects/{project_pk}/parameters/{id}/
    * @secure
    * @response `200` `Parameter`
-   * @response `400` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `404` `void` The given project id could not be found, or while checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `415` `void` While checking pre-conditions, a dynamic value was encountered that has an invalid content type.
-   * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
-   * @response `507` `void` While checking pre-conditions, a dynamic value was encountered that was too large to process.
+   * @response `400` `void` While checking pre-conditions, an external value was encountered that could not be resolved.
+   * @response `404` `void` The given project id could not be found, or while checking pre-conditions, an external value was encountered that could not be resolved.
+   * @response `415` `void` While checking pre-conditions, an external value was encountered that has an invalid content type.
+   * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having an external value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
+   * @response `507` `void` While checking pre-conditions, an external value was encountered that was too large to process.
    */
   export namespace ProjectsParametersUpdate {
     export type RequestParams = { id: string; projectPk: string };
@@ -1172,11 +1413,11 @@ export namespace Api {
    * @request PATCH:/api/v1/projects/{project_pk}/parameters/{id}/
    * @secure
    * @response `200` `Parameter`
-   * @response `400` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `404` `void` The given project id could not be found, or while checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `415` `void` While checking pre-conditions, a dynamic value was encountered that has an invalid content type.
-   * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
-   * @response `507` `void` While checking pre-conditions, a dynamic value was encountered that was too large to process.
+   * @response `400` `void` While checking pre-conditions, an external value was encountered that could not be resolved.
+   * @response `404` `void` The given project id could not be found, or while checking pre-conditions, an external value was encountered that could not be resolved.
+   * @response `415` `void` While checking pre-conditions, an external value was encountered that has an invalid content type.
+   * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having an external value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
+   * @response `507` `void` While checking pre-conditions, an external value was encountered that was too large to process.
    */
   export namespace ProjectsParametersPartialUpdate {
     export type RequestParams = { id: string; projectPk: string };
@@ -1203,16 +1444,49 @@ export namespace Api {
   }
 
   /**
-   * @description Endpoint for previewing a template.
+   * @description Summary information about how a parameter has changed over time. The time range of historical information available depends on your subscription. Any changes to the parameter itself, including rules and values, is included.
+   * @tags projects
+   * @name ProjectsParametersTimelineRetrieve
+   * @request GET:/api/v1/projects/{project_pk}/parameters/{id}/timeline/
+   * @secure
+   * @response `200` `ParameterTimeline`
+   */
+  export namespace ProjectsParametersTimelineRetrieve {
+    export type RequestParams = { id: string; projectPk: string };
+    export type RequestQuery = { as_of?: string; tag?: string };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = ParameterTimeline;
+  }
+
+  /**
+   * @description Information about how the parameters of a project have changed over time. The time range of historical information available depends on your subscription. Any changes to the project's parameters, including rules and values, is included.
+   * @tags projects
+   * @name ProjectsParametersTimelinesRetrieve
+   * @request GET:/api/v1/projects/{project_pk}/parameters/timelines/
+   * @secure
+   * @response `200` `ParameterTimeline`
+   */
+  export namespace ProjectsParametersTimelinesRetrieve {
+    export type RequestParams = { projectPk: string };
+    export type RequestQuery = { as_of?: string; tag?: string };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = ParameterTimeline;
+  }
+
+  /**
+   * @description Endpoint for previewing a template.  Post the template content in the request body.
    * @tags projects
    * @name ProjectsTemplatePreviewCreate
    * @request POST:/api/v1/projects/{project_pk}/template-preview/
    * @secure
-   * @response `201` `TemplatePreview`
+   * @response `200` `TemplatePreview`
+   * @response `422` `TemplateLookupError`
    */
   export namespace ProjectsTemplatePreviewCreate {
     export type RequestParams = { projectPk: string };
-    export type RequestQuery = { environment?: string; mask_secrets?: boolean };
+    export type RequestQuery = { as_of?: string; environment?: string; mask_secrets?: boolean; tag?: string };
     export type RequestBody = TemplatePreview;
     export type RequestHeaders = {};
     export type ResponseBody = TemplatePreview;
@@ -1240,14 +1514,15 @@ export namespace Api {
    * @name ProjectsTemplatesCreate
    * @request POST:/api/v1/projects/{project_pk}/templates/
    * @secure
-   * @response `201` `TemplateCreate`
+   * @response `201` `Template`
+   * @response `422` `TemplateLookupError`
    */
   export namespace ProjectsTemplatesCreate {
     export type RequestParams = { projectPk: string };
     export type RequestQuery = {};
     export type RequestBody = TemplateCreate;
     export type RequestHeaders = {};
-    export type ResponseBody = TemplateCreate;
+    export type ResponseBody = Template;
   }
 
   /**
@@ -1257,6 +1532,7 @@ export namespace Api {
    * @request GET:/api/v1/projects/{project_pk}/templates/{id}/
    * @secure
    * @response `200` `Template`
+   * @response `422` `TemplateLookupError`
    */
   export namespace ProjectsTemplatesRetrieve {
     export type RequestParams = { id: string; projectPk: string };
@@ -1273,6 +1549,7 @@ export namespace Api {
    * @request PUT:/api/v1/projects/{project_pk}/templates/{id}/
    * @secure
    * @response `200` `Template`
+   * @response `422` `TemplateLookupError`
    */
   export namespace ProjectsTemplatesUpdate {
     export type RequestParams = { id: string; projectPk: string };
@@ -1289,6 +1566,7 @@ export namespace Api {
    * @request PATCH:/api/v1/projects/{project_pk}/templates/{id}/
    * @secure
    * @response `200` `Template`
+   * @response `422` `TemplateLookupError`
    */
   export namespace ProjectsTemplatesPartialUpdate {
     export type RequestParams = { id: string; projectPk: string };
@@ -1312,6 +1590,38 @@ export namespace Api {
     export type RequestBody = never;
     export type RequestHeaders = {};
     export type ResponseBody = void;
+  }
+
+  /**
+   * @description Information about how a template has changed over time. The time range of historical information available depends on your subscription. Any changes to the template itself is included.
+   * @tags projects
+   * @name ProjectsTemplatesTimelineRetrieve
+   * @request GET:/api/v1/projects/{project_pk}/templates/{id}/timeline/
+   * @secure
+   * @response `200` `TemplateTimeline`
+   */
+  export namespace ProjectsTemplatesTimelineRetrieve {
+    export type RequestParams = { id: string; projectPk: string };
+    export type RequestQuery = { as_of?: string; tag?: string };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = TemplateTimeline;
+  }
+
+  /**
+   * @description Information about how the templates of a project have changed over time. The time range of historical information available depends on your subscription. Any changes to the project's templates is included.
+   * @tags projects
+   * @name ProjectsTemplatesTimelinesRetrieve
+   * @request GET:/api/v1/projects/{project_pk}/templates/timelines/
+   * @secure
+   * @response `200` `TemplateTimeline`
+   */
+  export namespace ProjectsTemplatesTimelinesRetrieve {
+    export type RequestParams = { projectPk: string };
+    export type RequestQuery = { as_of?: string; tag?: string };
+    export type RequestBody = never;
+    export type RequestHeaders = {};
+    export type ResponseBody = TemplateTimeline;
   }
 
   /**

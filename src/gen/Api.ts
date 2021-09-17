@@ -19,11 +19,14 @@ import {
   Environment,
   EnvironmentCreate,
   EnvironmentsListParams,
+  EnvironmentsTagsListParams,
   GitHubIntegration,
   GitHubIntegrationCreate,
+  IntegrationsAwsDestroyParams,
   IntegrationsAwsListParams,
   IntegrationsAwsRetrieveParams,
   IntegrationsExploreListParams,
+  IntegrationsGithubDestroyParams,
   IntegrationsGithubListParams,
   IntegrationsGithubRetrieveParams,
   Invitation,
@@ -44,22 +47,29 @@ import {
   PaginatedMembershipList,
   PaginatedOrganizationList,
   PaginatedParameterList,
+  PaginatedParameterRuleList,
   PaginatedProjectList,
   PaginatedServiceAccountList,
+  PaginatedTagList,
   PaginatedTemplateList,
   PaginatedUserList,
   PaginatedValueList,
   Parameter,
   ParameterCreate,
   ParameterExport,
+  ParameterRule,
+  ParameterRuleCreate,
+  ParameterTimeline,
   PatchedAwsIntegration,
   PatchedEnvironment,
   PatchedInvitation,
   PatchedMembership,
   PatchedOrganization,
   PatchedParameter,
+  PatchedParameterRule,
   PatchedProject,
   PatchedServiceAccount,
+  PatchedTag,
   PatchedTemplate,
   PatchedValue,
   Project,
@@ -68,6 +78,9 @@ import {
   ProjectsParameterExportListParams,
   ProjectsParametersListParams,
   ProjectsParametersRetrieveParams,
+  ProjectsParametersRulesListParams,
+  ProjectsParametersTimelineRetrieveParams,
+  ProjectsParametersTimelinesRetrieveParams,
   ProjectsParametersValuesCreateParams,
   ProjectsParametersValuesListParams,
   ProjectsParametersValuesPartialUpdateParams,
@@ -76,13 +89,19 @@ import {
   ProjectsTemplatePreviewCreateParams,
   ProjectsTemplatesListParams,
   ProjectsTemplatesRetrieveParams,
+  ProjectsTemplatesTimelineRetrieveParams,
+  ProjectsTemplatesTimelinesRetrieveParams,
   ServiceAccount,
   ServiceAccountCreateRequest,
   ServiceAccountCreateResponse,
   ServiceaccountsListParams,
+  Tag,
+  TagCreate,
   Template,
   TemplateCreate,
+  TemplateLookupError,
   TemplatePreview,
+  TemplateTimeline,
   User,
   UsersListParams,
   Value,
@@ -196,6 +215,114 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       secure: true,
       type: ContentType.Json,
       format: "json",
+      ...params,
+    });
+  /**
+   * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+   *
+   * @tags environments
+   * @name EnvironmentsTagsList
+   * @request GET:/api/v1/environments/{environment_pk}/tags/
+   * @secure
+   * @response `200` `PaginatedTagList`
+   */
+  environmentsTagsList = ({ environmentPk, ...query }: EnvironmentsTagsListParams, params: RequestParams = {}) =>
+    this.request<PaginatedTagList, any>({
+      path: `/api/v1/environments/${environmentPk}/tags/`,
+      method: "GET",
+      query: query,
+      secure: true,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+   *
+   * @tags environments
+   * @name EnvironmentsTagsCreate
+   * @request POST:/api/v1/environments/{environment_pk}/tags/
+   * @secure
+   * @response `201` `Tag`
+   */
+  environmentsTagsCreate = (environmentPk: string, data: TagCreate, params: RequestParams = {}) =>
+    this.request<Tag, any>({
+      path: `/api/v1/environments/${environmentPk}/tags/`,
+      method: "POST",
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+   *
+   * @tags environments
+   * @name EnvironmentsTagsRetrieve
+   * @request GET:/api/v1/environments/{environment_pk}/tags/{id}/
+   * @secure
+   * @response `200` `Tag`
+   */
+  environmentsTagsRetrieve = (environmentPk: string, id: string, params: RequestParams = {}) =>
+    this.request<Tag, any>({
+      path: `/api/v1/environments/${environmentPk}/tags/${id}/`,
+      method: "GET",
+      secure: true,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+   *
+   * @tags environments
+   * @name EnvironmentsTagsUpdate
+   * @request PUT:/api/v1/environments/{environment_pk}/tags/{id}/
+   * @secure
+   * @response `200` `Tag`
+   */
+  environmentsTagsUpdate = (environmentPk: string, id: string, data: Tag, params: RequestParams = {}) =>
+    this.request<Tag, any>({
+      path: `/api/v1/environments/${environmentPk}/tags/${id}/`,
+      method: "PUT",
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+   *
+   * @tags environments
+   * @name EnvironmentsTagsPartialUpdate
+   * @request PATCH:/api/v1/environments/{environment_pk}/tags/{id}/
+   * @secure
+   * @response `200` `Tag`
+   */
+  environmentsTagsPartialUpdate = (environmentPk: string, id: string, data: PatchedTag, params: RequestParams = {}) =>
+    this.request<Tag, any>({
+      path: `/api/v1/environments/${environmentPk}/tags/${id}/`,
+      method: "PATCH",
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+   *
+   * @tags environments
+   * @name EnvironmentsTagsDestroy
+   * @request DELETE:/api/v1/environments/{environment_pk}/tags/{id}/
+   * @secure
+   * @response `204` `void` No response body
+   */
+  environmentsTagsDestroy = (environmentPk: string, id: string, params: RequestParams = {}) =>
+    this.request<void, any>({
+      path: `/api/v1/environments/${environmentPk}/tags/${id}/`,
+      method: "DELETE",
+      secure: true,
       ...params,
     });
   /**
@@ -370,14 +497,17 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    *
    * @tags integrations
    * @name IntegrationsAwsDestroy
+   * @summary Delete an AWS integration.
    * @request DELETE:/api/v1/integrations/aws/{id}/
    * @secure
-   * @response `204` `void` No response body
+   * @response `204` `void` Integration removed.
+   * @response `409` `void` The integration is used by one (or more) Value(s) and cannot be removed.
    */
-  integrationsAwsDestroy = (id: string, params: RequestParams = {}) =>
-    this.request<void, any>({
+  integrationsAwsDestroy = ({ id, ...query }: IntegrationsAwsDestroyParams, params: RequestParams = {}) =>
+    this.request<void, void>({
       path: `/api/v1/integrations/aws/${id}/`,
       method: "DELETE",
+      query: query,
       secure: true,
       ...params,
     });
@@ -466,14 +596,17 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    *
    * @tags integrations
    * @name IntegrationsGithubDestroy
+   * @summary Delete a GitHub integration.
    * @request DELETE:/api/v1/integrations/github/{id}/
    * @secure
-   * @response `204` `void` No response body
+   * @response `204` `void` Integration removed.
+   * @response `409` `void` The integration is used by one (or more) Value(s) and cannot be removed.
    */
-  integrationsGithubDestroy = (id: string, params: RequestParams = {}) =>
-    this.request<void, any>({
+  integrationsGithubDestroy = ({ id, ...query }: IntegrationsGithubDestroyParams, params: RequestParams = {}) =>
+    this.request<void, void>({
       path: `/api/v1/integrations/github/${id}/`,
       method: "DELETE",
+      query: query,
       secure: true,
       ...params,
     });
@@ -1010,6 +1143,134 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       ...params,
     });
   /**
+   * No description
+   *
+   * @tags projects
+   * @name ProjectsParametersRulesList
+   * @request GET:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/
+   * @secure
+   * @response `200` `PaginatedParameterRuleList`
+   */
+  projectsParametersRulesList = (
+    { parameterPk, projectPk, ...query }: ProjectsParametersRulesListParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<PaginatedParameterRuleList, any>({
+      path: `/api/v1/projects/${projectPk}/parameters/${parameterPk}/rules/`,
+      method: "GET",
+      query: query,
+      secure: true,
+      format: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags projects
+   * @name ProjectsParametersRulesCreate
+   * @request POST:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/
+   * @secure
+   * @response `201` `ParameterRule`
+   */
+  projectsParametersRulesCreate = (
+    parameterPk: string,
+    projectPk: string,
+    data: ParameterRuleCreate,
+    params: RequestParams = {},
+  ) =>
+    this.request<ParameterRule, any>({
+      path: `/api/v1/projects/${projectPk}/parameters/${parameterPk}/rules/`,
+      method: "POST",
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags projects
+   * @name ProjectsParametersRulesRetrieve
+   * @request GET:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/{id}/
+   * @secure
+   * @response `200` `ParameterRule`
+   */
+  projectsParametersRulesRetrieve = (id: string, parameterPk: string, projectPk: string, params: RequestParams = {}) =>
+    this.request<ParameterRule, any>({
+      path: `/api/v1/projects/${projectPk}/parameters/${parameterPk}/rules/${id}/`,
+      method: "GET",
+      secure: true,
+      format: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags projects
+   * @name ProjectsParametersRulesUpdate
+   * @request PUT:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/{id}/
+   * @secure
+   * @response `200` `ParameterRule`
+   */
+  projectsParametersRulesUpdate = (
+    id: string,
+    parameterPk: string,
+    projectPk: string,
+    data: ParameterRule,
+    params: RequestParams = {},
+  ) =>
+    this.request<ParameterRule, any>({
+      path: `/api/v1/projects/${projectPk}/parameters/${parameterPk}/rules/${id}/`,
+      method: "PUT",
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags projects
+   * @name ProjectsParametersRulesPartialUpdate
+   * @request PATCH:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/{id}/
+   * @secure
+   * @response `200` `ParameterRule`
+   */
+  projectsParametersRulesPartialUpdate = (
+    id: string,
+    parameterPk: string,
+    projectPk: string,
+    data: PatchedParameterRule,
+    params: RequestParams = {},
+  ) =>
+    this.request<ParameterRule, any>({
+      path: `/api/v1/projects/${projectPk}/parameters/${parameterPk}/rules/${id}/`,
+      method: "PATCH",
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags projects
+   * @name ProjectsParametersRulesDestroy
+   * @request DELETE:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/{id}/
+   * @secure
+   * @response `204` `void` No response body
+   */
+  projectsParametersRulesDestroy = (id: string, parameterPk: string, projectPk: string, params: RequestParams = {}) =>
+    this.request<void, any>({
+      path: `/api/v1/projects/${projectPk}/parameters/${parameterPk}/rules/${id}/`,
+      method: "DELETE",
+      secure: true,
+      ...params,
+    });
+  /**
    * @description Retrieve previously set values of a parameter in one or all environments. To see all the _effective_ values for a parameter across every environment, use the Parameters API (see the `values` field).
    *
    * @tags projects
@@ -1174,11 +1435,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @request PUT:/api/v1/projects/{project_pk}/parameters/{id}/
    * @secure
    * @response `200` `Parameter`
-   * @response `400` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `404` `void` The given project id could not be found, or while checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `415` `void` While checking pre-conditions, a dynamic value was encountered that has an invalid content type.
-   * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
-   * @response `507` `void` While checking pre-conditions, a dynamic value was encountered that was too large to process.
+   * @response `400` `void` While checking pre-conditions, an external value was encountered that could not be resolved.
+   * @response `404` `void` The given project id could not be found, or while checking pre-conditions, an external value was encountered that could not be resolved.
+   * @response `415` `void` While checking pre-conditions, an external value was encountered that has an invalid content type.
+   * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having an external value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
+   * @response `507` `void` While checking pre-conditions, an external value was encountered that was too large to process.
    */
   projectsParametersUpdate = (id: string, projectPk: string, data: Parameter, params: RequestParams = {}) =>
     this.request<Parameter, void>({
@@ -1198,11 +1459,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @request PATCH:/api/v1/projects/{project_pk}/parameters/{id}/
    * @secure
    * @response `200` `Parameter`
-   * @response `400` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `404` `void` The given project id could not be found, or while checking pre-conditions, a dynamic value was encountered that could not be resolved.
-   * @response `415` `void` While checking pre-conditions, a dynamic value was encountered that has an invalid content type.
-   * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
-   * @response `507` `void` While checking pre-conditions, a dynamic value was encountered that was too large to process.
+   * @response `400` `void` While checking pre-conditions, an external value was encountered that could not be resolved.
+   * @response `404` `void` The given project id could not be found, or while checking pre-conditions, an external value was encountered that could not be resolved.
+   * @response `415` `void` While checking pre-conditions, an external value was encountered that has an invalid content type.
+   * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having an external value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
+   * @response `507` `void` While checking pre-conditions, an external value was encountered that was too large to process.
    */
   projectsParametersPartialUpdate = (
     id: string,
@@ -1236,20 +1497,63 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       ...params,
     });
   /**
-   * @description Endpoint for previewing a template.
+   * @description Summary information about how a parameter has changed over time. The time range of historical information available depends on your subscription. Any changes to the parameter itself, including rules and values, is included.
+   *
+   * @tags projects
+   * @name ProjectsParametersTimelineRetrieve
+   * @request GET:/api/v1/projects/{project_pk}/parameters/{id}/timeline/
+   * @secure
+   * @response `200` `ParameterTimeline`
+   */
+  projectsParametersTimelineRetrieve = (
+    { id, projectPk, ...query }: ProjectsParametersTimelineRetrieveParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<ParameterTimeline, any>({
+      path: `/api/v1/projects/${projectPk}/parameters/${id}/timeline/`,
+      method: "GET",
+      query: query,
+      secure: true,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Information about how the parameters of a project have changed over time. The time range of historical information available depends on your subscription. Any changes to the project's parameters, including rules and values, is included.
+   *
+   * @tags projects
+   * @name ProjectsParametersTimelinesRetrieve
+   * @request GET:/api/v1/projects/{project_pk}/parameters/timelines/
+   * @secure
+   * @response `200` `ParameterTimeline`
+   */
+  projectsParametersTimelinesRetrieve = (
+    { projectPk, ...query }: ProjectsParametersTimelinesRetrieveParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<ParameterTimeline, any>({
+      path: `/api/v1/projects/${projectPk}/parameters/timelines/`,
+      method: "GET",
+      query: query,
+      secure: true,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Endpoint for previewing a template.  Post the template content in the request body.
    *
    * @tags projects
    * @name ProjectsTemplatePreviewCreate
    * @request POST:/api/v1/projects/{project_pk}/template-preview/
    * @secure
-   * @response `201` `TemplatePreview`
+   * @response `200` `TemplatePreview`
+   * @response `422` `TemplateLookupError`
    */
   projectsTemplatePreviewCreate = (
     { projectPk, ...query }: ProjectsTemplatePreviewCreateParams,
     data: TemplatePreview,
     params: RequestParams = {},
   ) =>
-    this.request<TemplatePreview, any>({
+    this.request<TemplatePreview, TemplateLookupError>({
       path: `/api/v1/projects/${projectPk}/template-preview/`,
       method: "POST",
       query: query,
@@ -1284,10 +1588,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @name ProjectsTemplatesCreate
    * @request POST:/api/v1/projects/{project_pk}/templates/
    * @secure
-   * @response `201` `TemplateCreate`
+   * @response `201` `Template`
+   * @response `422` `TemplateLookupError`
    */
   projectsTemplatesCreate = (projectPk: string, data: TemplateCreate, params: RequestParams = {}) =>
-    this.request<TemplateCreate, any>({
+    this.request<Template, TemplateLookupError>({
       path: `/api/v1/projects/${projectPk}/templates/`,
       method: "POST",
       body: data,
@@ -1304,12 +1609,13 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @request GET:/api/v1/projects/{project_pk}/templates/{id}/
    * @secure
    * @response `200` `Template`
+   * @response `422` `TemplateLookupError`
    */
   projectsTemplatesRetrieve = (
     { id, projectPk, ...query }: ProjectsTemplatesRetrieveParams,
     params: RequestParams = {},
   ) =>
-    this.request<Template, any>({
+    this.request<Template, TemplateLookupError>({
       path: `/api/v1/projects/${projectPk}/templates/${id}/`,
       method: "GET",
       query: query,
@@ -1325,9 +1631,10 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @request PUT:/api/v1/projects/{project_pk}/templates/{id}/
    * @secure
    * @response `200` `Template`
+   * @response `422` `TemplateLookupError`
    */
   projectsTemplatesUpdate = (id: string, projectPk: string, data: Template, params: RequestParams = {}) =>
-    this.request<Template, any>({
+    this.request<Template, TemplateLookupError>({
       path: `/api/v1/projects/${projectPk}/templates/${id}/`,
       method: "PUT",
       body: data,
@@ -1344,9 +1651,10 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @request PATCH:/api/v1/projects/{project_pk}/templates/{id}/
    * @secure
    * @response `200` `Template`
+   * @response `422` `TemplateLookupError`
    */
   projectsTemplatesPartialUpdate = (id: string, projectPk: string, data: PatchedTemplate, params: RequestParams = {}) =>
-    this.request<Template, any>({
+    this.request<Template, TemplateLookupError>({
       path: `/api/v1/projects/${projectPk}/templates/${id}/`,
       method: "PATCH",
       body: data,
@@ -1369,6 +1677,48 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       path: `/api/v1/projects/${projectPk}/templates/${id}/`,
       method: "DELETE",
       secure: true,
+      ...params,
+    });
+  /**
+   * @description Information about how a template has changed over time. The time range of historical information available depends on your subscription. Any changes to the template itself is included.
+   *
+   * @tags projects
+   * @name ProjectsTemplatesTimelineRetrieve
+   * @request GET:/api/v1/projects/{project_pk}/templates/{id}/timeline/
+   * @secure
+   * @response `200` `TemplateTimeline`
+   */
+  projectsTemplatesTimelineRetrieve = (
+    { id, projectPk, ...query }: ProjectsTemplatesTimelineRetrieveParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<TemplateTimeline, any>({
+      path: `/api/v1/projects/${projectPk}/templates/${id}/timeline/`,
+      method: "GET",
+      query: query,
+      secure: true,
+      format: "json",
+      ...params,
+    });
+  /**
+   * @description Information about how the templates of a project have changed over time. The time range of historical information available depends on your subscription. Any changes to the project's templates is included.
+   *
+   * @tags projects
+   * @name ProjectsTemplatesTimelinesRetrieve
+   * @request GET:/api/v1/projects/{project_pk}/templates/timelines/
+   * @secure
+   * @response `200` `TemplateTimeline`
+   */
+  projectsTemplatesTimelinesRetrieve = (
+    { projectPk, ...query }: ProjectsTemplatesTimelinesRetrieveParams,
+    params: RequestParams = {},
+  ) =>
+    this.request<TemplateTimeline, any>({
+      path: `/api/v1/projects/${projectPk}/templates/timelines/`,
+      method: "GET",
+      query: query,
+      secure: true,
+      format: "json",
       ...params,
     });
   /**

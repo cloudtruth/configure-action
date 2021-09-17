@@ -18,6 +18,9 @@
             "env": {
                 "POLLY_MODE": "record"
                 // "SETUP": "setup"
+                // .env:
+                // CLOUDTRUTH_API_KEY
+                // NODE_EXTRA_CA_CERTS (crt + key => pem)
             },
             "envFile": "${workspaceFolder}/.env"
         },

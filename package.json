@@ -1,9 +1,10 @@
 {
   "name": "configure-action",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Securely deliver CloudTruth configuration and secrets into your GitHub Actions workflows.",
   "main": "lib/main.js",
   "scripts": {
+    "prebuild": "node -p \"'export const LIB_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
     "build": "tsc",
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",

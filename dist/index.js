@@ -94,6 +94,69 @@ class Api extends http_client_1.HttpClient {
          */
         this.environmentsCreate = (data, params = {}) => this.request(Object.assign({ path: `/api/v1/environments/`, method: "POST", body: data, secure: true, type: http_client_1.ContentType.Json, format: "json" }, params));
         /**
+         * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+         *
+         * @tags environments
+         * @name EnvironmentsTagsList
+         * @request GET:/api/v1/environments/{environment_pk}/tags/
+         * @secure
+         * @response `200` `PaginatedTagList`
+         */
+        this.environmentsTagsList = (_a, params = {}) => {
+            var { environmentPk } = _a, query = __rest(_a, ["environmentPk"]);
+            return this.request(Object.assign({ path: `/api/v1/environments/${environmentPk}/tags/`, method: "GET", query: query, secure: true, format: "json" }, params));
+        };
+        /**
+         * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+         *
+         * @tags environments
+         * @name EnvironmentsTagsCreate
+         * @request POST:/api/v1/environments/{environment_pk}/tags/
+         * @secure
+         * @response `201` `Tag`
+         */
+        this.environmentsTagsCreate = (environmentPk, data, params = {}) => this.request(Object.assign({ path: `/api/v1/environments/${environmentPk}/tags/`, method: "POST", body: data, secure: true, type: http_client_1.ContentType.Json, format: "json" }, params));
+        /**
+         * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+         *
+         * @tags environments
+         * @name EnvironmentsTagsRetrieve
+         * @request GET:/api/v1/environments/{environment_pk}/tags/{id}/
+         * @secure
+         * @response `200` `Tag`
+         */
+        this.environmentsTagsRetrieve = (environmentPk, id, params = {}) => this.request(Object.assign({ path: `/api/v1/environments/${environmentPk}/tags/${id}/`, method: "GET", secure: true, format: "json" }, params));
+        /**
+         * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+         *
+         * @tags environments
+         * @name EnvironmentsTagsUpdate
+         * @request PUT:/api/v1/environments/{environment_pk}/tags/{id}/
+         * @secure
+         * @response `200` `Tag`
+         */
+        this.environmentsTagsUpdate = (environmentPk, id, data, params = {}) => this.request(Object.assign({ path: `/api/v1/environments/${environmentPk}/tags/${id}/`, method: "PUT", body: data, secure: true, type: http_client_1.ContentType.Json, format: "json" }, params));
+        /**
+         * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+         *
+         * @tags environments
+         * @name EnvironmentsTagsPartialUpdate
+         * @request PATCH:/api/v1/environments/{environment_pk}/tags/{id}/
+         * @secure
+         * @response `200` `Tag`
+         */
+        this.environmentsTagsPartialUpdate = (environmentPk, id, data, params = {}) => this.request(Object.assign({ path: `/api/v1/environments/${environmentPk}/tags/${id}/`, method: "PATCH", body: data, secure: true, type: http_client_1.ContentType.Json, format: "json" }, params));
+        /**
+         * @description Tags allow you to name stable points in time for your configuration. Any query API that accepts an `as_of` option will also accept a `tag` option, however they are mutually exclusive.
+         *
+         * @tags environments
+         * @name EnvironmentsTagsDestroy
+         * @request DELETE:/api/v1/environments/{environment_pk}/tags/{id}/
+         * @secure
+         * @response `204` `void` No response body
+         */
+        this.environmentsTagsDestroy = (environmentPk, id, params = {}) => this.request(Object.assign({ path: `/api/v1/environments/${environmentPk}/tags/${id}/`, method: "DELETE", secure: true }, params));
+        /**
          * No description
          *
          * @tags environments
@@ -194,11 +257,16 @@ class Api extends http_client_1.HttpClient {
          *
          * @tags integrations
          * @name IntegrationsAwsDestroy
+         * @summary Delete an AWS integration.
          * @request DELETE:/api/v1/integrations/aws/{id}/
          * @secure
-         * @response `204` `void` No response body
+         * @response `204` `void` Integration removed.
+         * @response `409` `void` The integration is used by one (or more) Value(s) and cannot be removed.
          */
-        this.integrationsAwsDestroy = (id, params = {}) => this.request(Object.assign({ path: `/api/v1/integrations/aws/${id}/`, method: "DELETE", secure: true }, params));
+        this.integrationsAwsDestroy = (_a, params = {}) => {
+            var { id } = _a, query = __rest(_a, ["id"]);
+            return this.request(Object.assign({ path: `/api/v1/integrations/aws/${id}/`, method: "DELETE", query: query, secure: true }, params));
+        };
         /**
          * @description ### Description ### Queries a third-party integration to retrieve the data specified by the FQN. You can start exploring by not specifying an 'fqn', which will return a list of FQNs for the existing third-party integrations. Third-party integrations can be configured via the Integrations section of the web application.
          *
@@ -254,11 +322,16 @@ class Api extends http_client_1.HttpClient {
          *
          * @tags integrations
          * @name IntegrationsGithubDestroy
+         * @summary Delete a GitHub integration.
          * @request DELETE:/api/v1/integrations/github/{id}/
          * @secure
-         * @response `204` `void` No response body
+         * @response `204` `void` Integration removed.
+         * @response `409` `void` The integration is used by one (or more) Value(s) and cannot be removed.
          */
-        this.integrationsGithubDestroy = (id, params = {}) => this.request(Object.assign({ path: `/api/v1/integrations/github/${id}/`, method: "DELETE", secure: true }, params));
+        this.integrationsGithubDestroy = (_a, params = {}) => {
+            var { id } = _a, query = __rest(_a, ["id"]);
+            return this.request(Object.assign({ path: `/api/v1/integrations/github/${id}/`, method: "DELETE", query: query, secure: true }, params));
+        };
         /**
          * No description
          *
@@ -564,6 +637,69 @@ class Api extends http_client_1.HttpClient {
          */
         this.projectsParametersCreate = (projectPk, data, params = {}) => this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/parameters/`, method: "POST", body: data, secure: true, type: http_client_1.ContentType.Json, format: "json" }, params));
         /**
+         * No description
+         *
+         * @tags projects
+         * @name ProjectsParametersRulesList
+         * @request GET:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/
+         * @secure
+         * @response `200` `PaginatedParameterRuleList`
+         */
+        this.projectsParametersRulesList = (_a, params = {}) => {
+            var { parameterPk, projectPk } = _a, query = __rest(_a, ["parameterPk", "projectPk"]);
+            return this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/parameters/${parameterPk}/rules/`, method: "GET", query: query, secure: true, format: "json" }, params));
+        };
+        /**
+         * No description
+         *
+         * @tags projects
+         * @name ProjectsParametersRulesCreate
+         * @request POST:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/
+         * @secure
+         * @response `201` `ParameterRule`
+         */
+        this.projectsParametersRulesCreate = (parameterPk, projectPk, data, params = {}) => this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/parameters/${parameterPk}/rules/`, method: "POST", body: data, secure: true, type: http_client_1.ContentType.Json, format: "json" }, params));
+        /**
+         * No description
+         *
+         * @tags projects
+         * @name ProjectsParametersRulesRetrieve
+         * @request GET:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/{id}/
+         * @secure
+         * @response `200` `ParameterRule`
+         */
+        this.projectsParametersRulesRetrieve = (id, parameterPk, projectPk, params = {}) => this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/parameters/${parameterPk}/rules/${id}/`, method: "GET", secure: true, format: "json" }, params));
+        /**
+         * No description
+         *
+         * @tags projects
+         * @name ProjectsParametersRulesUpdate
+         * @request PUT:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/{id}/
+         * @secure
+         * @response `200` `ParameterRule`
+         */
+        this.projectsParametersRulesUpdate = (id, parameterPk, projectPk, data, params = {}) => this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/parameters/${parameterPk}/rules/${id}/`, method: "PUT", body: data, secure: true, type: http_client_1.ContentType.Json, format: "json" }, params));
+        /**
+         * No description
+         *
+         * @tags projects
+         * @name ProjectsParametersRulesPartialUpdate
+         * @request PATCH:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/{id}/
+         * @secure
+         * @response `200` `ParameterRule`
+         */
+        this.projectsParametersRulesPartialUpdate = (id, parameterPk, projectPk, data, params = {}) => this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/parameters/${parameterPk}/rules/${id}/`, method: "PATCH", body: data, secure: true, type: http_client_1.ContentType.Json, format: "json" }, params));
+        /**
+         * No description
+         *
+         * @tags projects
+         * @name ProjectsParametersRulesDestroy
+         * @request DELETE:/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/{id}/
+         * @secure
+         * @response `204` `void` No response body
+         */
+        this.projectsParametersRulesDestroy = (id, parameterPk, projectPk, params = {}) => this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/parameters/${parameterPk}/rules/${id}/`, method: "DELETE", secure: true }, params));
+        /**
          * @description Retrieve previously set values of a parameter in one or all environments. To see all the _effective_ values for a parameter across every environment, use the Parameters API (see the `values` field).
          *
          * @tags projects
@@ -665,11 +801,11 @@ class Api extends http_client_1.HttpClient {
          * @request PUT:/api/v1/projects/{project_pk}/parameters/{id}/
          * @secure
          * @response `200` `Parameter`
-         * @response `400` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
-         * @response `404` `void` The given project id could not be found, or while checking pre-conditions, a dynamic value was encountered that could not be resolved.
-         * @response `415` `void` While checking pre-conditions, a dynamic value was encountered that has an invalid content type.
-         * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
-         * @response `507` `void` While checking pre-conditions, a dynamic value was encountered that was too large to process.
+         * @response `400` `void` While checking pre-conditions, an external value was encountered that could not be resolved.
+         * @response `404` `void` The given project id could not be found, or while checking pre-conditions, an external value was encountered that could not be resolved.
+         * @response `415` `void` While checking pre-conditions, an external value was encountered that has an invalid content type.
+         * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having an external value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
+         * @response `507` `void` While checking pre-conditions, an external value was encountered that was too large to process.
          */
         this.projectsParametersUpdate = (id, projectPk, data, params = {}) => this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/parameters/${id}/`, method: "PUT", body: data, secure: true, type: http_client_1.ContentType.Json, format: "json" }, params));
         /**
@@ -680,11 +816,11 @@ class Api extends http_client_1.HttpClient {
          * @request PATCH:/api/v1/projects/{project_pk}/parameters/{id}/
          * @secure
          * @response `200` `Parameter`
-         * @response `400` `void` While checking pre-conditions, a dynamic value was encountered that could not be resolved.
-         * @response `404` `void` The given project id could not be found, or while checking pre-conditions, a dynamic value was encountered that could not be resolved.
-         * @response `415` `void` While checking pre-conditions, a dynamic value was encountered that has an invalid content type.
-         * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having a dynamic value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
-         * @response `507` `void` While checking pre-conditions, a dynamic value was encountered that was too large to process.
+         * @response `400` `void` While checking pre-conditions, an external value was encountered that could not be resolved.
+         * @response `404` `void` The given project id could not be found, or while checking pre-conditions, an external value was encountered that could not be resolved.
+         * @response `415` `void` While checking pre-conditions, an external value was encountered that has an invalid content type.
+         * @response `422` `void` A pre-condition to modifying the `secret` setting of the parameter failed, for example setting `secret: false` and having an external value that resolves to a value that is a secret.  In this case it would be unsafe to allow the `secret` setting to change.
+         * @response `507` `void` While checking pre-conditions, an external value was encountered that was too large to process.
          */
         this.projectsParametersPartialUpdate = (id, projectPk, data, params = {}) => this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/parameters/${id}/`, method: "PATCH", body: data, secure: true, type: http_client_1.ContentType.Json, format: "json" }, params));
         /**
@@ -698,13 +834,40 @@ class Api extends http_client_1.HttpClient {
          */
         this.projectsParametersDestroy = (id, projectPk, params = {}) => this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/parameters/${id}/`, method: "DELETE", secure: true }, params));
         /**
-         * @description Endpoint for previewing a template.
+         * @description Summary information about how a parameter has changed over time. The time range of historical information available depends on your subscription. Any changes to the parameter itself, including rules and values, is included.
+         *
+         * @tags projects
+         * @name ProjectsParametersTimelineRetrieve
+         * @request GET:/api/v1/projects/{project_pk}/parameters/{id}/timeline/
+         * @secure
+         * @response `200` `ParameterTimeline`
+         */
+        this.projectsParametersTimelineRetrieve = (_a, params = {}) => {
+            var { id, projectPk } = _a, query = __rest(_a, ["id", "projectPk"]);
+            return this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/parameters/${id}/timeline/`, method: "GET", query: query, secure: true, format: "json" }, params));
+        };
+        /**
+         * @description Information about how the parameters of a project have changed over time. The time range of historical information available depends on your subscription. Any changes to the project's parameters, including rules and values, is included.
+         *
+         * @tags projects
+         * @name ProjectsParametersTimelinesRetrieve
+         * @request GET:/api/v1/projects/{project_pk}/parameters/timelines/
+         * @secure
+         * @response `200` `ParameterTimeline`
+         */
+        this.projectsParametersTimelinesRetrieve = (_a, params = {}) => {
+            var { projectPk } = _a, query = __rest(_a, ["projectPk"]);
+            return this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/parameters/timelines/`, method: "GET", query: query, secure: true, format: "json" }, params));
+        };
+        /**
+         * @description Endpoint for previewing a template.  Post the template content in the request body.
          *
          * @tags projects
          * @name ProjectsTemplatePreviewCreate
          * @request POST:/api/v1/projects/{project_pk}/template-preview/
          * @secure
-         * @response `201` `TemplatePreview`
+         * @response `200` `TemplatePreview`
+         * @response `422` `TemplateLookupError`
          */
         this.projectsTemplatePreviewCreate = (_a, data, params = {}) => {
             var { projectPk } = _a, query = __rest(_a, ["projectPk"]);
@@ -730,7 +893,8 @@ class Api extends http_client_1.HttpClient {
          * @name ProjectsTemplatesCreate
          * @request POST:/api/v1/projects/{project_pk}/templates/
          * @secure
-         * @response `201` `TemplateCreate`
+         * @response `201` `Template`
+         * @response `422` `TemplateLookupError`
          */
         this.projectsTemplatesCreate = (projectPk, data, params = {}) => this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/templates/`, method: "POST", body: data, secure: true, type: http_client_1.ContentType.Json, format: "json" }, params));
         /**
@@ -741,6 +905,7 @@ class Api extends http_client_1.HttpClient {
          * @request GET:/api/v1/projects/{project_pk}/templates/{id}/
          * @secure
          * @response `200` `Template`
+         * @response `422` `TemplateLookupError`
          */
         this.projectsTemplatesRetrieve = (_a, params = {}) => {
             var { id, projectPk } = _a, query = __rest(_a, ["id", "projectPk"]);
@@ -754,6 +919,7 @@ class Api extends http_client_1.HttpClient {
          * @request PUT:/api/v1/projects/{project_pk}/templates/{id}/
          * @secure
          * @response `200` `Template`
+         * @response `422` `TemplateLookupError`
          */
         this.projectsTemplatesUpdate = (id, projectPk, data, params = {}) => this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/templates/${id}/`, method: "PUT", body: data, secure: true, type: http_client_1.ContentType.Json, format: "json" }, params));
         /**
@@ -764,6 +930,7 @@ class Api extends http_client_1.HttpClient {
          * @request PATCH:/api/v1/projects/{project_pk}/templates/{id}/
          * @secure
          * @response `200` `Template`
+         * @response `422` `TemplateLookupError`
          */
         this.projectsTemplatesPartialUpdate = (id, projectPk, data, params = {}) => this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/templates/${id}/`, method: "PATCH", body: data, secure: true, type: http_client_1.ContentType.Json, format: "json" }, params));
         /**
@@ -776,6 +943,32 @@ class Api extends http_client_1.HttpClient {
          * @response `204` `void` No response body
          */
         this.projectsTemplatesDestroy = (id, projectPk, params = {}) => this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/templates/${id}/`, method: "DELETE", secure: true }, params));
+        /**
+         * @description Information about how a template has changed over time. The time range of historical information available depends on your subscription. Any changes to the template itself is included.
+         *
+         * @tags projects
+         * @name ProjectsTemplatesTimelineRetrieve
+         * @request GET:/api/v1/projects/{project_pk}/templates/{id}/timeline/
+         * @secure
+         * @response `200` `TemplateTimeline`
+         */
+        this.projectsTemplatesTimelineRetrieve = (_a, params = {}) => {
+            var { id, projectPk } = _a, query = __rest(_a, ["id", "projectPk"]);
+            return this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/templates/${id}/timeline/`, method: "GET", query: query, secure: true, format: "json" }, params));
+        };
+        /**
+         * @description Information about how the templates of a project have changed over time. The time range of historical information available depends on your subscription. Any changes to the project's templates is included.
+         *
+         * @tags projects
+         * @name ProjectsTemplatesTimelinesRetrieve
+         * @request GET:/api/v1/projects/{project_pk}/templates/timelines/
+         * @secure
+         * @response `200` `TemplateTimeline`
+         */
+        this.projectsTemplatesTimelinesRetrieve = (_a, params = {}) => {
+            var { projectPk } = _a, query = __rest(_a, ["projectPk"]);
+            return this.request(Object.assign({ path: `/api/v1/projects/${projectPk}/templates/timelines/`, method: "GET", query: query, secure: true, format: "json" }, params));
+        };
         /**
          * No description
          *
@@ -1074,25 +1267,50 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = exports.api = void 0;
+exports.run = exports.api = exports.configurefetch = void 0;
 const core = __importStar(__nccwpck_require__(186));
 const Api_1 = __nccwpck_require__(428);
+const version_1 = __nccwpck_require__(217);
 const uuid_1 = __nccwpck_require__(840);
-__nccwpck_require__(340);
+const isomorphic_fetch_1 = __importDefault(__nccwpck_require__(340));
+const USER_AGENT = `configure-action/${version_1.LIB_VERSION}`;
+const configurefetch = (url, 
+/* istanbul ignore next */
+_a = {}) => {
+    var 
+    /* istanbul ignore next */
+    { headers } = _a, options = __rest(_a, 
+    /* istanbul ignore next */
+    ["headers"]);
+    return (0, isomorphic_fetch_1.default)(url, Object.assign({ headers: Object.assign({ 'User-Agent': USER_AGENT }, headers) }, options));
+};
+exports.configurefetch = configurefetch;
 function api() {
     const api = new Api_1.Api({
         baseUrl: core.getInput('server') || 'https://api.cloudtruth.io',
-        customFetch: fetch,
+        customFetch: exports.configurefetch,
         securityWorker: (securityData) => {
-            if (securityData) {
-                return {
-                    headers: {
-                        ['Authorization']: 'Api-Key ' + securityData.apikey
-                    },
-                    keepalive: true
-                };
-            }
+            return {
+                headers: {
+                    ['Authorization']: 'Api-Key ' + securityData.apikey
+                },
+                keepalive: true
+            };
         }
     });
     api.setSecurityData({ apikey: core.getInput('apikey') });
@@ -1123,34 +1341,8 @@ function inject(response) {
         }
     }
 }
-function resolve_environment_id(environment_name_or_id, api) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (!environment_name_or_id) {
-            throw new Error(`No environment name or id was specified.`);
-        }
-        if ((0, uuid_1.validate)(environment_name_or_id)) {
-            // we look it up to make sure the id is good and we have permission to use it
-            try {
-                const response = yield api.environmentsRetrieve(environment_name_or_id);
-                return response.data.id;
-            }
-            catch (error) {
-                throw new Error(`Environment "${environment_name_or_id}": ${error.error.detail}`);
-            }
-        }
-        const response = yield api.environmentsList({ name: environment_name_or_id });
-        if (response.data.count == 1) {
-            const result = response.data.results;
-            return result[0].id;
-        }
-        throw new Error(`Environment "${environment_name_or_id}": Not found.`);
-    });
-}
 function resolve_project_id(project_name_or_id, api) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (!project_name_or_id) {
-            throw new Error(`No project name or id was specified.`);
-        }
         if ((0, uuid_1.validate)(project_name_or_id)) {
             // we look it up to make sure the id is good and we have permission to use it
             try {
@@ -1173,14 +1365,21 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const client = api();
-            const project_id = yield resolve_project_id(core.getInput('project'), client);
-            const environment_id = yield resolve_environment_id(core.getInput('environment'), client);
+            const project_id = yield resolve_project_id(core.getInput('project', { required: true }), client);
+            const environment = core.getInput('environment', { required: true });
+            const tag = core.getInput('tag') || undefined;
             for (let page = 1;; ++page) {
-                core.debug(`Requesting parameter values for project='${project_id}' environment='${environment_id}' page=${page}`);
+                core.debug(`Requesting parameter values for project='${project_id}' environment='${environment}' tag='${tag}' page=${page}`);
+                let page_size = undefined;
+                if (process.env.TESTING_REST_API_PAGE_SIZE) {
+                    page_size = parseInt(process.env.TESTING_REST_API_PAGE_SIZE);
+                }
                 const response = yield client.projectsParametersList({
                     projectPk: project_id,
-                    environment: environment_id,
-                    page: page
+                    environment: environment,
+                    tag: tag,
+                    page: page,
+                    page_size: page_size
                 });
                 inject(response);
                 if (response.data.next == null) {
@@ -1197,6 +1396,18 @@ function run() {
     });
 }
 exports.run = run;
+
+
+/***/ }),
+
+/***/ 217:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LIB_VERSION = void 0;
+exports.LIB_VERSION = "2.1.0";
 
 
 /***/ }),
