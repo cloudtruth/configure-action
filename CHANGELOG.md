@@ -7,11 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added support for environment tags.
+- Added configure-action User-Agent when talking to server.
+
+### Updated
+
+- Updated to latest API specification.
+- Handle nomenclature change: static to internal, dynamic to external.
+
 ### Fixed
 
-- Updated to latest API schema.
+- Leverage environment lookup by name to avoid an extra API call.
+- Added testing for paged reads.
+- Functional, Line, and Branch coverage brought to 100%.
 - Test against staging and production servers to catch regressions.
-
 
 ## [2.0.0] - 2021-07-20
 

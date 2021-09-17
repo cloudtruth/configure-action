@@ -48,6 +48,12 @@ export interface AuditTrailSummary {
    */
   earliest: string | null;
 
+  /** The maximum number of days the system will save auditing records, based on your subscription. */
+  max_days: number;
+
+  /** The maximum number of auditing records the system will save based on your subscription. */
+  max_records: number;
+
   /** The total number of audit records available. */
   total: number;
 }
@@ -262,6 +268,18 @@ export interface GitHubIntegrationCreate {
   gh_installation_id: number;
 }
 
+export enum HistoryModelEnum {
+  Parameter = "Parameter",
+  ParameterRule = "ParameterRule",
+  Value = "Value",
+}
+
+export enum HistoryTypeEnum {
+  Create = "create",
+  Update = "update",
+  Delete = "delete",
+}
+
 /**
  * Describes the content available at a given location.
  */
@@ -374,14 +392,11 @@ export enum NodeTypeEnum {
 }
 
 export enum ObjectTypeEnum {
+  DataIntegration = "DataIntegration",
   Environment = "Environment",
-  Integration = "Integration",
-  Invitation = "Invitation",
-  Membership = "Membership",
-  Organization = "Organization",
   Parameter = "Parameter",
+  ParameterRule = "ParameterRule",
   Project = "Project",
-  ServiceAccount = "ServiceAccount",
   Template = "Template",
   Value = "Value",
 }
@@ -401,9 +416,9 @@ export interface Organization {
 
   /** @format date-time */
   subscription_expires_at: string | null;
-  subscription_id: string;
-  subscription_plan_id: string;
-  subscription_plan_name: string;
+  subscription_id: string | null;
+  subscription_plan_id: string | null;
+  subscription_plan_name: string | null;
 
   /** @format date-time */
   created_at: string;
@@ -579,6 +594,24 @@ export interface PaginatedParameterList {
   results?: Parameter[];
 }
 
+export interface PaginatedParameterRuleList {
+  /** @example 123 */
+  count?: number;
+
+  /**
+   * @format uri
+   * @example http://api.example.org/accounts/?page=4
+   */
+  next?: string | null;
+
+  /**
+   * @format uri
+   * @example http://api.example.org/accounts/?page=2
+   */
+  previous?: string | null;
+  results?: ParameterRule[];
+}
+
 export interface PaginatedProjectList {
   /** @example 123 */
   count?: number;
@@ -613,6 +646,24 @@ export interface PaginatedServiceAccountList {
    */
   previous?: string | null;
   results?: ServiceAccount[];
+}
+
+export interface PaginatedTagList {
+  /** @example 123 */
+  count?: number;
+
+  /**
+   * @format uri
+   * @example http://api.example.org/accounts/?page=4
+   */
+  next?: string | null;
+
+  /**
+   * @format uri
+   * @example http://api.example.org/accounts/?page=2
+   */
+  previous?: string | null;
+  results?: Tag[];
 }
 
 export interface PaginatedTemplateList {
@@ -688,8 +739,14 @@ export interface Parameter {
   /** A description of the parameter.  You may find it helpful to document how this parameter is used to assist others when they need to maintain software that uses this content. */
   description?: string;
 
-  /** Indicates if this content is secret or not.  When a parameter is considered to be a secret, any static values are stored in a dedicated vault for your organization for maximum security.  Dynamic values are inspected on-demand to ensure they align with the parameter's secret setting and if they do not, those dynamic values are not allowed to be used. */
+  /** Indicates if this content is secret or not.  When a parameter is considered to be a secret, any internal values are stored in a dedicated vault for your organization for maximum security.  External values are inspected on-demand to ensure they align with the parameter's secret setting and if they do not, those external values are not allowed to be used. */
   secret?: boolean;
+  type?: ParameterTypeEnum;
+
+  /** Rules applied to this parameter */
+  rules: ParameterRule[];
+
+  /** Templates that reference this Parameter. */
   templates: string[];
 
   /**
@@ -732,12 +789,130 @@ export interface ParameterCreate {
   /** A description of the parameter.  You may find it helpful to document how this parameter is used to assist others when they need to maintain software that uses this content. */
   description?: string;
 
-  /** Indicates if this content is secret or not.  When a parameter is considered to be a secret, any static values are stored in a dedicated vault for your organization for maximum security.  Dynamic values are inspected on-demand to ensure they align with the parameter's secret setting and if they do not, those dynamic values are not allowed to be used. */
+  /** Indicates if this content is secret or not.  When a parameter is considered to be a secret, any internal values are stored in a dedicated vault for your organization for maximum security.  External values are inspected on-demand to ensure they align with the parameter's secret setting and if they do not, those external values are not allowed to be used. */
   secret?: boolean;
+  type?: ParameterTypeEnum;
 }
 
 export interface ParameterExport {
   body: string;
+}
+
+/**
+* A type of `ModelSerializer` that uses hyperlinked relationships with compound keys instead
+of primary key relationships.  Specifically:
+
+* A 'url' field is included instead of the 'id' field.
+* Relationships to other instances are hyperlinks, instead of primary keys.
+
+NOTE: this only works with DRF 3.1.0 and above.
+*/
+export interface ParameterRule {
+  /** @format uri */
+  url: string;
+
+  /** @format uuid */
+  id: string;
+
+  /**
+   * The parameter this rule is for.
+   * @format uri
+   */
+  parameter: string;
+  type: ParameterRuleTypeEnum;
+  constraint: string;
+
+  /** @format date-time */
+  created_at: string;
+
+  /** @format date-time */
+  modified_at: string;
+}
+
+/**
+* A type of `ModelSerializer` that uses hyperlinked relationships with compound keys instead
+of primary key relationships.  Specifically:
+
+* A 'url' field is included instead of the 'id' field.
+* Relationships to other instances are hyperlinks, instead of primary keys.
+
+NOTE: this only works with DRF 3.1.0 and above.
+*/
+export interface ParameterRuleCreate {
+  type: ParameterRuleTypeEnum;
+  constraint: string;
+}
+
+export enum ParameterRuleTypeEnum {
+  Min = "min",
+  Max = "max",
+  MinLen = "min_len",
+  MaxLen = "max_len",
+  Regex = "regex",
+}
+
+export interface ParameterTimeline {
+  /** The number of records in this response. */
+  count: number;
+
+  /**
+   * If present, additional history can be retrieved using this timestamp in the next call for the as_of query parameter value.
+   * @format date-time
+   */
+  next_as_of?: string;
+  results: ParameterTimelineEntry[];
+}
+
+/**
+ * Details about a single change.
+ */
+export interface ParameterTimelineEntry {
+  /** @format date-time */
+  history_date: string;
+  history_type: HistoryTypeEnum;
+
+  /** The unique identifier of a user. */
+  history_user?: string | null;
+
+  /** The affected environment(s). */
+  history_environments: ParameterTimelineEntryEnvironment[];
+
+  /** The component of the parameter that changed. */
+  history_model: HistoryModelEnum;
+
+  /** The affected parameter. */
+  history_parameter: ParameterTimelineEntryParameter;
+}
+
+export interface ParameterTimelineEntryEnvironment {
+  /**
+   * A unique identifier for the environment.
+   * @format uuid
+   */
+  id: string;
+
+  /** The environment name. */
+  name: string;
+
+  /** Indicates if the value change was direct or if it flowed into the environment. If `true` then the value was actually set directly into this environment. If `false` then the environment has no value set directly so it inherited the value from its parent. */
+  override: boolean;
+}
+
+export interface ParameterTimelineEntryParameter {
+  /**
+   * A unique identifier for the parameter.
+   * @format uuid
+   */
+  id: string;
+
+  /** The parameter name. */
+  name: string;
+}
+
+export enum ParameterTypeEnum {
+  String = "string",
+  Integer = "integer",
+  Bool = "bool",
 }
 
 export interface PatchedAwsIntegration {
@@ -915,9 +1090,9 @@ export interface PatchedOrganization {
 
   /** @format date-time */
   subscription_expires_at?: string | null;
-  subscription_id?: string;
-  subscription_plan_id?: string;
-  subscription_plan_name?: string;
+  subscription_id?: string | null;
+  subscription_plan_id?: string | null;
+  subscription_plan_name?: string | null;
 
   /** @format date-time */
   created_at?: string;
@@ -945,8 +1120,14 @@ export interface PatchedParameter {
   /** A description of the parameter.  You may find it helpful to document how this parameter is used to assist others when they need to maintain software that uses this content. */
   description?: string;
 
-  /** Indicates if this content is secret or not.  When a parameter is considered to be a secret, any static values are stored in a dedicated vault for your organization for maximum security.  Dynamic values are inspected on-demand to ensure they align with the parameter's secret setting and if they do not, those dynamic values are not allowed to be used. */
+  /** Indicates if this content is secret or not.  When a parameter is considered to be a secret, any internal values are stored in a dedicated vault for your organization for maximum security.  External values are inspected on-demand to ensure they align with the parameter's secret setting and if they do not, those external values are not allowed to be used. */
   secret?: boolean;
+  type?: ParameterTypeEnum;
+
+  /** Rules applied to this parameter */
+  rules?: ParameterRule[];
+
+  /** Templates that reference this Parameter. */
   templates?: string[];
 
   /**
@@ -971,6 +1152,37 @@ export interface PatchedParameter {
    *
    */
   values?: Record<string, Value | null>;
+
+  /** @format date-time */
+  created_at?: string;
+
+  /** @format date-time */
+  modified_at?: string;
+}
+
+/**
+* A type of `ModelSerializer` that uses hyperlinked relationships with compound keys instead
+of primary key relationships.  Specifically:
+
+* A 'url' field is included instead of the 'id' field.
+* Relationships to other instances are hyperlinks, instead of primary keys.
+
+NOTE: this only works with DRF 3.1.0 and above.
+*/
+export interface PatchedParameterRule {
+  /** @format uri */
+  url?: string;
+
+  /** @format uuid */
+  id?: string;
+
+  /**
+   * The parameter this rule is for.
+   * @format uri
+   */
+  parameter?: string;
+  type?: ParameterRuleTypeEnum;
+  constraint?: string;
 
   /** @format date-time */
   created_at?: string;
@@ -1025,6 +1237,35 @@ export interface PatchedServiceAccount {
 }
 
 /**
+ * The details of a tag.
+ */
+export interface PatchedTag {
+  /** @format uri */
+  url?: string;
+
+  /**
+   * A unique identifier for the tag.
+   * @format uuid
+   */
+  id?: string;
+
+  /** The tag name. Tag names may contain alphanumeric, hyphen, underscore, or period characters. Tag names are case sensitive. The name cannot be modified. */
+  name?: string;
+
+  /** A description of the tag.  You may find it helpful to document how this tag is used to assist others when they need to maintain software that uses this content. */
+  description?: string;
+
+  /**
+   * The point in time this tag represents.
+   * @format date-time
+   */
+  timestamp?: string;
+
+  /** The read usage details of a tag. */
+  usage?: TagReadUsage;
+}
+
+/**
  * A parameter template in a given project, optionally instantiated against an environment.
  */
 export interface PatchedTemplate {
@@ -1046,6 +1287,8 @@ export interface PatchedTemplate {
   /** The content of the template.  Use mustache-style templating delimiters of `{{` and `}}` to reference parameter values by name for substitution into the template result. */
   body?: string;
   parameters?: string[];
+  references?: string[];
+  referenced_by?: string[];
 
   /** If True, this template contains secrets. */
   has_secret?: boolean;
@@ -1076,32 +1319,43 @@ export interface PatchedValue {
    */
   environment?: string;
 
+  /** The environment name for this value.  This is a convenience to avoid another query against the server to resolve the environment url into a name. */
+  environment_name?: string;
+
+  /** The earliest tag name this value appears in (within the value's environment). */
+  earliest_tag?: string | null;
+
   /**
    * The parameter this value is for.
    * @format uri
    */
   parameter?: string;
 
-  /** A dynamic parameter leverages a CloudTruth integration to retrieve content on-demand from an external source.  When this is `false` the value is stored by CloudTruth.  When this is `true`, the `fqn` field must be set. */
-  dynamic?: boolean;
+  /** An external parameter leverages a CloudTruth integration to retrieve content on-demand from an external source.  When this is `false` the value is stored by CloudTruth and considered to be _internal_.  When this is `true`, the `external_fqn` field must be set. */
+  external?: boolean;
 
-  /** The FQN, or Fully-Qualified Name, is the path through the integration to get to the desired content.  This must be present and reference a valid integration when the value is `dynamic`. */
-  dynamic_fqn?: string;
+  /** The FQN, or Fully-Qualified Name, is the path through the integration to get to the desired content.  This must be present and reference a valid integration when the value is `external`. */
+  external_fqn?: string;
 
-  /** If `dynamic`, the content returned by the integration can be reduced by applying a JMESpath expression.  This is valid as long as the content is structured and of a supported format.  We support JMESpath expressions on `json`, `yaml`, and `dotenv` content. */
-  dynamic_filter?: string;
+  /** If the value is `external`, the content returned by the integration can be reduced by applying a JMESpath expression.  This is valid as long as the content is structured and of a supported format.  JMESpath expressions are supported on `json`, `yaml`, and `dotenv` content. */
+  external_filter?: string;
 
-  /** This is the content to use when resolving the Value for a static non-secret. */
-  static_value?: string | null;
+  /** If the value is external, and an error occurs retrieving it, the reason for the retrieval error will be placed into this field.  The query parameter `partial_success` can be used to control whether this condition causes an HTTP error response or not. */
+  external_error?: string | null;
+
+  /** This is the content to use when resolving the Value for an internal non-secret, or when storing a secret.  When storing a secret, this content is stored in your organization's dedicated vault and this field is cleared.  This field is required if the value is being created or updated and is `internal`.  This field cannot be specified when creating or updating an `external` value. */
+  internal_value?: string | null;
 
   /**
    * This is the actual content of the Value for the given parameter in the given environment.  Depending on the settings in the Value, the following things occur to calculate the `value`:
    *
-   * For values that are not `dynamic` and parameters that are not `secret`, the system will use the content in `static_value` to satisfy the request.
+   * For values that are not `external` and parameters that are not `secret`, the system will use the content in `internal_value` to satisfy the request.
    *
-   * For values that are not `dynamic` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.
+   * For values that are not `external` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.
    *
-   * For values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
+   * For values that are `external`, the system will retrieve the content from the integration on-demand.  You can control the error handling behavior of the server through the `partial_success` query parameter.
+   *
+   * If the content from the integration is `secret` and the parameter is not, an error will occur.  If an `external_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
    *
    * If you request secret masking, no secret content will be included in the result and instead a series of asterisks will be used instead for the value.  If you request wrapping, the secret content will be wrapped in an envelope that is bound to your JWT token.  For more information about secret wrapping, see the docs.
    *
@@ -1109,7 +1363,7 @@ export interface PatchedValue {
    */
   value?: string | null;
 
-  /** Indicates the value content is a secret.  Normally this is `true` when the parameter is a secret, however it is possible for a parameter to be a secret with a dynamic value that is not a secret.  It is not possible to convert a parameter from a secret to a non-secret if any of the values are dynamic and a secret.  Clients can check this condition by leveraging this field. */
+  /** Indicates the value content is a secret.  Normally this is `true` when the parameter is a secret, however it is possible for a parameter to be a secret with a external value that is not a secret.  It is not possible to convert a parameter from a secret to a non-secret if any of the values are external and a secret.  Clients can check this condition by leveraging this field. */
   secret?: boolean | null;
 
   /** @format date-time */
@@ -1213,6 +1467,72 @@ export interface ServiceAccountCreateResponse {
 }
 
 /**
+ * The details of a tag.
+ */
+export interface Tag {
+  /** @format uri */
+  url: string;
+
+  /**
+   * A unique identifier for the tag.
+   * @format uuid
+   */
+  id: string;
+
+  /** The tag name. Tag names may contain alphanumeric, hyphen, underscore, or period characters. Tag names are case sensitive. The name cannot be modified. */
+  name: string;
+
+  /** A description of the tag.  You may find it helpful to document how this tag is used to assist others when they need to maintain software that uses this content. */
+  description?: string;
+
+  /**
+   * The point in time this tag represents.
+   * @format date-time
+   */
+  timestamp: string;
+
+  /** The read usage details of a tag. */
+  usage: TagReadUsage;
+}
+
+/**
+ * Details for creating a tag.
+ */
+export interface TagCreate {
+  /**
+   * The tag name. Tag names may contain alphanumeric, hyphen, underscore, or period characters. Tag names are case sensitive. The name cannot be modified.
+   * @pattern ^[\w.-]+$
+   */
+  name: string;
+
+  /** A description of the tag.  You may find it helpful to document how this tag is used to assist others when they need to maintain software that uses this content. */
+  description?: string;
+
+  /**
+   * The point in time this tag represents. If not specified then the current time will be used.
+   * @format date-time
+   */
+  timestamp?: string | null;
+}
+
+/**
+ * The read usage details of a tag.
+ */
+export interface TagReadUsage {
+  /**
+   * The last time a configuration was retrieved with this tag.
+   * @format date-time
+   */
+  last_read: string | null;
+
+  /** The last user (id) to use this tag to read configuration. */
+  last_read_by?: string;
+
+  /** The number of times the tag has been used to read configuration. */
+  total_reads: number;
+}
+
+/**
  * A parameter template in a given project, optionally instantiated against an environment.
  */
 export interface Template {
@@ -1234,6 +1554,8 @@ export interface Template {
   /** The content of the template.  Use mustache-style templating delimiters of `{{` and `}}` to reference parameter values by name for substitution into the template result. */
   body?: string;
   parameters: string[];
+  references: string[];
+  referenced_by: string[];
 
   /** If True, this template contains secrets. */
   has_secret: boolean;
@@ -1259,8 +1581,76 @@ export interface TemplateCreate {
   body?: string;
 }
 
+/**
+ * Indicates errors occurred while retrieving values to substitute into the template.
+ */
+export interface TemplateLookupError {
+  detail: TemplateLookupErrorEntry[];
+}
+
+export interface TemplateLookupErrorEntry {
+  /**
+   * The parameter id.
+   * @format uuid
+   */
+  parameter_id: string;
+
+  /** The parameter name. */
+  parameter_name: string;
+
+  /** The error code. */
+  error_code: string;
+
+  /** Details about the error. */
+  error_detail: string;
+}
+
 export interface TemplatePreview {
   body: string;
+}
+
+export interface TemplateTimeline {
+  /** The number of records in this response. */
+  count: number;
+
+  /**
+   * If present, additional history can be retrieved using this timestamp in the next call for the as_of query parameter value.
+   * @format date-time
+   */
+  next_as_of?: string;
+  results: TemplateTimelineEntry[];
+}
+
+/**
+ * Details about a single change.
+ */
+export interface TemplateTimelineEntry {
+  /** @format date-time */
+  history_date: string;
+  history_type: HistoryTypeEnum;
+
+  /** The unique identifier of a user. */
+  history_user?: string | null;
+
+  /** The template record as it was when archived for history. */
+  history_template: TemplateTimelineEntryTemplate;
+}
+
+export interface TemplateTimelineEntryTemplate {
+  /**
+   * A unique identifier for the template.
+   * @format uuid
+   */
+  id: string;
+
+  /** The template name. */
+  name: string;
+
+  /** A description of the template.  You may find it helpful to document how this template is used to assist others when they need to maintain software that uses this content. */
+  description?: string;
+
+  /** The content of the template.  Use mustache-style templating delimiters of `{{` and `}}` to reference parameter values by name for substitution into the template result. */
+  body?: string;
 }
 
 export interface User {
@@ -1302,32 +1692,43 @@ export interface Value {
    */
   environment: string;
 
+  /** The environment name for this value.  This is a convenience to avoid another query against the server to resolve the environment url into a name. */
+  environment_name: string;
+
+  /** The earliest tag name this value appears in (within the value's environment). */
+  earliest_tag: string | null;
+
   /**
    * The parameter this value is for.
    * @format uri
    */
   parameter: string;
 
-  /** A dynamic parameter leverages a CloudTruth integration to retrieve content on-demand from an external source.  When this is `false` the value is stored by CloudTruth.  When this is `true`, the `fqn` field must be set. */
-  dynamic?: boolean;
+  /** An external parameter leverages a CloudTruth integration to retrieve content on-demand from an external source.  When this is `false` the value is stored by CloudTruth and considered to be _internal_.  When this is `true`, the `external_fqn` field must be set. */
+  external?: boolean;
 
-  /** The FQN, or Fully-Qualified Name, is the path through the integration to get to the desired content.  This must be present and reference a valid integration when the value is `dynamic`. */
-  dynamic_fqn?: string;
+  /** The FQN, or Fully-Qualified Name, is the path through the integration to get to the desired content.  This must be present and reference a valid integration when the value is `external`. */
+  external_fqn?: string;
 
-  /** If `dynamic`, the content returned by the integration can be reduced by applying a JMESpath expression.  This is valid as long as the content is structured and of a supported format.  We support JMESpath expressions on `json`, `yaml`, and `dotenv` content. */
-  dynamic_filter?: string;
+  /** If the value is `external`, the content returned by the integration can be reduced by applying a JMESpath expression.  This is valid as long as the content is structured and of a supported format.  JMESpath expressions are supported on `json`, `yaml`, and `dotenv` content. */
+  external_filter?: string;
 
-  /** This is the content to use when resolving the Value for a static non-secret. */
-  static_value?: string | null;
+  /** If the value is external, and an error occurs retrieving it, the reason for the retrieval error will be placed into this field.  The query parameter `partial_success` can be used to control whether this condition causes an HTTP error response or not. */
+  external_error: string | null;
+
+  /** This is the content to use when resolving the Value for an internal non-secret, or when storing a secret.  When storing a secret, this content is stored in your organization's dedicated vault and this field is cleared.  This field is required if the value is being created or updated and is `internal`.  This field cannot be specified when creating or updating an `external` value. */
+  internal_value?: string | null;
 
   /**
    * This is the actual content of the Value for the given parameter in the given environment.  Depending on the settings in the Value, the following things occur to calculate the `value`:
    *
-   * For values that are not `dynamic` and parameters that are not `secret`, the system will use the content in `static_value` to satisfy the request.
+   * For values that are not `external` and parameters that are not `secret`, the system will use the content in `internal_value` to satisfy the request.
    *
-   * For values that are not `dynamic` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.
+   * For values that are not `external` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.
    *
-   * For values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
+   * For values that are `external`, the system will retrieve the content from the integration on-demand.  You can control the error handling behavior of the server through the `partial_success` query parameter.
+   *
+   * If the content from the integration is `secret` and the parameter is not, an error will occur.  If an `external_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
    *
    * If you request secret masking, no secret content will be included in the result and instead a series of asterisks will be used instead for the value.  If you request wrapping, the secret content will be wrapped in an envelope that is bound to your JWT token.  For more information about secret wrapping, see the docs.
    *
@@ -1335,7 +1736,7 @@ export interface Value {
    */
   value: string | null;
 
-  /** Indicates the value content is a secret.  Normally this is `true` when the parameter is a secret, however it is possible for a parameter to be a secret with a dynamic value that is not a secret.  It is not possible to convert a parameter from a secret to a non-secret if any of the values are dynamic and a secret.  Clients can check this condition by leveraging this field. */
+  /** Indicates the value content is a secret.  Normally this is `true` when the parameter is a secret, however it is possible for a parameter to be a secret with a external value that is not a secret.  It is not possible to convert a parameter from a secret to a non-secret if any of the values are external and a secret.  Clients can check this condition by leveraging this field. */
   secret: boolean | null;
 
   /** @format date-time */
@@ -1355,17 +1756,17 @@ export interface ValueCreate {
    */
   environment: string;
 
-  /** A dynamic parameter leverages a CloudTruth integration to retrieve content on-demand from an external source.  When this is `false` the value is stored by CloudTruth.  When this is `true`, the `fqn` field must be set. */
-  dynamic?: boolean;
+  /** An external parameter leverages a CloudTruth integration to retrieve content on-demand from an external source.  When this is `false` the value is stored by CloudTruth and considered to be _internal_.  When this is `true`, the `external_fqn` field must be set. */
+  external?: boolean;
 
-  /** The FQN, or Fully-Qualified Name, is the path through the integration to get to the desired content.  This must be present and reference a valid integration when the value is `dynamic`. */
-  dynamic_fqn?: string;
+  /** The FQN, or Fully-Qualified Name, is the path through the integration to get to the desired content.  This must be present and reference a valid integration when the value is `external`. */
+  external_fqn?: string;
 
-  /** If `dynamic`, the content returned by the integration can be reduced by applying a JMESpath expression.  This is valid as long as the content is structured and of a supported format.  We support JMESpath expressions on `json`, `yaml`, and `dotenv` content. */
-  dynamic_filter?: string;
+  /** If the value is `external`, the content returned by the integration can be reduced by applying a JMESpath expression.  This is valid as long as the content is structured and of a supported format.  JMESpath expressions are supported on `json`, `yaml`, and `dotenv` content. */
+  external_filter?: string;
 
-  /** This is the content to use when resolving the Value for a static non-secret. */
-  static_value?: string | null;
+  /** This is the content to use when resolving the Value for an internal non-secret, or when storing a secret.  When storing a secret, this content is stored in your organization's dedicated vault and this field is cleared.  This field is required if the value is being created or updated and is `internal`.  This field cannot be specified when creating or updating an `external` value. */
+  internal_value?: string | null;
 }
 
 export interface ApiSchemaRetrieveParams {
@@ -1500,6 +1901,33 @@ export interface EnvironmentsListParams {
   parent__name?: string;
 }
 
+export interface EnvironmentsTagsListParams {
+  description__icontains?: string;
+  name?: string;
+  name__icontains?: string;
+
+  /** Which field to use when ordering the results. */
+  ordering?: string;
+
+  /** A page number within the paginated result set. */
+  page?: number;
+
+  /** Number of results to return per page. */
+  page_size?: number;
+
+  /** @format date-time */
+  timestamp?: string;
+
+  /** @format date-time */
+  timestamp__gte?: string;
+
+  /** @format date-time */
+  timestamp__lte?: string;
+
+  /** @format uuid */
+  environmentPk: string;
+}
+
 export interface IntegrationsAwsListParams {
   aws_account_id?: string;
   aws_role_name?: string;
@@ -1514,6 +1942,23 @@ export interface IntegrationsAwsListParams {
 export interface IntegrationsAwsRetrieveParams {
   /** Refresh the integration status before returning the details. */
   refresh_status?: boolean;
+
+  /**
+   * The unique identifier for the integration.
+   * @format uuid
+   */
+  id: string;
+}
+
+export interface IntegrationsAwsDestroyParams {
+  /**
+   * (Optional) Desired behavior if the integration has in-use values.
+   *
+   * - `fail` will return HTTP error 409 if there are any values using the integration.
+   * - `leave` (default) will leave values in place and future queries may fail; you can control future value query behavior with the `lookup_error` query parameter on those requests.
+   * - `remove` will remove the all values using the integration when the integration is removed.
+   */
+  in_use?: "fail" | "leave" | "remove";
 
   /**
    * The unique identifier for the integration.
@@ -1549,6 +1994,23 @@ export interface IntegrationsGithubListParams {
 export interface IntegrationsGithubRetrieveParams {
   /** Refresh the integration status before returning the details. */
   refresh_status?: boolean;
+
+  /**
+   * The unique identifier for the integration.
+   * @format uuid
+   */
+  id: string;
+}
+
+export interface IntegrationsGithubDestroyParams {
+  /**
+   * (Optional) Desired behavior if the integration has in-use values.
+   *
+   * - `fail` will return HTTP error 409 if there are any values using the integration.
+   * - `leave` (default) will leave values in place and future queries may fail; you can control future value query behavior with the `lookup_error` query parameter on those requests.
+   * - `remove` will remove the all values using the integration when the integration is removed.
+   */
+  in_use?: "fail" | "leave" | "remove";
 
   /**
    * The unique identifier for the integration.
@@ -1608,37 +2070,37 @@ export interface ProjectsListParams {
 }
 
 export interface ProjectsParameterExportListParams {
-  /** (Optional) Only include parameters whose names contain the provided string. */
+  /**
+   * Specify a point in time to retrieve configuration from. Cannot be specified with `tag`.
+   * @format date-time
+   */
+  as_of?: string;
+
+  /** Only include parameters with names that contain the provided string. */
   contains?: string;
 
-  /** (Optional) Only include parameters whose names end with the provided string. */
+  /** Only include parameters with names that end with the provided string. */
   endswith?: string;
 
-  /**
-   * (Optional) ID of the environment to use to instantiate this template
-   * @format uuid
-   */
+  /** Name or id of the environment to use to retrieve parameter values. */
   environment?: string;
 
-  /** If true, explicitly marks parameters with export, e.g. export FOO=bar.  Defaults to false. */
+  /** Explicitly marks parameters with export, e.g. `export FOO=bar`. */
   explicit_export?: boolean;
 
-  /** If true, masks all secrets in the template (defaults to false) */
+  /** Masks all secrets in the template with `*****`. */
   mask_secrets?: boolean;
 
   /** Format to output: One of 'docker', 'dotenv', 'shell'. */
   output?: string;
 
-  /** A page number within the paginated result set. */
-  page?: number;
-
-  /** Number of results to return per page. */
-  page_size?: number;
-
-  /** (Optional) Only include parameters whose names start with the provided string. */
+  /** Only include parameters with names that start with the provided string. */
   startswith?: string;
 
-  /** Indicates all secrets are wrapped.  For more information on secret wrapping, see the documentation. */
+  /** Specify a tag to retrieve configuration from.  Cannot be specified with `as_of`. */
+  tag?: string;
+
+  /** Indicates all secrets are wrapped. For more information on secret wrapping, see the documentation. */
   wrap?: boolean;
 
   /** @format uuid */
@@ -1647,12 +2109,15 @@ export interface ProjectsParameterExportListParams {
 
 export interface ProjectsParametersListParams {
   /**
-   * (Optional) ID of the environment to get parameter values for.
-   * @format uuid
+   * Specify a point in time to retrieve configuration from. Cannot be specified with `tag`.
+   * @format date-time
    */
+  as_of?: string;
+
+  /** Name or id (uuid) of the environment to get parameter values for.  Cannot be used with `values`. */
   environment?: string;
 
-  /** If true, masks all secrets (defaults to false). */
+  /** If true, masks all secrets. */
   mask_secrets?: boolean;
   name?: string;
 
@@ -1662,18 +2127,59 @@ export interface ProjectsParametersListParams {
   /** Number of results to return per page. */
   page_size?: number;
 
-  /** If true, wraps all secrets (defaults to false) - see documentation for more details. */
+  /**
+   * Determine if the response is allowed to include a partial success.
+   *
+   * A partial success can occur if one or more external values cannot be retrieved, for example when an in-use integration is removed using the `leave` option, leaving the values untouched. When `true`, any error that occurs during external value retrieval will be placed into a field named `external_error` in the affected Value, and the `value` field will be empty.  When `false`, any such error will cause the entire request to fail.
+   * Partial success allows clients to tolerate invalid external values better.
+   */
+  partial_success?: boolean;
+
+  /** Specify a tag to retrieve configuration from.  Cannot be specified with `as_of`. */
+  tag?: string;
+
+  /** If false, values are not returned: the `values` array will have no entries. This speeds up retrieval if value content is not needed.  Cannot be used with `environment`. */
+  values?: boolean;
+
+  /** If true, wraps all secrets - see documentation for more details. */
   wrap?: boolean;
 
   /** @format uuid */
   projectPk: string;
 }
 
+export interface ProjectsParametersRulesListParams {
+  /** A page number within the paginated result set. */
+  page?: number;
+
+  /** Number of results to return per page. */
+  page_size?: number;
+  type?: "max" | "max_len" | "min" | "min_len" | "regex";
+
+  /**
+   * The parameter id.
+   * @format uuid
+   */
+  parameterPk: string;
+
+  /**
+   * The project id.
+   * @format uuid
+   */
+  projectPk: string;
+}
+
 export interface ProjectsParametersValuesListParams {
-  /** ID of the environment to limit the result to.  If this is not specified then the result will contain a value for any environment in which it is set.  You cannot use this option to retrieve the _effective_ value of a parameter in an environment for which is is not explicitly set.  To see _effective_ values use the Parameters API (see the `values` field). */
+  /**
+   * Specify a point in time to retrieve configuration from. Cannot be specified with `tag`.
+   * @format date-time
+   */
+  as_of?: string;
+
+  /** Name or id of the environment to limit the result to. If this is not specified then the result will contain a value for any environment in which it is set. You cannot use this option to retrieve the _effective_ value of a parameter in an environment for which is is not explicitly set. To see _effective_ values use the Parameters API (see the `values` field). */
   environment?: string;
 
-  /** (Optional) If true, mask secret values in responses (defaults to false). */
+  /** Mask secret values in responses with `*****`. */
   mask_secrets?: boolean;
 
   /** A page number within the paginated result set. */
@@ -1682,7 +2188,18 @@ export interface ProjectsParametersValuesListParams {
   /** Number of results to return per page. */
   page_size?: number;
 
-  /** For writes, indicates `static_value` is wrapped; for reads, indicates `value` is wrapped. For more information on secret wrapping, see the documentation.  */
+  /**
+   * Determine if the response is allowed to include a partial success.
+   *
+   * A partial success can occur if one or more external values cannot be retrieved, for example when an in-use integration is removed using the `leave` option, leaving the values untouched. When `true`, any error that occurs during external value retrieval will be placed into a field named `external_error` in the affected Value, and the `value` field will be empty.  When `false`, any such error will cause the entire request to fail.
+   * Partial success allows clients to tolerate invalid external values better.
+   */
+  partial_success?: boolean;
+
+  /** Specify a tag to retrieve configuration from.  Cannot be specified with `as_of`. */
+  tag?: string;
+
+  /** For writes, indicates `internal_value` is wrapped; for reads, indicates `value` is wrapped. For more information on secret wrapping, see the documentation.  */
   wrap?: boolean;
 
   /**
@@ -1699,7 +2216,7 @@ export interface ProjectsParametersValuesListParams {
 }
 
 export interface ProjectsParametersValuesCreateParams {
-  /** Indicates the `static_value` is a wrapped secret. For more information on secret wrapping, see the documentation.  */
+  /** Indicates the `internal_value` is a wrapped secret. For more information on secret wrapping, see the documentation.  */
   wrap?: boolean;
 
   /**
@@ -1716,10 +2233,27 @@ export interface ProjectsParametersValuesCreateParams {
 }
 
 export interface ProjectsParametersValuesRetrieveParams {
-  /** (Optional) If true, mask secret values in responses (defaults to false). */
+  /**
+   * Specify a point in time to retrieve configuration from. Cannot be specified with `tag`.
+   * @format date-time
+   */
+  as_of?: string;
+
+  /** Mask secret values in responses with `*****`. */
   mask_secrets?: boolean;
 
-  /** For writes, indicates `static_value` is wrapped; for reads, indicates `value` is wrapped. For more information on secret wrapping, see the documentation.  */
+  /**
+   * Determine if the response is allowed to include a partial success.
+   *
+   * A partial success can occur if one or more external values cannot be retrieved, for example when an in-use integration is removed using the `leave` option, leaving the values untouched. When `true`, any error that occurs during external value retrieval will be placed into a field named `external_error` in the affected Value, and the `value` field will be empty.  When `false`, any such error will cause the entire request to fail.
+   * Partial success allows clients to tolerate invalid external values better.
+   */
+  partial_success?: boolean;
+
+  /** Specify a tag to retrieve configuration from.  Cannot be specified with `as_of`. */
+  tag?: string;
+
+  /** For writes, indicates `internal_value` is wrapped; for reads, indicates `value` is wrapped. For more information on secret wrapping, see the documentation.  */
   wrap?: boolean;
 
   /**
@@ -1742,7 +2276,7 @@ export interface ProjectsParametersValuesRetrieveParams {
 }
 
 export interface ProjectsParametersValuesUpdateParams {
-  /** Indicates the `static_value` is a wrapped secret. For more information on secret wrapping, see the documentation.  */
+  /** Indicates the `internal_value` is a wrapped secret. For more information on secret wrapping, see the documentation.  */
   wrap?: boolean;
 
   /**
@@ -1765,7 +2299,7 @@ export interface ProjectsParametersValuesUpdateParams {
 }
 
 export interface ProjectsParametersValuesPartialUpdateParams {
-  /** Indicates the `static_value` is a wrapped secret. For more information on secret wrapping, see the documentation.  */
+  /** Indicates the `internal_value` is a wrapped secret. For more information on secret wrapping, see the documentation.  */
   wrap?: boolean;
 
   /**
@@ -1789,15 +2323,32 @@ export interface ProjectsParametersValuesPartialUpdateParams {
 
 export interface ProjectsParametersRetrieveParams {
   /**
-   * (Optional) ID of the environment to get parameter values for.
-   * @format uuid
+   * Specify a point in time to retrieve configuration from. Cannot be specified with `tag`.
+   * @format date-time
    */
+  as_of?: string;
+
+  /** Name or id (uuid) of the environment to get parameter values for.  Cannot be used with `values`. */
   environment?: string;
 
-  /** If true, masks all secrets (defaults to false). */
+  /** If true, masks all secrets. */
   mask_secrets?: boolean;
 
-  /** If true, wraps all secrets (defaults to false) - see documentation for more details. */
+  /**
+   * Determine if the response is allowed to include a partial success.
+   *
+   * A partial success can occur if one or more external values cannot be retrieved, for example when an in-use integration is removed using the `leave` option, leaving the values untouched. When `true`, any error that occurs during external value retrieval will be placed into a field named `external_error` in the affected Value, and the `value` field will be empty.  When `false`, any such error will cause the entire request to fail.
+   * Partial success allows clients to tolerate invalid external values better.
+   */
+  partial_success?: boolean;
+
+  /** Specify a tag to retrieve configuration from.  Cannot be specified with `as_of`. */
+  tag?: string;
+
+  /** If false, values are not returned: the `values` array will have no entries. This speeds up retrieval if value content is not needed.  Cannot be used with `environment`. */
+  values?: boolean;
+
+  /** If true, wraps all secrets - see documentation for more details. */
   wrap?: boolean;
 
   /**
@@ -1810,15 +2361,55 @@ export interface ProjectsParametersRetrieveParams {
   projectPk: string;
 }
 
-export interface ProjectsTemplatePreviewCreateParams {
+export interface ProjectsParametersTimelineRetrieveParams {
   /**
-   * (Optional) ID of the environment to use to instantiate this template
+   * Specify a point in time to retrieve configuration from. Cannot be specified with `tag`.
+   * @format date-time
+   */
+  as_of?: string;
+
+  /** Specify a tag to retrieve configuration from.  Cannot be specified with `as_of`. */
+  tag?: string;
+
+  /**
+   * A unique identifier for the parameter.
    * @format uuid
    */
+  id: string;
+
+  /** @format uuid */
+  projectPk: string;
+}
+
+export interface ProjectsParametersTimelinesRetrieveParams {
+  /**
+   * Specify a point in time to retrieve configuration from. Cannot be specified with `tag`.
+   * @format date-time
+   */
+  as_of?: string;
+
+  /** Specify a tag to retrieve configuration from.  Cannot be specified with `as_of`. */
+  tag?: string;
+
+  /** @format uuid */
+  projectPk: string;
+}
+
+export interface ProjectsTemplatePreviewCreateParams {
+  /**
+   * Specify a point in time to retrieve configuration from. Cannot be specified with `tag`.
+   * @format date-time
+   */
+  as_of?: string;
+
+  /** Name or id of the environment to use to instantiate this template. If not specified then the default environment is used. */
   environment?: string;
 
-  /** If true, masks all secrets in the template (defaults to false) */
+  /** Masks all secrets in the template with `*****`. */
   mask_secrets?: boolean;
+
+  /** Specify a tag to retrieve configuration from.  Cannot be specified with `as_of`. */
+  tag?: string;
 
   /** @format uuid */
   projectPk: string;
@@ -1839,12 +2430,12 @@ export interface ProjectsTemplatesListParams {
 
 export interface ProjectsTemplatesRetrieveParams {
   /**
-   * (Optional) ID of the environment to use to instantiate this template
+   * Name or id of the environment to use to evaluate this template. If not specified then the original content is returned in the body.
    * @format uuid
    */
   environment?: string;
 
-  /** If true, masks all secrets in the template (defaults to false) */
+  /** Masks all secrets in the template with `*****`. */
   mask_secrets?: boolean;
 
   /**
@@ -1852,6 +2443,40 @@ export interface ProjectsTemplatesRetrieveParams {
    * @format uuid
    */
   id: string;
+
+  /** @format uuid */
+  projectPk: string;
+}
+
+export interface ProjectsTemplatesTimelineRetrieveParams {
+  /**
+   * Specify a point in time to retrieve configuration from. Cannot be specified with `tag`.
+   * @format date-time
+   */
+  as_of?: string;
+
+  /** Specify a tag to retrieve configuration from.  Cannot be specified with `as_of`. */
+  tag?: string;
+
+  /**
+   * A unique identifier for the template.
+   * @format uuid
+   */
+  id: string;
+
+  /** @format uuid */
+  projectPk: string;
+}
+
+export interface ProjectsTemplatesTimelinesRetrieveParams {
+  /**
+   * Specify a point in time to retrieve configuration from. Cannot be specified with `tag`.
+   * @format date-time
+   */
+  as_of?: string;
+
+  /** Specify a tag to retrieve configuration from.  Cannot be specified with `as_of`. */
+  tag?: string;
 
   /** @format uuid */
   projectPk: string;
