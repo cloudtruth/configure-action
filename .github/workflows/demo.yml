@@ -8,6 +8,8 @@ name: 'demo'
 on:
   pull_request: {}
   push:
+    branches:
+      - 'release/*'
     tags:
       - 'v*'
 

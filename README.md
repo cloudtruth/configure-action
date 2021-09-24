@@ -34,12 +34,12 @@ You must have an api key established in your CloudTruth account.
 
 | name | required | description |
 | ---- | -------- | ----------- |
-| `apikey` | `yes` | (`@v2` only) The CloudTruth Service Account API Key to use. |
+| `apikey` | `yes` | The CloudTruth Service Account API Key to use. |
 | `project` | `yes` | The CloudTruth project (name or id) within the organization. |
 | `environment` | `yes` | The CloudTruth environment (name or id) view to use. |
+| `tag` | `no` | The CloudTruth tag (name) within the environment to use.  If not specified, current values will be retrieved. |
 | `overwrite` | `no` | (default: false) Allow existing environment variables to be overwritten. |
 | `server` | `no` | (default: `https://api.cloudtruth.io`) The CloudTruth server to execute the query against. |
-| `token` | `yes` | (`@v1` only) The CloudTruth Access Token to use. |
 
 ## Usage
 
@@ -54,5 +54,8 @@ stored in GitHub as a secret:
         environment: "<environment name or id>"
 ```
 
-See our [GitHub Actions workflow](https://github.com/cloudtruth/configure-action/blob/main/.github/workflows/demo.yml) for a working example.
+We recommend using tags to provide consistent retrieval of configuration.
+Tags isolate your deployments from changes being made in real-time by users.
 
+See our [GitHub Actions workflow](https://github.com/cloudtruth/configure-action/blob/main/.github/workflows/demo.yml)
+for a working example.

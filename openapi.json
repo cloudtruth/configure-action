@@ -343,7 +343,6 @@
         "/api/v1/environments/": {
             "get": {
                 "operationId": "environments_list",
-                "description": "",
                 "parameters": [
                     {
                         "in": "query",
@@ -404,7 +403,6 @@
             },
             "post": {
                 "operationId": "environments_create",
-                "description": "",
                 "tags": [
                     "environments"
                 ],
@@ -849,7 +847,6 @@
         "/api/v1/environments/{id}/": {
             "get": {
                 "operationId": "environments_retrieve",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -888,7 +885,6 @@
             },
             "put": {
                 "operationId": "environments_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -947,7 +943,6 @@
             },
             "patch": {
                 "operationId": "environments_partial_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -1005,7 +1000,6 @@
             },
             "delete": {
                 "operationId": "environments_destroy",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -1042,7 +1036,6 @@
         "/api/v1/integrations/aws/": {
             "get": {
                 "operationId": "integrations_aws_list",
-                "description": "",
                 "parameters": [
                     {
                         "in": "query",
@@ -1153,7 +1146,6 @@
         "/api/v1/integrations/aws/{id}/": {
             "get": {
                 "operationId": "integrations_aws_retrieve",
-                "description": "",
                 "summary": "Get details of an AWS Integration.",
                 "parameters": [
                     {
@@ -1201,7 +1193,6 @@
             },
             "put": {
                 "operationId": "integrations_aws_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -1260,7 +1251,6 @@
             },
             "patch": {
                 "operationId": "integrations_aws_partial_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -1318,7 +1308,6 @@
             },
             "delete": {
                 "operationId": "integrations_aws_destroy",
-                "description": "",
                 "summary": "Delete an AWS integration.",
                 "parameters": [
                     {
@@ -1441,7 +1430,6 @@
         "/api/v1/integrations/github/": {
             "get": {
                 "operationId": "integrations_github_list",
-                "description": "",
                 "parameters": [
                     {
                         "in": "query",
@@ -1545,7 +1533,6 @@
         "/api/v1/integrations/github/{id}/": {
             "get": {
                 "operationId": "integrations_github_retrieve",
-                "description": "",
                 "summary": "Get details of a GitHub Integration.",
                 "parameters": [
                     {
@@ -1593,7 +1580,6 @@
             },
             "delete": {
                 "operationId": "integrations_github_destroy",
-                "description": "",
                 "summary": "Delete a GitHub integration.",
                 "parameters": [
                     {
@@ -1644,7 +1630,6 @@
         "/api/v1/invitations/": {
             "get": {
                 "operationId": "invitations_list",
-                "description": "",
                 "parameters": [
                     {
                         "in": "query",
@@ -1782,7 +1767,6 @@
         "/api/v1/invitations/{id}/": {
             "get": {
                 "operationId": "invitations_retrieve",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -1821,7 +1805,6 @@
             },
             "put": {
                 "operationId": "invitations_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -1880,7 +1863,6 @@
             },
             "patch": {
                 "operationId": "invitations_partial_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -1938,7 +1920,6 @@
             },
             "delete": {
                 "operationId": "invitations_destroy",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -2066,7 +2047,6 @@
         "/api/v1/memberships/": {
             "get": {
                 "operationId": "memberships_list",
-                "description": "",
                 "parameters": [
                     {
                         "name": "page",
@@ -2135,7 +2115,6 @@
             },
             "post": {
                 "operationId": "memberships_create",
-                "description": "",
                 "tags": [
                     "memberships"
                 ],
@@ -2184,7 +2163,6 @@
         "/api/v1/memberships/{id}/": {
             "get": {
                 "operationId": "memberships_retrieve",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -2223,7 +2201,6 @@
             },
             "put": {
                 "operationId": "memberships_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -2282,7 +2259,6 @@
             },
             "patch": {
                 "operationId": "memberships_partial_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -2340,7 +2316,6 @@
             },
             "delete": {
                 "operationId": "memberships_destroy",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -2374,7 +2349,6 @@
         "/api/v1/organizations/": {
             "get": {
                 "operationId": "organizations_list",
-                "description": "",
                 "parameters": [
                     {
                         "in": "query",
@@ -2428,7 +2402,6 @@
             },
             "post": {
                 "operationId": "organizations_create",
-                "description": "",
                 "tags": [
                     "organizations"
                 ],
@@ -2477,7 +2450,6 @@
         "/api/v1/organizations/{id}/": {
             "get": {
                 "operationId": "organizations_retrieve",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -2515,7 +2487,6 @@
             },
             "put": {
                 "operationId": "organizations_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -2573,7 +2544,6 @@
             },
             "patch": {
                 "operationId": "organizations_partial_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -2630,7 +2600,6 @@
             },
             "delete": {
                 "operationId": "organizations_destroy",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -2663,7 +2632,6 @@
         "/api/v1/projects/": {
             "get": {
                 "operationId": "projects_list",
-                "description": "",
                 "parameters": [
                     {
                         "in": "query",
@@ -2717,7 +2685,6 @@
             },
             "post": {
                 "operationId": "projects_create",
-                "description": "",
                 "tags": [
                     "projects"
                 ],
@@ -2766,7 +2733,6 @@
         "/api/v1/projects/{id}/": {
             "get": {
                 "operationId": "projects_retrieve",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -2805,7 +2771,6 @@
             },
             "put": {
                 "operationId": "projects_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -2864,7 +2829,6 @@
             },
             "patch": {
                 "operationId": "projects_partial_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -2922,7 +2886,6 @@
             },
             "delete": {
                 "operationId": "projects_destroy",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -3080,7 +3043,6 @@
         "/api/v1/projects/{project_pk}/parameters/": {
             "get": {
                 "operationId": "projects_parameters_list",
-                "description": "",
                 "parameters": [
                     {
                         "in": "query",
@@ -3204,7 +3166,6 @@
             },
             "post": {
                 "operationId": "projects_parameters_create",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -3264,7 +3225,6 @@
         "/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/": {
             "get": {
                 "operationId": "projects_parameters_rules_list",
-                "description": "",
                 "parameters": [
                     {
                         "name": "page",
@@ -3345,7 +3305,6 @@
             },
             "post": {
                 "operationId": "projects_parameters_rules_create",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -3416,7 +3375,6 @@
         "/api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/{id}/": {
             "get": {
                 "operationId": "projects_parameters_rules_retrieve",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -3475,7 +3433,6 @@
             },
             "put": {
                 "operationId": "projects_parameters_rules_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -3554,7 +3511,6 @@
             },
             "patch": {
                 "operationId": "projects_parameters_rules_partial_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -3632,7 +3588,6 @@
             },
             "delete": {
                 "operationId": "projects_parameters_rules_destroy",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -4219,7 +4174,6 @@
         "/api/v1/projects/{project_pk}/parameters/{id}/": {
             "get": {
                 "operationId": "projects_parameters_retrieve",
-                "description": "",
                 "parameters": [
                     {
                         "in": "query",
@@ -4328,7 +4282,6 @@
             },
             "put": {
                 "operationId": "projects_parameters_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -4411,7 +4364,6 @@
             },
             "patch": {
                 "operationId": "projects_parameters_partial_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -4493,7 +4445,6 @@
             },
             "delete": {
                 "operationId": "projects_parameters_destroy",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -4764,7 +4715,6 @@
         "/api/v1/projects/{project_pk}/templates/": {
             "get": {
                 "operationId": "projects_templates_list",
-                "description": "",
                 "parameters": [
                     {
                         "in": "query",
@@ -4827,7 +4777,6 @@
             },
             "post": {
                 "operationId": "projects_templates_create",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -4897,7 +4846,6 @@
         "/api/v1/projects/{project_pk}/templates/{id}/": {
             "get": {
                 "operationId": "projects_templates_retrieve",
-                "description": "",
                 "parameters": [
                     {
                         "in": "query",
@@ -4973,7 +4921,6 @@
             },
             "put": {
                 "operationId": "projects_templates_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -5051,7 +4998,6 @@
             },
             "patch": {
                 "operationId": "projects_templates_partial_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -5128,7 +5074,6 @@
             },
             "delete": {
                 "operationId": "projects_templates_destroy",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -5295,7 +5240,6 @@
         "/api/v1/serviceaccounts/": {
             "get": {
                 "operationId": "serviceaccounts_list",
-                "description": "",
                 "parameters": [
                     {
                         "name": "page",
@@ -5392,7 +5336,6 @@
         "/api/v1/serviceaccounts/{id}/": {
             "get": {
                 "operationId": "serviceaccounts_retrieve",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -5430,7 +5373,6 @@
             },
             "put": {
                 "operationId": "serviceaccounts_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -5487,7 +5429,6 @@
             },
             "patch": {
                 "operationId": "serviceaccounts_partial_update",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -5544,7 +5485,6 @@
             },
             "delete": {
                 "operationId": "serviceaccounts_destroy",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -5577,7 +5517,6 @@
         "/api/v1/users/": {
             "get": {
                 "operationId": "users_list",
-                "description": "",
                 "parameters": [
                     {
                         "name": "page",
@@ -5633,7 +5572,6 @@
         "/api/v1/users/{id}/": {
             "get": {
                 "operationId": "users_retrieve",
-                "description": "",
                 "parameters": [
                     {
                         "in": "path",
@@ -6955,9 +6893,9 @@
                             "$ref": "#/components/schemas/ParameterRule"
                         },
                         "readOnly": true,
-                        "description": "Rules applied to this parameter"
+                        "description": "Rules applied to this parameter."
                     },
-                    "templates": {
+                    "referencing_templates": {
                         "type": "array",
                         "items": {
                             "type": "string",
@@ -6965,6 +6903,15 @@
                         },
                         "readOnly": true,
                         "description": "Templates that reference this Parameter."
+                    },
+                    "referencing_values": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "readOnly": true,
+                        "description": "Dynamic values that reference this Parameter."
                     },
                     "values": {
                         "type": "object",
@@ -6995,8 +6942,9 @@
                     "id",
                     "modified_at",
                     "name",
+                    "referencing_templates",
+                    "referencing_values",
                     "rules",
-                    "templates",
                     "url",
                     "values"
                 ]
@@ -7569,9 +7517,9 @@
                             "$ref": "#/components/schemas/ParameterRule"
                         },
                         "readOnly": true,
-                        "description": "Rules applied to this parameter"
+                        "description": "Rules applied to this parameter."
                     },
-                    "templates": {
+                    "referencing_templates": {
                         "type": "array",
                         "items": {
                             "type": "string",
@@ -7579,6 +7527,15 @@
                         },
                         "readOnly": true,
                         "description": "Templates that reference this Parameter."
+                    },
+                    "referencing_values": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "readOnly": true,
+                        "description": "Dynamic values that reference this Parameter."
                     },
                     "values": {
                         "type": "object",
@@ -7751,7 +7708,12 @@
                         "description": "The point in time this tag represents."
                     },
                     "usage": {
-                        "$ref": "#/components/schemas/TagReadUsage"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/TagReadUsage"
+                            }
+                        ],
+                        "readOnly": true
                     }
                 }
             },
@@ -7783,29 +7745,41 @@
                         "type": "string",
                         "description": "The content of the template.  Use mustache-style templating delimiters of `{{` and `}}` to reference parameter values by name for substitution into the template result."
                     },
-                    "parameters": {
+                    "referenced_parameters": {
                         "type": "array",
                         "items": {
                             "type": "string",
                             "format": "uri"
                         },
-                        "readOnly": true
+                        "readOnly": true,
+                        "description": "Parameters that this template references."
                     },
-                    "references": {
+                    "referenced_templates": {
                         "type": "array",
                         "items": {
                             "type": "string",
                             "format": "uri"
                         },
-                        "readOnly": true
+                        "readOnly": true,
+                        "description": "Other templates that this template references."
                     },
-                    "referenced_by": {
+                    "referencing_templates": {
                         "type": "array",
                         "items": {
                             "type": "string",
                             "format": "uri"
                         },
-                        "readOnly": true
+                        "readOnly": true,
+                        "description": "Other templates that reference this template."
+                    },
+                    "referencing_values": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "readOnly": true,
+                        "description": "The dynamic values that reference this template."
                     },
                     "has_secret": {
                         "type": "boolean",
@@ -7888,6 +7862,10 @@
                         "description": "This is the content to use when resolving the Value for an internal non-secret, or when storing a secret.  When storing a secret, this content is stored in your organization's dedicated vault and this field is cleared.  This field is required if the value is being created or updated and is `internal`.  This field cannot be specified when creating or updating an `external` value.",
                         "maxLength": 16384
                     },
+                    "interpolated": {
+                        "type": "boolean",
+                        "description": "If `true`, apply template substitution rules to this value.  If `false`, this value is a literal value.  Note: secrets cannot be interpolated."
+                    },
                     "value": {
                         "type": "string",
                         "nullable": true,
@@ -7899,6 +7877,24 @@
                         "nullable": true,
                         "readOnly": true,
                         "description": "Indicates the value content is a secret.  Normally this is `true` when the parameter is a secret, however it is possible for a parameter to be a secret with a external value that is not a secret.  It is not possible to convert a parameter from a secret to a non-secret if any of the values are external and a secret.  Clients can check this condition by leveraging this field."
+                    },
+                    "referenced_parameters": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "readOnly": true,
+                        "description": "The parameters this value references, if interpolated."
+                    },
+                    "referenced_templates": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "readOnly": true,
+                        "description": "The templates this value references, if interpolated."
                     },
                     "created_at": {
                         "type": "string",
@@ -8133,7 +8129,12 @@
                         "description": "The point in time this tag represents."
                     },
                     "usage": {
-                        "$ref": "#/components/schemas/TagReadUsage"
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/TagReadUsage"
+                            }
+                        ],
+                        "readOnly": true
                     }
                 },
                 "required": [
@@ -8222,29 +8223,41 @@
                         "type": "string",
                         "description": "The content of the template.  Use mustache-style templating delimiters of `{{` and `}}` to reference parameter values by name for substitution into the template result."
                     },
-                    "parameters": {
+                    "referenced_parameters": {
                         "type": "array",
                         "items": {
                             "type": "string",
                             "format": "uri"
                         },
-                        "readOnly": true
+                        "readOnly": true,
+                        "description": "Parameters that this template references."
                     },
-                    "references": {
+                    "referenced_templates": {
                         "type": "array",
                         "items": {
                             "type": "string",
                             "format": "uri"
                         },
-                        "readOnly": true
+                        "readOnly": true,
+                        "description": "Other templates that this template references."
                     },
-                    "referenced_by": {
+                    "referencing_templates": {
                         "type": "array",
                         "items": {
                             "type": "string",
                             "format": "uri"
                         },
-                        "readOnly": true
+                        "readOnly": true,
+                        "description": "Other templates that reference this template."
+                    },
+                    "referencing_values": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "readOnly": true,
+                        "description": "The dynamic values that reference this template."
                     },
                     "has_secret": {
                         "type": "boolean",
@@ -8268,9 +8281,10 @@
                     "id",
                     "modified_at",
                     "name",
-                    "parameters",
-                    "referenced_by",
-                    "references",
+                    "referenced_parameters",
+                    "referenced_templates",
+                    "referencing_templates",
+                    "referencing_values",
                     "url"
                 ]
             },
@@ -8557,6 +8571,10 @@
                         "description": "This is the content to use when resolving the Value for an internal non-secret, or when storing a secret.  When storing a secret, this content is stored in your organization's dedicated vault and this field is cleared.  This field is required if the value is being created or updated and is `internal`.  This field cannot be specified when creating or updating an `external` value.",
                         "maxLength": 16384
                     },
+                    "interpolated": {
+                        "type": "boolean",
+                        "description": "If `true`, apply template substitution rules to this value.  If `false`, this value is a literal value.  Note: secrets cannot be interpolated."
+                    },
                     "value": {
                         "type": "string",
                         "nullable": true,
@@ -8568,6 +8586,24 @@
                         "nullable": true,
                         "readOnly": true,
                         "description": "Indicates the value content is a secret.  Normally this is `true` when the parameter is a secret, however it is possible for a parameter to be a secret with a external value that is not a secret.  It is not possible to convert a parameter from a secret to a non-secret if any of the values are external and a secret.  Clients can check this condition by leveraging this field."
+                    },
+                    "referenced_parameters": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "readOnly": true,
+                        "description": "The parameters this value references, if interpolated."
+                    },
+                    "referenced_templates": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "readOnly": true,
+                        "description": "The templates this value references, if interpolated."
                     },
                     "created_at": {
                         "type": "string",
@@ -8589,6 +8625,8 @@
                     "id",
                     "modified_at",
                     "parameter",
+                    "referenced_parameters",
+                    "referenced_templates",
                     "secret",
                     "url",
                     "value"
@@ -8622,6 +8660,10 @@
                         "nullable": true,
                         "description": "This is the content to use when resolving the Value for an internal non-secret, or when storing a secret.  When storing a secret, this content is stored in your organization's dedicated vault and this field is cleared.  This field is required if the value is being created or updated and is `internal`.  This field cannot be specified when creating or updating an `external` value.",
                         "maxLength": 16384
+                    },
+                    "interpolated": {
+                        "type": "boolean",
+                        "description": "If `true`, apply template substitution rules to this value.  If `false`, this value is a literal value.  Note: secrets cannot be interpolated."
                     }
                 },
                 "required": [
