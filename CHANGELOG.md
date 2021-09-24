@@ -7,15 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2021-09-30
+
 ### Added
 
 - Added support for environment tags.
-- Added configure-action User-Agent when talking to server.
+- Added custom User-Agent with version when talking to server.
 
 ### Updated
 
 - Updated to latest API specification.
-- Handle nomenclature change: static to internal, dynamic to external.
+- Handle value API nomenclature change: static to internal, dynamic to external.
 
 ### Fixed
 
@@ -36,7 +38,6 @@ Support for the new CloudTruth API.
 ### Removed
 
 - Removed support for `cloudtruth.com` (graph-based API).
-  Continue to use the `@v1` tag if you use `app.cloudtruth.com`.
 
 ### Fixed
 

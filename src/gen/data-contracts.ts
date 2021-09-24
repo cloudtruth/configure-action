@@ -743,11 +743,14 @@ export interface Parameter {
   secret?: boolean;
   type?: ParameterTypeEnum;
 
-  /** Rules applied to this parameter */
+  /** Rules applied to this parameter. */
   rules: ParameterRule[];
 
   /** Templates that reference this Parameter. */
-  templates: string[];
+  referencing_templates: string[];
+
+  /** Dynamic values that reference this Parameter. */
+  referencing_values: string[];
 
   /**
    *
@@ -1124,11 +1127,14 @@ export interface PatchedParameter {
   secret?: boolean;
   type?: ParameterTypeEnum;
 
-  /** Rules applied to this parameter */
+  /** Rules applied to this parameter. */
   rules?: ParameterRule[];
 
   /** Templates that reference this Parameter. */
-  templates?: string[];
+  referencing_templates?: string[];
+
+  /** Dynamic values that reference this Parameter. */
+  referencing_values?: string[];
 
   /**
    *
@@ -1260,8 +1266,6 @@ export interface PatchedTag {
    * @format date-time
    */
   timestamp?: string;
-
-  /** The read usage details of a tag. */
   usage?: TagReadUsage;
 }
 
@@ -1286,9 +1290,18 @@ export interface PatchedTemplate {
 
   /** The content of the template.  Use mustache-style templating delimiters of `{{` and `}}` to reference parameter values by name for substitution into the template result. */
   body?: string;
-  parameters?: string[];
-  references?: string[];
-  referenced_by?: string[];
+
+  /** Parameters that this template references. */
+  referenced_parameters?: string[];
+
+  /** Other templates that this template references. */
+  referenced_templates?: string[];
+
+  /** Other templates that reference this template. */
+  referencing_templates?: string[];
+
+  /** The dynamic values that reference this template. */
+  referencing_values?: string[];
 
   /** If True, this template contains secrets. */
   has_secret?: boolean;
@@ -1346,6 +1359,9 @@ export interface PatchedValue {
   /** This is the content to use when resolving the Value for an internal non-secret, or when storing a secret.  When storing a secret, this content is stored in your organization's dedicated vault and this field is cleared.  This field is required if the value is being created or updated and is `internal`.  This field cannot be specified when creating or updating an `external` value. */
   internal_value?: string | null;
 
+  /** If `true`, apply template substitution rules to this value.  If `false`, this value is a literal value.  Note: secrets cannot be interpolated. */
+  interpolated?: boolean;
+
   /**
    * This is the actual content of the Value for the given parameter in the given environment.  Depending on the settings in the Value, the following things occur to calculate the `value`:
    *
@@ -1365,6 +1381,12 @@ export interface PatchedValue {
 
   /** Indicates the value content is a secret.  Normally this is `true` when the parameter is a secret, however it is possible for a parameter to be a secret with a external value that is not a secret.  It is not possible to convert a parameter from a secret to a non-secret if any of the values are external and a secret.  Clients can check this condition by leveraging this field. */
   secret?: boolean | null;
+
+  /** The parameters this value references, if interpolated. */
+  referenced_parameters?: string[];
+
+  /** The templates this value references, if interpolated. */
+  referenced_templates?: string[];
 
   /** @format date-time */
   created_at?: string;
@@ -1490,8 +1512,6 @@ export interface Tag {
    * @format date-time
    */
   timestamp: string;
-
-  /** The read usage details of a tag. */
   usage: TagReadUsage;
 }
 
@@ -1553,9 +1573,18 @@ export interface Template {
 
   /** The content of the template.  Use mustache-style templating delimiters of `{{` and `}}` to reference parameter values by name for substitution into the template result. */
   body?: string;
-  parameters: string[];
-  references: string[];
-  referenced_by: string[];
+
+  /** Parameters that this template references. */
+  referenced_parameters: string[];
+
+  /** Other templates that this template references. */
+  referenced_templates: string[];
+
+  /** Other templates that reference this template. */
+  referencing_templates: string[];
+
+  /** The dynamic values that reference this template. */
+  referencing_values: string[];
 
   /** If True, this template contains secrets. */
   has_secret: boolean;
@@ -1719,6 +1748,9 @@ export interface Value {
   /** This is the content to use when resolving the Value for an internal non-secret, or when storing a secret.  When storing a secret, this content is stored in your organization's dedicated vault and this field is cleared.  This field is required if the value is being created or updated and is `internal`.  This field cannot be specified when creating or updating an `external` value. */
   internal_value?: string | null;
 
+  /** If `true`, apply template substitution rules to this value.  If `false`, this value is a literal value.  Note: secrets cannot be interpolated. */
+  interpolated?: boolean;
+
   /**
    * This is the actual content of the Value for the given parameter in the given environment.  Depending on the settings in the Value, the following things occur to calculate the `value`:
    *
@@ -1738,6 +1770,12 @@ export interface Value {
 
   /** Indicates the value content is a secret.  Normally this is `true` when the parameter is a secret, however it is possible for a parameter to be a secret with a external value that is not a secret.  It is not possible to convert a parameter from a secret to a non-secret if any of the values are external and a secret.  Clients can check this condition by leveraging this field. */
   secret: boolean | null;
+
+  /** The parameters this value references, if interpolated. */
+  referenced_parameters: string[];
+
+  /** The templates this value references, if interpolated. */
+  referenced_templates: string[];
 
   /** @format date-time */
   created_at: string;
@@ -1767,6 +1805,9 @@ export interface ValueCreate {
 
   /** This is the content to use when resolving the Value for an internal non-secret, or when storing a secret.  When storing a secret, this content is stored in your organization's dedicated vault and this field is cleared.  This field is required if the value is being created or updated and is `internal`.  This field cannot be specified when creating or updating an `external` value. */
   internal_value?: string | null;
+
+  /** If `true`, apply template substitution rules to this value.  If `false`, this value is a literal value.  Note: secrets cannot be interpolated. */
+  interpolated?: boolean;
 }
 
 export interface ApiSchemaRetrieveParams {
