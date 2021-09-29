@@ -31,7 +31,7 @@
   "author": "CloudTruth, Inc.",
   "license": "Apache-2.0",
   "dependencies": {
-    "@actions/core": "^1.5.0",
+    "@actions/core": "^1.6.0",
     "isomorphic-fetch": "^3.0.0",
     "uuid": "^8.3.2"
   },
