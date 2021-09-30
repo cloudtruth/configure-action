@@ -21,11 +21,6 @@ and then accessed those secrets through the `secrets` object in your action.
 This action will modify your `env` object to have values for all the parameters that
 you have stored in your project for the given environment.
 
-## Compatibility
-
-The `@v2` tag is for customers who are using `app.cloudtruth.io`, starting in July 2021.
-The `@v1` tag is for customers who have been using `app.cloudtruth.com`.
-
 ## Prerequisites
 
 You must have an api key established in your CloudTruth account.
