@@ -38,7 +38,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@scaleleap/jest-polly": "^1.5.55",
+    "@scaleleap/jest-polly": "^1.5.56",
     "@types/isomorphic-fetch": "^0.0.35",
     "@types/jest": "^27.0.2",
     "@types/node": "^12.20.24",
