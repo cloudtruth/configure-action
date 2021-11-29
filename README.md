@@ -1,4 +1,4 @@
-# configure-action
+# configure-action foo
 
  ![ci](https://github.com/cloudtruth/configure-action/actions/workflows/test.yml/badge.svg)
 [![codecov](https://codecov.io/gh/cloudtruth/configure-action/branch/main/graph/badge.svg?token=CZs9Fqr6k9)](https://codecov.io/gh/cloudtruth/configure-action)
