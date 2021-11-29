@@ -106,6 +106,9 @@ jobs:
           - macos-latest
           - ubuntu-latest
     steps:
+      - name: dump the environment
+        run: |
+          printenv | sort
       - uses: actions/checkout@v2
       - name: save initial state and set expectations
         run: |
