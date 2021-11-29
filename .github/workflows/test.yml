@@ -92,9 +92,6 @@ jobs:
     # tests against an environment named "staging"
     # runs on ubuntu against production, macos against staging
     # to detect regressions or breaking changes
-    needs:
-      - secrets-gate
-    if: ${{ needs.secrets-gate.outputs.ok == 'true' }}
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
