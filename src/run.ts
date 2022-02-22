@@ -3,6 +3,7 @@
 //
 
 import * as core from '@actions/core'
+import * as github from '@actions/github'
 import {Api} from './gen/Api'
 import {LIB_VERSION} from './version'
 import {validate as uuidValidate} from 'uuid'
@@ -10,6 +11,7 @@ import {PaginatedParameterList, Project, ProjectsParametersListParams} from './g
 import {HttpResponse} from './gen/http-client'
 
 import fetch from 'isomorphic-fetch'
+import {env} from 'process'
 
 const USER_AGENT = `configure-action/${LIB_VERSION}`
 
