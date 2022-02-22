@@ -61,8 +61,8 @@ jobs:
       fail-fast: false
       matrix:
         node-version:
-          # all github action execution environments use node12
-          - 12.x
+          # github action execution environments can use node16
+          - 16.x
         os:
           - macos-latest
           - ubuntu-latest
