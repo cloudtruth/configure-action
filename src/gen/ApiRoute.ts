@@ -14,6 +14,7 @@ import {
   AuditTrailSummary,
   AwsIntegration,
   AwsIntegrationCreate,
+  AwsIntegrationScan,
   AwsPull,
   AwsPullSyncActionRequest,
   AwsPullTask,
@@ -23,6 +24,7 @@ import {
   AwsPushTaskStep,
   AwsPushUpdate,
   BackupDataSnapshot,
+  DiscoveryResult,
   Environment,
   EnvironmentCreate,
   GeneratedPasswordResponse,
@@ -31,6 +33,7 @@ import {
   GitHubPull,
   GitHubPullTask,
   GitHubPullTaskStep,
+  Grant,
   ImportCreateRequest,
   ImportCreateResponse,
   Invitation,
@@ -52,6 +55,7 @@ import {
   PaginatedGitHubPullList,
   PaginatedGitHubPullTaskList,
   PaginatedGitHubPullTaskStepList,
+  PaginatedGrantList,
   PaginatedIntegrationNodeList,
   PaginatedInvitationList,
   PaginatedMembershipList,
@@ -83,6 +87,7 @@ import {
   PatchedAwsPushUpdate,
   PatchedEnvironment,
   PatchedGitHubPull,
+  PatchedGrant,
   PatchedInvitation,
   PatchedMembership,
   PatchedOrganization,
@@ -534,6 +539,132 @@ export namespace Api {
     export type RequestBody = never
     export type RequestHeaders = {}
     export type ResponseBody = void
+  }
+
+  /**
+   * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+   * @tags grants
+   * @name GrantsList
+   * @request GET:/api/v1/grants/
+   * @secure
+   * @response `200` `PaginatedGrantList`
+   * @response `403` `void` Forbidden: see response for further details.
+   */
+  export namespace GrantsList {
+    export type RequestParams = {}
+    export type RequestQuery = {
+      ordering?: string
+      page?: number
+      page_size?: number
+      principal?: string
+      role?: 'ADMIN' | 'CONTRIB' | 'OWNER' | 'VIEWER'
+      scope?: string
+    }
+    export type RequestBody = never
+    export type RequestHeaders = {}
+    export type ResponseBody = PaginatedGrantList
+  }
+
+  /**
+   * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+   * @tags grants
+   * @name GrantsCreate
+   * @request POST:/api/v1/grants/
+   * @secure
+   * @response `201` `Grant`
+   * @response `403` `void` Forbidden: see response for further details.
+   */
+  export namespace GrantsCreate {
+    export type RequestParams = {}
+    export type RequestQuery = {}
+    export type RequestBody = Grant
+    export type RequestHeaders = {}
+    export type ResponseBody = Grant
+  }
+
+  /**
+   * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+   * @tags grants
+   * @name GrantsRetrieve
+   * @request GET:/api/v1/grants/{id}/
+   * @secure
+   * @response `200` `Grant`
+   * @response `403` `void` Forbidden: see response for further details.
+   */
+  export namespace GrantsRetrieve {
+    export type RequestParams = {id: string}
+    export type RequestQuery = {}
+    export type RequestBody = never
+    export type RequestHeaders = {}
+    export type ResponseBody = Grant
+  }
+
+  /**
+   * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+   * @tags grants
+   * @name GrantsUpdate
+   * @request PUT:/api/v1/grants/{id}/
+   * @secure
+   * @response `200` `Grant`
+   * @response `403` `void` Forbidden: see response for further details.
+   */
+  export namespace GrantsUpdate {
+    export type RequestParams = {id: string}
+    export type RequestQuery = {}
+    export type RequestBody = Grant
+    export type RequestHeaders = {}
+    export type ResponseBody = Grant
+  }
+
+  /**
+   * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+   * @tags grants
+   * @name GrantsPartialUpdate
+   * @request PATCH:/api/v1/grants/{id}/
+   * @secure
+   * @response `200` `Grant`
+   * @response `403` `void` Forbidden: see response for further details.
+   */
+  export namespace GrantsPartialUpdate {
+    export type RequestParams = {id: string}
+    export type RequestQuery = {}
+    export type RequestBody = PatchedGrant
+    export type RequestHeaders = {}
+    export type ResponseBody = Grant
+  }
+
+  /**
+   * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+   * @tags grants
+   * @name GrantsDestroy
+   * @request DELETE:/api/v1/grants/{id}/
+   * @secure
+   * @response `204` `void` Deleted.
+   * @response `403` `void` Forbidden: see response for further details.
+   */
+  export namespace GrantsDestroy {
+    export type RequestParams = {id: string}
+    export type RequestQuery = {}
+    export type RequestBody = never
+    export type RequestHeaders = {}
+    export type ResponseBody = void
+  }
+
+  /**
+   * @description Removes grants matching the query parameters atomically. Use this technique to disable access control on a scope, or remove all grants for a user.
+   * @tags grants
+   * @name GrantsMultiDestroy
+   * @request DELETE:/api/v1/grants/multi/
+   * @secure
+   * @response `200` `Grant`
+   * @response `403` `void` Forbidden: see response for further details.
+   */
+  export namespace GrantsMultiDestroy {
+    export type RequestParams = {}
+    export type RequestQuery = {}
+    export type RequestBody = never
+    export type RequestHeaders = {}
+    export type ResponseBody = Grant
   }
 
   /**
@@ -1066,6 +1197,23 @@ export namespace Api {
     export type RequestBody = never
     export type RequestHeaders = {}
     export type ResponseBody = void
+  }
+
+  /**
+   * @description Probe a region and service using a pattern matching string that can be used in pull actions.  This allows the pattern match to be checked for correctness and preview what will match during creation of the string.
+   * @tags integrations
+   * @name IntegrationsAwsScanCreate
+   * @summary Evaluate a potential pull pattern and understand what it will match.
+   * @request POST:/api/v1/integrations/aws/{id}/scan/
+   * @secure
+   * @response `200` `DiscoveryResult`
+   */
+  export namespace IntegrationsAwsScanCreate {
+    export type RequestParams = {id: string}
+    export type RequestQuery = {}
+    export type RequestBody = AwsIntegrationScan
+    export type RequestHeaders = {}
+    export type ResponseBody = DiscoveryResult
   }
 
   /**
