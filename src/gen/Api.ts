@@ -16,6 +16,7 @@ import {
   AuditTrailSummary,
   AwsIntegration,
   AwsIntegrationCreate,
+  AwsIntegrationScan,
   AwsPull,
   AwsPullSyncActionRequest,
   AwsPullTask,
@@ -25,6 +26,7 @@ import {
   AwsPushTaskStep,
   AwsPushUpdate,
   BackupDataSnapshot,
+  DiscoveryResult,
   Environment,
   EnvironmentCreate,
   EnvironmentsListParams,
@@ -36,6 +38,8 @@ import {
   GitHubPull,
   GitHubPullTask,
   GitHubPullTaskStep,
+  Grant,
+  GrantsListParams,
   ImportCreateParams,
   ImportCreateRequest,
   ImportCreateResponse,
@@ -77,6 +81,7 @@ import {
   PaginatedGitHubPullList,
   PaginatedGitHubPullTaskList,
   PaginatedGitHubPullTaskStepList,
+  PaginatedGrantList,
   PaginatedIntegrationNodeList,
   PaginatedInvitationList,
   PaginatedMembershipList,
@@ -108,6 +113,7 @@ import {
   PatchedAwsPushUpdate,
   PatchedEnvironment,
   PatchedGitHubPull,
+  PatchedGrant,
   PatchedInvitation,
   PatchedMembership,
   PatchedOrganization,
@@ -492,6 +498,138 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       path: `/api/v1/environments/${id}/`,
       method: 'DELETE',
       secure: true,
+      ...params
+    })
+  /**
+   * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+   *
+   * @tags grants
+   * @name GrantsList
+   * @request GET:/api/v1/grants/
+   * @secure
+   * @response `200` `PaginatedGrantList`
+   * @response `403` `void` Forbidden: see response for further details.
+   */
+  grantsList = (query: GrantsListParams, params: RequestParams = {}) =>
+    this.request<PaginatedGrantList, void>({
+      path: `/api/v1/grants/`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params
+    })
+  /**
+   * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+   *
+   * @tags grants
+   * @name GrantsCreate
+   * @request POST:/api/v1/grants/
+   * @secure
+   * @response `201` `Grant`
+   * @response `403` `void` Forbidden: see response for further details.
+   */
+  grantsCreate = (data: Grant, params: RequestParams = {}) =>
+    this.request<Grant, void>({
+      path: `/api/v1/grants/`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params
+    })
+  /**
+   * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+   *
+   * @tags grants
+   * @name GrantsRetrieve
+   * @request GET:/api/v1/grants/{id}/
+   * @secure
+   * @response `200` `Grant`
+   * @response `403` `void` Forbidden: see response for further details.
+   */
+  grantsRetrieve = (id: string, params: RequestParams = {}) =>
+    this.request<Grant, void>({
+      path: `/api/v1/grants/${id}/`,
+      method: 'GET',
+      secure: true,
+      format: 'json',
+      ...params
+    })
+  /**
+   * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+   *
+   * @tags grants
+   * @name GrantsUpdate
+   * @request PUT:/api/v1/grants/{id}/
+   * @secure
+   * @response `200` `Grant`
+   * @response `403` `void` Forbidden: see response for further details.
+   */
+  grantsUpdate = (id: string, data: Grant, params: RequestParams = {}) =>
+    this.request<Grant, void>({
+      path: `/api/v1/grants/${id}/`,
+      method: 'PUT',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params
+    })
+  /**
+   * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+   *
+   * @tags grants
+   * @name GrantsPartialUpdate
+   * @request PATCH:/api/v1/grants/{id}/
+   * @secure
+   * @response `200` `Grant`
+   * @response `403` `void` Forbidden: see response for further details.
+   */
+  grantsPartialUpdate = (id: string, data: PatchedGrant, params: RequestParams = {}) =>
+    this.request<Grant, void>({
+      path: `/api/v1/grants/${id}/`,
+      method: 'PATCH',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params
+    })
+  /**
+   * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+   *
+   * @tags grants
+   * @name GrantsDestroy
+   * @request DELETE:/api/v1/grants/{id}/
+   * @secure
+   * @response `204` `void` Deleted.
+   * @response `403` `void` Forbidden: see response for further details.
+   */
+  grantsDestroy = (id: string, params: RequestParams = {}) =>
+    this.request<void, void>({
+      path: `/api/v1/grants/${id}/`,
+      method: 'DELETE',
+      secure: true,
+      ...params
+    })
+  /**
+   * @description Removes grants matching the query parameters atomically. Use this technique to disable access control on a scope, or remove all grants for a user.
+   *
+   * @tags grants
+   * @name GrantsMultiDestroy
+   * @request DELETE:/api/v1/grants/multi/
+   * @secure
+   * @response `200` `Grant`
+   * @response `403` `void` Forbidden: see response for further details.
+   */
+  grantsMultiDestroy = (params: RequestParams = {}) =>
+    this.request<Grant, void>({
+      path: `/api/v1/grants/multi/`,
+      method: 'DELETE',
+      secure: true,
+      format: 'json',
       ...params
     })
   /**
@@ -1078,6 +1216,26 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       method: 'DELETE',
       query: query,
       secure: true,
+      ...params
+    })
+  /**
+   * @description Probe a region and service using a pattern matching string that can be used in pull actions.  This allows the pattern match to be checked for correctness and preview what will match during creation of the string.
+   *
+   * @tags integrations
+   * @name IntegrationsAwsScanCreate
+   * @summary Evaluate a potential pull pattern and understand what it will match.
+   * @request POST:/api/v1/integrations/aws/{id}/scan/
+   * @secure
+   * @response `200` `DiscoveryResult`
+   */
+  integrationsAwsScanCreate = (id: string, data: AwsIntegrationScan, params: RequestParams = {}) =>
+    this.request<DiscoveryResult, any>({
+      path: `/api/v1/integrations/aws/${id}/scan/`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
       ...params
     })
   /**

@@ -163,6 +163,25 @@ export interface AwsIntegrationCreate {
   aws_role_name: string
 }
 
+export interface AwsIntegrationScan {
+  /** The AWS region to use.  This region must be enabled in the integration. */
+  region: AwsRegionEnum
+
+  /** The AWS service to use.  This service must be enabled in the integration. */
+  service: AwsServiceEnum
+
+  /**
+   * Defines a pattern matching string that contains either mustache or regular expression syntax (with named capture groups) that locate the environment, project, and parameter name of the content you are looking for.
+   *
+   * If you are using mustache pattern matching, use:
+   *   - ``{{ environment }}`` to identify the environment name
+   *   - ``{{ parameter }}`` to identify the parameter name
+   *   - ``{{ project }}`` to identify the project name
+   * If you are using a regular expression, use Python syntax with named capture groups that locate the `environment`, `project`, and `parameter`.
+   */
+  resource: string
+}
+
 /**
 * Pull actions can be configured to get configuration and secrets from
 integrations on demand.
@@ -207,26 +226,27 @@ export interface AwsPull {
   /**
    * The pull mode used.
    *
-   * A pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names.
+   * A pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names, or with a Python regular expression that uses named capture groups that define the same three concepts.
    * A mapped pull uses a specific resource and JMESpath expression to deliver a value to a specific project, parameter, and environment.  This leverages external value linkages made in the value editor, and there is one mapped pull per integration provided by the system so that you can trigger external value pull synchronizations.
    */
   mode: ModeEnum
 
-  /** The AWS region this pull uses.  This region must be enabled in the integration. */
+  /** The AWS region to use.  This region must be enabled in the integration. */
   region: AwsRegionEnum
 
-  /** The AWS service this pull uses.  This service must be enabled in the integration. */
+  /** The AWS service to use.  This service must be enabled in the integration. */
   service: AwsServiceEnum
 
   /**
-   * Defines a path through the integration to the location where values will be pulled.
+   * Defines a pattern matching string that contains either mustache or regular expression syntax (with named capture groups) that locate the environment, project, and parameter name of the content you are looking for.
    *
-   * The following mustache-style substitutions must be used in the resource locator string:
+   * If you are using mustache pattern matching, use:
    *   - ``{{ environment }}`` to identify the environment name
    *   - ``{{ parameter }}`` to identify the parameter name
    *   - ``{{ project }}`` to identify the project name
+   * If you are using a regular expression, use Python syntax with named capture groups that locate the `environment`, `project`, and `parameter`.
    */
-  resource: string | null
+  resource: string
 }
 
 export interface AwsPullSyncActionRequest {
@@ -746,6 +766,19 @@ export interface BackupTemplate {
   description: string | null
 }
 
+export interface DiscoveredContent {
+  venue_id: string
+  venue_name: string
+  environment_name: string
+  project_name: string
+  parameter_name: string
+}
+
+export interface DiscoveryResult {
+  matched: Record<string, DiscoveredContent>
+  skipped: Record<string, string>
+}
+
 export interface Environment {
   /** @format uri */
   url: string
@@ -770,6 +803,12 @@ export interface Environment {
 
   /** This is the opposite of `parent`, see that field for more details. */
   children: string[]
+
+  /** Indicates if access control is being enforced through grants. */
+  access_controlled?: boolean
+
+  /** Your role in the environment, if the environment is access-controlled. */
+  role: RoleEnum | null
 
   /** @format date-time */
   created_at: string
@@ -902,7 +941,7 @@ export interface GitHubPull {
   /**
    * The pull mode used.
    *
-   * A pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names.
+   * A pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names, or with a Python regular expression that uses named capture groups that define the same three concepts.
    * A mapped pull uses a specific resource and JMESpath expression to deliver a value to a specific project, parameter, and environment.  This leverages external value linkages made in the value editor, and there is one mapped pull per integration provided by the system so that you can trigger external value pull synchronizations.
    */
   mode: ModeEnum
@@ -1032,6 +1071,38 @@ export interface GitHubPullTaskStep {
 
   /** Details on the error that occurred during processing. */
   error_detail?: string | null
+
+  /** @format date-time */
+  created_at: string
+
+  /** @format date-time */
+  modified_at: string
+}
+
+export interface Grant {
+  /** @format uri */
+  url: string
+
+  /**
+   * A unique identifier for the grant.
+   * @format uuid
+   */
+  id: string
+
+  /**
+   * The URI of a principal for the grant; this must describe a user.
+   * @format uri
+   */
+  principal: string
+
+  /**
+   * The URI of a scope for the grant; this must describe a project or environment.
+   * @format uri
+   */
+  scope: string
+
+  /** The role that the principal has in the given scope. */
+  role: RoleEnum
 
   /** @format date-time */
   created_at: string
@@ -1269,6 +1340,7 @@ export enum ObjectTypeEnum {
   AwsIntegration = 'AwsIntegration',
   Environment = 'Environment',
   GitHubIntegration = 'GitHubIntegration',
+  Grant = 'Grant',
   Invitation = 'Invitation',
   Membership = 'Membership',
   Organization = 'Organization',
@@ -1306,8 +1378,12 @@ export interface Organization {
   /** Indicates if this Organization is the one currently targeted by the Bearer token used by the client to authorize. */
   current: boolean
 
+  /** Your role in the organization. */
+  role: RoleEnum
+
   /** @format date-time */
   subscription_expires_at: string | null
+  subscription_features: string[]
   subscription_id: string | null
   subscription_plan_id: string | null
   subscription_plan_name: string | null
@@ -1556,6 +1632,24 @@ export interface PaginatedGitHubPullTaskStepList {
    */
   previous?: string | null
   results?: GitHubPullTaskStep[]
+}
+
+export interface PaginatedGrantList {
+  /** @example 123 */
+  count?: number
+
+  /**
+   * @format uri
+   * @example http://api.example.org/accounts/?page=4
+   */
+  next?: string | null
+
+  /**
+   * @format uri
+   * @example http://api.example.org/accounts/?page=2
+   */
+  previous?: string | null
+  results?: Grant[]
 }
 
 export interface PaginatedIntegrationNodeList {
@@ -2276,26 +2370,27 @@ export interface PatchedAwsPull {
   /**
    * The pull mode used.
    *
-   * A pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names.
+   * A pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names, or with a Python regular expression that uses named capture groups that define the same three concepts.
    * A mapped pull uses a specific resource and JMESpath expression to deliver a value to a specific project, parameter, and environment.  This leverages external value linkages made in the value editor, and there is one mapped pull per integration provided by the system so that you can trigger external value pull synchronizations.
    */
   mode?: ModeEnum
 
-  /** The AWS region this pull uses.  This region must be enabled in the integration. */
+  /** The AWS region to use.  This region must be enabled in the integration. */
   region?: AwsRegionEnum
 
-  /** The AWS service this pull uses.  This service must be enabled in the integration. */
+  /** The AWS service to use.  This service must be enabled in the integration. */
   service?: AwsServiceEnum
 
   /**
-   * Defines a path through the integration to the location where values will be pulled.
+   * Defines a pattern matching string that contains either mustache or regular expression syntax (with named capture groups) that locate the environment, project, and parameter name of the content you are looking for.
    *
-   * The following mustache-style substitutions must be used in the resource locator string:
+   * If you are using mustache pattern matching, use:
    *   - ``{{ environment }}`` to identify the environment name
    *   - ``{{ parameter }}`` to identify the parameter name
    *   - ``{{ project }}`` to identify the project name
+   * If you are using a regular expression, use Python syntax with named capture groups that locate the `environment`, `project`, and `parameter`.
    */
-  resource?: string | null
+  resource?: string
 }
 
 /**
@@ -2372,6 +2467,12 @@ export interface PatchedEnvironment {
   /** This is the opposite of `parent`, see that field for more details. */
   children?: string[]
 
+  /** Indicates if access control is being enforced through grants. */
+  access_controlled?: boolean
+
+  /** Your role in the environment, if the environment is access-controlled. */
+  role?: RoleEnum | null
+
   /** @format date-time */
   created_at?: string
 
@@ -2423,10 +2524,42 @@ export interface PatchedGitHubPull {
   /**
    * The pull mode used.
    *
-   * A pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names.
+   * A pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names, or with a Python regular expression that uses named capture groups that define the same three concepts.
    * A mapped pull uses a specific resource and JMESpath expression to deliver a value to a specific project, parameter, and environment.  This leverages external value linkages made in the value editor, and there is one mapped pull per integration provided by the system so that you can trigger external value pull synchronizations.
    */
   mode?: ModeEnum
+}
+
+export interface PatchedGrant {
+  /** @format uri */
+  url?: string
+
+  /**
+   * A unique identifier for the grant.
+   * @format uuid
+   */
+  id?: string
+
+  /**
+   * The URI of a principal for the grant; this must describe a user.
+   * @format uri
+   */
+  principal?: string
+
+  /**
+   * The URI of a scope for the grant; this must describe a project or environment.
+   * @format uri
+   */
+  scope?: string
+
+  /** The role that the principal has in the given scope. */
+  role?: RoleEnum
+
+  /** @format date-time */
+  created_at?: string
+
+  /** @format date-time */
+  modified_at?: string
 }
 
 export interface PatchedInvitation {
@@ -2521,8 +2654,12 @@ export interface PatchedOrganization {
   /** Indicates if this Organization is the one currently targeted by the Bearer token used by the client to authorize. */
   current?: boolean
 
+  /** Your role in the organization. */
+  role?: RoleEnum
+
   /** @format date-time */
   subscription_expires_at?: string | null
+  subscription_features?: string[]
   subscription_id?: string | null
   subscription_plan_id?: string | null
   subscription_plan_name?: string | null
@@ -2739,6 +2876,12 @@ export interface PatchedProject {
    * @format uri
    */
   depends_on?: string | null
+
+  /** Indicates if access control is being enforced through grants. */
+  access_controlled?: boolean
+
+  /** Your role in the project, if the project is access-controlled. */
+  role?: RoleEnum | null
   pushes?: AwsPush[]
 
   /** @format date-time */
@@ -2951,6 +3094,12 @@ export interface Project {
    * @format uri
    */
   depends_on?: string | null
+
+  /** Indicates if access control is being enforced through grants. */
+  access_controlled?: boolean
+
+  /** Your role in the project, if the project is access-controlled. */
+  role: RoleEnum | null
   pushes: AwsPush[]
 
   /** @format date-time */
@@ -3723,6 +3872,32 @@ export interface EnvironmentsTagsListParams {
 
   /** @format uuid */
   environmentPk: string
+}
+
+export interface GrantsListParams {
+  /** Which field to use when ordering the results. */
+  ordering?: string
+
+  /** A page number within the paginated result set. */
+  page?: number
+
+  /** Number of results to return per page. */
+  page_size?: number
+
+  /**
+   * Filter by principal (User).
+   * @format uri
+   */
+  principal?: string
+
+  /** Filter by role. */
+  role?: 'ADMIN' | 'CONTRIB' | 'OWNER' | 'VIEWER'
+
+  /**
+   * Filter by grant scope (Environment, Project).
+   * @format uri
+   */
+  scope?: string
 }
 
 export interface ImportCreateParams {

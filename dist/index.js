@@ -329,6 +329,131 @@ class Api extends http_client_1.HttpClient {
             ...params
         });
         /**
+         * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+         *
+         * @tags grants
+         * @name GrantsList
+         * @request GET:/api/v1/grants/
+         * @secure
+         * @response `200` `PaginatedGrantList`
+         * @response `403` `void` Forbidden: see response for further details.
+         */
+        this.grantsList = (query, params = {}) => this.request({
+            path: `/api/v1/grants/`,
+            method: 'GET',
+            query: query,
+            secure: true,
+            format: 'json',
+            ...params
+        });
+        /**
+         * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+         *
+         * @tags grants
+         * @name GrantsCreate
+         * @request POST:/api/v1/grants/
+         * @secure
+         * @response `201` `Grant`
+         * @response `403` `void` Forbidden: see response for further details.
+         */
+        this.grantsCreate = (data, params = {}) => this.request({
+            path: `/api/v1/grants/`,
+            method: 'POST',
+            body: data,
+            secure: true,
+            type: http_client_1.ContentType.Json,
+            format: 'json',
+            ...params
+        });
+        /**
+         * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+         *
+         * @tags grants
+         * @name GrantsRetrieve
+         * @request GET:/api/v1/grants/{id}/
+         * @secure
+         * @response `200` `Grant`
+         * @response `403` `void` Forbidden: see response for further details.
+         */
+        this.grantsRetrieve = (id, params = {}) => this.request({
+            path: `/api/v1/grants/${id}/`,
+            method: 'GET',
+            secure: true,
+            format: 'json',
+            ...params
+        });
+        /**
+         * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+         *
+         * @tags grants
+         * @name GrantsUpdate
+         * @request PUT:/api/v1/grants/{id}/
+         * @secure
+         * @response `200` `Grant`
+         * @response `403` `void` Forbidden: see response for further details.
+         */
+        this.grantsUpdate = (id, data, params = {}) => this.request({
+            path: `/api/v1/grants/${id}/`,
+            method: 'PUT',
+            body: data,
+            secure: true,
+            type: http_client_1.ContentType.Json,
+            format: 'json',
+            ...params
+        });
+        /**
+         * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+         *
+         * @tags grants
+         * @name GrantsPartialUpdate
+         * @request PATCH:/api/v1/grants/{id}/
+         * @secure
+         * @response `200` `Grant`
+         * @response `403` `void` Forbidden: see response for further details.
+         */
+        this.grantsPartialUpdate = (id, data, params = {}) => this.request({
+            path: `/api/v1/grants/${id}/`,
+            method: 'PATCH',
+            body: data,
+            secure: true,
+            type: http_client_1.ContentType.Json,
+            format: 'json',
+            ...params
+        });
+        /**
+         * @description Grants allow you to enable access control on Environments and Projects. Grants are part of the role-based access control feature set, so if your subscription does not have support for it, these paths will return a 403 Forbidden error.
+         *
+         * @tags grants
+         * @name GrantsDestroy
+         * @request DELETE:/api/v1/grants/{id}/
+         * @secure
+         * @response `204` `void` Deleted.
+         * @response `403` `void` Forbidden: see response for further details.
+         */
+        this.grantsDestroy = (id, params = {}) => this.request({
+            path: `/api/v1/grants/${id}/`,
+            method: 'DELETE',
+            secure: true,
+            ...params
+        });
+        /**
+         * @description Removes grants matching the query parameters atomically. Use this technique to disable access control on a scope, or remove all grants for a user.
+         *
+         * @tags grants
+         * @name GrantsMultiDestroy
+         * @request DELETE:/api/v1/grants/multi/
+         * @secure
+         * @response `200` `Grant`
+         * @response `403` `void` Forbidden: see response for further details.
+         */
+        this.grantsMultiDestroy = (params = {}) => this.request({
+            path: `/api/v1/grants/multi/`,
+            method: 'DELETE',
+            secure: true,
+            format: 'json',
+            ...params
+        });
+        /**
          * @description Import parameters from the provided data.
          *
          * @tags import
@@ -823,6 +948,25 @@ class Api extends http_client_1.HttpClient {
             method: 'DELETE',
             query: query,
             secure: true,
+            ...params
+        });
+        /**
+         * @description Probe a region and service using a pattern matching string that can be used in pull actions.  This allows the pattern match to be checked for correctness and preview what will match during creation of the string.
+         *
+         * @tags integrations
+         * @name IntegrationsAwsScanCreate
+         * @summary Evaluate a potential pull pattern and understand what it will match.
+         * @request POST:/api/v1/integrations/aws/{id}/scan/
+         * @secure
+         * @response `200` `DiscoveryResult`
+         */
+        this.integrationsAwsScanCreate = (id, data, params = {}) => this.request({
+            path: `/api/v1/integrations/aws/${id}/scan/`,
+            method: 'POST',
+            body: data,
+            secure: true,
+            type: http_client_1.ContentType.Json,
+            format: 'json',
             ...params
         });
         /**
@@ -2665,7 +2809,11 @@ exports.HttpClient = HttpClient;
 //
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];

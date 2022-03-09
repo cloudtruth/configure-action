@@ -1199,6 +1199,383 @@
                 }
             }
         },
+        "/api/v1/grants/": {
+            "get": {
+                "operationId": "grants_list",
+                "description": "Grants allow you to enable access control on Environments and Projects.\n\nGrants are part of the role-based access control feature set, so\nif your subscription does not have support for it, these paths\nwill return a 403 Forbidden error.",
+                "parameters": [
+                    {
+                        "name": "ordering",
+                        "required": false,
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "principal",
+                        "schema": {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "description": "Filter by principal (User)."
+                    },
+                    {
+                        "in": "query",
+                        "name": "role",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "ADMIN",
+                                "CONTRIB",
+                                "OWNER",
+                                "VIEWER"
+                            ]
+                        },
+                        "description": "Filter by role."
+                    },
+                    {
+                        "in": "query",
+                        "name": "scope",
+                        "schema": {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "description": "Filter by grant scope (Environment, Project)."
+                    }
+                ],
+                "tags": [
+                    "grants"
+                ],
+                "security": [
+                    {
+                        "JWTAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PaginatedGrantList"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "description": "Forbidden: see response for further details."
+                    }
+                }
+            },
+            "post": {
+                "operationId": "grants_create",
+                "description": "Grants allow you to enable access control on Environments and Projects.\n\nGrants are part of the role-based access control feature set, so\nif your subscription does not have support for it, these paths\nwill return a 403 Forbidden error.",
+                "tags": [
+                    "grants"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Grant"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Grant"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Grant"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "JWTAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Grant"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "description": "Forbidden: see response for further details."
+                    }
+                }
+            }
+        },
+        "/api/v1/grants/{id}/": {
+            "get": {
+                "operationId": "grants_retrieve",
+                "description": "Grants allow you to enable access control on Environments and Projects.\n\nGrants are part of the role-based access control feature set, so\nif your subscription does not have support for it, these paths\nwill return a 403 Forbidden error.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "A unique identifier for the grant."
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "grants"
+                ],
+                "security": [
+                    {
+                        "JWTAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Grant"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "description": "Forbidden: see response for further details."
+                    }
+                }
+            },
+            "put": {
+                "operationId": "grants_update",
+                "description": "Grants allow you to enable access control on Environments and Projects.\n\nGrants are part of the role-based access control feature set, so\nif your subscription does not have support for it, these paths\nwill return a 403 Forbidden error.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "A unique identifier for the grant."
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "grants"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Grant"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Grant"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Grant"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "JWTAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Grant"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "description": "Forbidden: see response for further details."
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "grants_partial_update",
+                "description": "Grants allow you to enable access control on Environments and Projects.\n\nGrants are part of the role-based access control feature set, so\nif your subscription does not have support for it, these paths\nwill return a 403 Forbidden error.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "A unique identifier for the grant."
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "grants"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedGrant"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedGrant"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedGrant"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWTAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Grant"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "description": "Forbidden: see response for further details."
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "grants_destroy",
+                "description": "Grants allow you to enable access control on Environments and Projects.\n\nGrants are part of the role-based access control feature set, so\nif your subscription does not have support for it, these paths\nwill return a 403 Forbidden error.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "description": "A unique identifier for the grant."
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "grants"
+                ],
+                "security": [
+                    {
+                        "JWTAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Deleted."
+                    },
+                    "403": {
+                        "description": "Forbidden: see response for further details."
+                    }
+                }
+            }
+        },
+        "/api/v1/grants/multi/": {
+            "delete": {
+                "operationId": "grants_multi_destroy",
+                "description": "Removes grants matching the query parameters atomically.\n\nUse this technique to disable access control on a scope,\nor remove all grants for a user.",
+                "tags": [
+                    "grants"
+                ],
+                "security": [
+                    {
+                        "JWTAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Grant"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "description": "Forbidden: see response for further details."
+                    }
+                }
+            }
+        },
         "/api/v1/import/": {
             "post": {
                 "operationId": "import_create",
@@ -3260,6 +3637,67 @@
                     },
                     "409": {
                         "description": "The integration is used by one (or more) Value(s) and cannot be removed."
+                    }
+                }
+            }
+        },
+        "/api/v1/integrations/aws/{id}/scan/": {
+            "post": {
+                "operationId": "integrations_aws_scan_create",
+                "description": "Probe a region and service using a pattern matching string that can be used in pull actions.  This allows the pattern match to be checked for correctness and preview what will match during creation of the string.",
+                "summary": "Evaluate a potential pull pattern and understand what it will match.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "integrations"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AwsIntegrationScan"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AwsIntegrationScan"
+                            }
+                        },
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AwsIntegrationScan"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "security": [
+                    {
+                        "JWTAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DiscoveryResult"
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -10081,6 +10519,37 @@
                     "aws_role_name"
                 ]
             },
+            "AwsIntegrationScan": {
+                "type": "object",
+                "properties": {
+                    "region": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/AwsRegionEnum"
+                            }
+                        ],
+                        "description": "The AWS region to use.  This region must be enabled in the integration."
+                    },
+                    "service": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/AwsServiceEnum"
+                            }
+                        ],
+                        "description": "The AWS service to use.  This service must be enabled in the integration."
+                    },
+                    "resource": {
+                        "type": "string",
+                        "description": "Defines a pattern matching string that contains either mustache or regular expression syntax (with named capture groups) that locate the environment, project, and parameter name of the content you are looking for.\n\nIf you are using mustache pattern matching, use:\n\n  - ``{{ environment }}`` to identify the environment name\n  - ``{{ parameter }}`` to identify the parameter name\n  - ``{{ project }}`` to identify the project name\n\nIf you are using a regular expression, use Python syntax with named capture groups that locate the `environment`, `project`, and `parameter`.",
+                        "maxLength": 1024
+                    }
+                },
+                "required": [
+                    "region",
+                    "resource",
+                    "service"
+                ]
+            },
             "AwsPull": {
                 "type": "object",
                 "description": "Pull actions can be configured to get configuration and secrets from\nintegrations on demand.",
@@ -10152,7 +10621,7 @@
                             }
                         ],
                         "readOnly": true,
-                        "description": "The pull mode used.\n\nA pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names.\n\nA mapped pull uses a specific resource and JMESpath expression to deliver a value to a specific project, parameter, and environment.  This leverages external value linkages made in the value editor, and there is one mapped pull per integration provided by the system so that you can trigger external value pull synchronizations."
+                        "description": "The pull mode used.\n\nA pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names, or with a Python regular expression that uses named capture groups that define the same three concepts.\n\nA mapped pull uses a specific resource and JMESpath expression to deliver a value to a specific project, parameter, and environment.  This leverages external value linkages made in the value editor, and there is one mapped pull per integration provided by the system so that you can trigger external value pull synchronizations."
                     },
                     "region": {
                         "allOf": [
@@ -10160,7 +10629,7 @@
                                 "$ref": "#/components/schemas/AwsRegionEnum"
                             }
                         ],
-                        "description": "The AWS region this pull uses.  This region must be enabled in the integration."
+                        "description": "The AWS region to use.  This region must be enabled in the integration."
                     },
                     "service": {
                         "allOf": [
@@ -10168,12 +10637,11 @@
                                 "$ref": "#/components/schemas/AwsServiceEnum"
                             }
                         ],
-                        "description": "The AWS service this pull uses.  This service must be enabled in the integration."
+                        "description": "The AWS service to use.  This service must be enabled in the integration."
                     },
                     "resource": {
                         "type": "string",
-                        "nullable": true,
-                        "description": "Defines a path through the integration to the location where values will be pulled.\n\nThe following mustache-style substitutions must be used in the resource locator string:\n\n  - ``{{ environment }}`` to identify the environment name\n  - ``{{ parameter }}`` to identify the parameter name\n  - ``{{ project }}`` to identify the project name",
+                        "description": "Defines a pattern matching string that contains either mustache or regular expression syntax (with named capture groups) that locate the environment, project, and parameter name of the content you are looking for.\n\nIf you are using mustache pattern matching, use:\n\n  - ``{{ environment }}`` to identify the environment name\n  - ``{{ parameter }}`` to identify the parameter name\n  - ``{{ project }}`` to identify the project name\n\nIf you are using a regular expression, use Python syntax with named capture groups that locate the `environment`, `project`, and `parameter`.",
                         "maxLength": 1024
                     }
                 },
@@ -11097,6 +11565,54 @@
                     "text"
                 ]
             },
+            "DiscoveredContent": {
+                "type": "object",
+                "properties": {
+                    "venue_id": {
+                        "type": "string"
+                    },
+                    "venue_name": {
+                        "type": "string"
+                    },
+                    "environment_name": {
+                        "type": "string"
+                    },
+                    "project_name": {
+                        "type": "string"
+                    },
+                    "parameter_name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "environment_name",
+                    "parameter_name",
+                    "project_name",
+                    "venue_id",
+                    "venue_name"
+                ]
+            },
+            "DiscoveryResult": {
+                "type": "object",
+                "properties": {
+                    "matched": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/DiscoveredContent"
+                        }
+                    },
+                    "skipped": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "matched",
+                    "skipped"
+                ]
+            },
             "Environment": {
                 "type": "object",
                 "properties": {
@@ -11135,6 +11651,20 @@
                         "readOnly": true,
                         "description": "This is the opposite of `parent`, see that field for more details."
                     },
+                    "access_controlled": {
+                        "type": "boolean",
+                        "description": "Indicates if access control is being enforced through grants."
+                    },
+                    "role": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RoleEnum"
+                            }
+                        ],
+                        "nullable": true,
+                        "readOnly": true,
+                        "description": "Your role in the environment, if the environment is access-controlled."
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
@@ -11152,6 +11682,7 @@
                     "id",
                     "modified_at",
                     "name",
+                    "role",
                     "url"
                 ]
             },
@@ -11372,7 +11903,7 @@
                             }
                         ],
                         "readOnly": true,
-                        "description": "The pull mode used.\n\nA pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names.\n\nA mapped pull uses a specific resource and JMESpath expression to deliver a value to a specific project, parameter, and environment.  This leverages external value linkages made in the value editor, and there is one mapped pull per integration provided by the system so that you can trigger external value pull synchronizations."
+                        "description": "The pull mode used.\n\nA pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names, or with a Python regular expression that uses named capture groups that define the same three concepts.\n\nA mapped pull uses a specific resource and JMESpath expression to deliver a value to a specific project, parameter, and environment.  This leverages external value linkages made in the value editor, and there is one mapped pull per integration provided by the system so that you can trigger external value pull synchronizations."
                     }
                 },
                 "required": [
@@ -11591,6 +12122,59 @@
                     "parameter",
                     "project",
                     "success",
+                    "url"
+                ]
+            },
+            "Grant": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "readOnly": true
+                    },
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true,
+                        "description": "A unique identifier for the grant."
+                    },
+                    "principal": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "The URI of a principal for the grant; this must describe a user."
+                    },
+                    "scope": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "The URI of a scope for the grant; this must describe a project or environment."
+                    },
+                    "role": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RoleEnum"
+                            }
+                        ],
+                        "description": "The role that the principal has in the given scope."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "modified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "created_at",
+                    "id",
+                    "modified_at",
+                    "principal",
+                    "role",
+                    "scope",
                     "url"
                 ]
             },
@@ -12004,6 +12588,7 @@
                     "AwsIntegration",
                     "Environment",
                     "GitHubIntegration",
+                    "Grant",
                     "Invitation",
                     "Membership",
                     "Organization",
@@ -12054,10 +12639,26 @@
                         "readOnly": true,
                         "description": "Indicates if this Organization is the one currently targeted by the Bearer token used by the client to authorize."
                     },
+                    "role": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RoleEnum"
+                            }
+                        ],
+                        "readOnly": true,
+                        "description": "Your role in the organization."
+                    },
                     "subscription_expires_at": {
                         "type": "string",
                         "format": "date-time",
                         "nullable": true,
+                        "readOnly": true
+                    },
+                    "subscription_features": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
                         "readOnly": true
                     },
                     "subscription_id": {
@@ -12092,7 +12693,9 @@
                     "id",
                     "modified_at",
                     "name",
+                    "role",
                     "subscription_expires_at",
+                    "subscription_features",
                     "subscription_id",
                     "subscription_plan_id",
                     "subscription_plan_name",
@@ -12459,6 +13062,33 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/GitHubPullTaskStep"
+                        }
+                    }
+                }
+            },
+            "PaginatedGrantList": {
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "next": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?page=4"
+                    },
+                    "previous": {
+                        "type": "string",
+                        "nullable": true,
+                        "format": "uri",
+                        "example": "http://api.example.org/accounts/?page=2"
+                    },
+                    "results": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Grant"
                         }
                     }
                 }
@@ -13603,7 +14233,7 @@
                             }
                         ],
                         "readOnly": true,
-                        "description": "The pull mode used.\n\nA pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names.\n\nA mapped pull uses a specific resource and JMESpath expression to deliver a value to a specific project, parameter, and environment.  This leverages external value linkages made in the value editor, and there is one mapped pull per integration provided by the system so that you can trigger external value pull synchronizations."
+                        "description": "The pull mode used.\n\nA pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names, or with a Python regular expression that uses named capture groups that define the same three concepts.\n\nA mapped pull uses a specific resource and JMESpath expression to deliver a value to a specific project, parameter, and environment.  This leverages external value linkages made in the value editor, and there is one mapped pull per integration provided by the system so that you can trigger external value pull synchronizations."
                     },
                     "region": {
                         "allOf": [
@@ -13611,7 +14241,7 @@
                                 "$ref": "#/components/schemas/AwsRegionEnum"
                             }
                         ],
-                        "description": "The AWS region this pull uses.  This region must be enabled in the integration."
+                        "description": "The AWS region to use.  This region must be enabled in the integration."
                     },
                     "service": {
                         "allOf": [
@@ -13619,12 +14249,11 @@
                                 "$ref": "#/components/schemas/AwsServiceEnum"
                             }
                         ],
-                        "description": "The AWS service this pull uses.  This service must be enabled in the integration."
+                        "description": "The AWS service to use.  This service must be enabled in the integration."
                     },
                     "resource": {
                         "type": "string",
-                        "nullable": true,
-                        "description": "Defines a path through the integration to the location where values will be pulled.\n\nThe following mustache-style substitutions must be used in the resource locator string:\n\n  - ``{{ environment }}`` to identify the environment name\n  - ``{{ parameter }}`` to identify the parameter name\n  - ``{{ project }}`` to identify the project name",
+                        "description": "Defines a pattern matching string that contains either mustache or regular expression syntax (with named capture groups) that locate the environment, project, and parameter name of the content you are looking for.\n\nIf you are using mustache pattern matching, use:\n\n  - ``{{ environment }}`` to identify the environment name\n  - ``{{ parameter }}`` to identify the parameter name\n  - ``{{ project }}`` to identify the project name\n\nIf you are using a regular expression, use Python syntax with named capture groups that locate the `environment`, `project`, and `parameter`.",
                         "maxLength": 1024
                     }
                 }
@@ -13728,6 +14357,20 @@
                         "readOnly": true,
                         "description": "This is the opposite of `parent`, see that field for more details."
                     },
+                    "access_controlled": {
+                        "type": "boolean",
+                        "description": "Indicates if access control is being enforced through grants."
+                    },
+                    "role": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RoleEnum"
+                            }
+                        ],
+                        "nullable": true,
+                        "readOnly": true,
+                        "description": "Your role in the environment, if the environment is access-controlled."
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
@@ -13811,7 +14454,51 @@
                             }
                         ],
                         "readOnly": true,
-                        "description": "The pull mode used.\n\nA pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names.\n\nA mapped pull uses a specific resource and JMESpath expression to deliver a value to a specific project, parameter, and environment.  This leverages external value linkages made in the value editor, and there is one mapped pull per integration provided by the system so that you can trigger external value pull synchronizations."
+                        "description": "The pull mode used.\n\nA pattern pull uses a pattern-matching resource string with mustache-style markers to identify the project, parameter, and environment names, or with a Python regular expression that uses named capture groups that define the same three concepts.\n\nA mapped pull uses a specific resource and JMESpath expression to deliver a value to a specific project, parameter, and environment.  This leverages external value linkages made in the value editor, and there is one mapped pull per integration provided by the system so that you can trigger external value pull synchronizations."
+                    }
+                }
+            },
+            "PatchedGrant": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "readOnly": true
+                    },
+                    "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "readOnly": true,
+                        "description": "A unique identifier for the grant."
+                    },
+                    "principal": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "The URI of a principal for the grant; this must describe a user."
+                    },
+                    "scope": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "The URI of a scope for the grant; this must describe a project or environment."
+                    },
+                    "role": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RoleEnum"
+                            }
+                        ],
+                        "description": "The role that the principal has in the given scope."
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "modified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
                     }
                 }
             },
@@ -13946,10 +14633,26 @@
                         "readOnly": true,
                         "description": "Indicates if this Organization is the one currently targeted by the Bearer token used by the client to authorize."
                     },
+                    "role": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RoleEnum"
+                            }
+                        ],
+                        "readOnly": true,
+                        "description": "Your role in the organization."
+                    },
                     "subscription_expires_at": {
                         "type": "string",
                         "format": "date-time",
                         "nullable": true,
+                        "readOnly": true
+                    },
+                    "subscription_features": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
                         "readOnly": true
                     },
                     "subscription_id": {
@@ -14249,6 +14952,20 @@
                         "format": "uri",
                         "nullable": true,
                         "description": "Project dependencies allow projects to be used for shared configuration, for example a database used by many applications needs to advertise its port number.\n\nProjects can depend on another project which will add the parameters from the parent project into the current project.  All of the parameter names between the two projects must be unique.  When retrieving values or rendering templates, all of the parameters from the parent project will also be available in the current project."
+                    },
+                    "access_controlled": {
+                        "type": "boolean",
+                        "description": "Indicates if access control is being enforced through grants."
+                    },
+                    "role": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RoleEnum"
+                            }
+                        ],
+                        "nullable": true,
+                        "readOnly": true,
+                        "description": "Your role in the project, if the project is access-controlled."
                     },
                     "pushes": {
                         "type": "array",
@@ -14586,6 +15303,20 @@
                         "nullable": true,
                         "description": "Project dependencies allow projects to be used for shared configuration, for example a database used by many applications needs to advertise its port number.\n\nProjects can depend on another project which will add the parameters from the parent project into the current project.  All of the parameter names between the two projects must be unique.  When retrieving values or rendering templates, all of the parameters from the parent project will also be available in the current project."
                     },
+                    "access_controlled": {
+                        "type": "boolean",
+                        "description": "Indicates if access control is being enforced through grants."
+                    },
+                    "role": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RoleEnum"
+                            }
+                        ],
+                        "nullable": true,
+                        "readOnly": true,
+                        "description": "Your role in the project, if the project is access-controlled."
+                    },
                     "pushes": {
                         "type": "array",
                         "items": {
@@ -14611,6 +15342,7 @@
                     "modified_at",
                     "name",
                     "pushes",
+                    "role",
                     "url"
                 ]
             },
