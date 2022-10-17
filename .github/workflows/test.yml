@@ -25,7 +25,7 @@ jobs:
         id: check-secrets
         run: |
           if [ ! -z "${{ secrets.CLOUDTRUTH_API_KEY }}" ]; then
-            echo "::set-output name=ok::true"
+            echo "ok=true" >>$GITHUB_OUTPUT
           fi
 
   codeql:
@@ -40,18 +40,18 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
+        uses: github/codeql-action/init@v2
         with:
           languages: 'javascript'
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v1
+        uses: github/codeql-action/autobuild@v2
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
+        uses: github/codeql-action/analyze@v2
 
   build:
     needs:
@@ -68,9 +68,9 @@ jobs:
           - ubuntu-latest
           - windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - run: |
@@ -84,7 +84,7 @@ jobs:
           git diff --exit-code
       - name: Upload coverage to Codecov
         if: ${{ contains(matrix.os, 'ubuntu') && needs.secrets-gate.outputs.ok == 'true' }}
-        uses: codecov/codecov-action@v1 
+        uses: codecov/codecov-action@v3 
         with:
           token: "${{ secrets.CODECOV_TOKEN }}"
 
@@ -109,7 +109,7 @@ jobs:
           - macos-latest
           - ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: save initial state and set expectations
         run: |
           printenv | grep -v 'GITHUB_' > env_expected_unsorted
@@ -140,7 +140,7 @@ jobs:
     if: ${{ needs.secrets-gate.outputs.ok == 'true' }}
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: save initial state and set expectations
         shell: pwsh
         run: |
