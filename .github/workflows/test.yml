@@ -64,6 +64,9 @@ jobs:
         node-version:
           # github action execution environments can use node16
           - 16.x
+          - 20.x
+          - 22.x
+          - 24.x
         os:
           - macos-latest
           - ubuntu-latest
@@ -80,7 +83,7 @@ jobs:
         run: |
           npm run all
       - name: Check for changes in dist
-        if: ${{ !contains(matrix.os, 'windows') }}
+        if: ${{ contains(matrix.os, 'ubuntu') }}
         run: |
           git diff --exit-code
       - name: Upload coverage to Codecov
