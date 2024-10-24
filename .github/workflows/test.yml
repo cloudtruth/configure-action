@@ -25,7 +25,7 @@ jobs:
         id: check-secrets
         run: |
           if [ ! -z "${{ secrets.CLOUDTRUTH_API_KEY }}" ]; then
-            echo "::set-output name=ok::true"
+            echo "ok=true" >>$GITHUB_OUTPUT
           fi
 
   codeql:
@@ -40,18 +40,19 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
+        uses: github/codeql-action/init@v3
         with:
+          config-file: .github/codeql/codeql-config.yml
           languages: 'javascript'
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v1
+        uses: github/codeql-action/autobuild@v3
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
+        uses: github/codeql-action/analyze@v3
 
   build:
     needs:
@@ -61,16 +62,15 @@ jobs:
       fail-fast: false
       matrix:
         node-version:
-          # github action execution environments can use node16
-          - 16.x
+          - 20.x
         os:
           - macos-latest
           - ubuntu-latest
           - windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - run: |
@@ -79,12 +79,12 @@ jobs:
         run: |
           npm run all
       - name: Check for changes in dist
-        if: ${{ !contains(matrix.os, 'windows') }}
+        if: ${{ contains(matrix.os, 'ubuntu') }}
         run: |
           git diff --exit-code
       - name: Upload coverage to Codecov
         if: ${{ contains(matrix.os, 'ubuntu') && needs.secrets-gate.outputs.ok == 'true' }}
-        uses: codecov/codecov-action@v1 
+        uses: codecov/codecov-action@v3 
         with:
           token: "${{ secrets.CODECOV_TOKEN }}"
 
@@ -109,7 +109,7 @@ jobs:
           - macos-latest
           - ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: save initial state and set expectations
         run: |
           printenv | grep -v 'GITHUB_' > env_expected_unsorted
@@ -140,7 +140,7 @@ jobs:
     if: ${{ needs.secrets-gate.outputs.ok == 'true' }}
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: save initial state and set expectations
         shell: pwsh
         run: |
