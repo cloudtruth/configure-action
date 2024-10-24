@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
@@ -68,7 +68,7 @@ jobs:
           - ubuntu-latest
           - windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -109,7 +109,7 @@ jobs:
           - macos-latest
           - ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: save initial state and set expectations
         run: |
           printenv | grep -v 'GITHUB_' > env_expected_unsorted
@@ -140,7 +140,7 @@ jobs:
     if: ${{ needs.secrets-gate.outputs.ok == 'true' }}
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: save initial state and set expectations
         shell: pwsh
         run: |

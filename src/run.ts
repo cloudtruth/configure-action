@@ -16,7 +16,7 @@ import {env} from 'process'
 const USER_AGENT = `configure-action/${LIB_VERSION}`
 
 export const configurefetch = (
-  url: RequestInfo,
+  url: RequestInfo | URL,
   /* istanbul ignore next */
   {headers, ...options}: RequestInit = {}
 ) => {

@@ -4,6 +4,10 @@
 // NOTE: to record against a localhost you need to combine the root-ca crt and key into a pem
 //
 
+import {TextEncoder, TextDecoder} from 'util'
+global.TextEncoder = TextEncoder
+global.TextDecoder = TextDecoder as typeof globalThis.TextDecoder
+
 import * as core from '@actions/core'
 import * as process from 'process'
 import {api, run} from '../src/run'
