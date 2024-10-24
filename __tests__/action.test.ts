@@ -24,7 +24,6 @@ process.env.INPUT_APIKEY = process.env.CLOUDTRUTH_API_KEY
 process.env.INPUT_ENVIRONMENT = 'default'
 process.env.INPUT_PROJECT = 'cloudtruth/configure-action'
 process.env.INPUT_SERVER = 'https://localhost:8000'
-process.env.TESTING_REST_API_PAGE_SIZE = '3' // to force multiple pages to be tested
 
 async function setup() {
   // helper to seed the test environment
@@ -102,19 +101,17 @@ describe('configure-action tests', () => {
   })
 
   beforeEach(() => {
-    delete process.env.CTTEST_NOT_A_SECRET
-    delete process.env.CTTEST_TOTALLY_A_SECRET
-    delete process.env.CTTEST_HAS_NO_OVERRIDE
-    delete process.env.CTTEST_HAS_NO_VALUE
-    delete process.env['cttest.not.posix']
-
     process.env.INPUT_PROJECT = 'cloudtruth/configure-action'
     process.env.INPUT_ENVIRONMENT = 'default'
-    delete process.env.INPUT_OVERRIDE
-    delete process.env.INPUT_TAG
+    process.stdout.write = jest.fn()
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   it('configures the default environment', async () => {
+    process.env.TESTING_REST_API_PAGE_SIZE = '3' // to force multiple pages to be tested
     const spySetEnvvar = jest.spyOn(core, 'exportVariable')
     const spySetSecret = jest.spyOn(core, 'setSecret')
     await run()
@@ -124,7 +121,6 @@ describe('configure-action tests', () => {
     expect(spySetEnvvar).toHaveBeenCalledWith('CTTEST_HAS_NO_OVERRIDE', 'has_no_override_default')
     expect(spySetEnvvar).toHaveBeenCalledWith('cttest.not.posix', 'not.posix.default')
     expect(spySetEnvvar).not.toHaveBeenCalledWith('CTTEST_HAS_NO_VALUE', expect.anything())
-    delete process.env.TESTING_REST_API_PAGE_SIZE // only need it for one query
   })
 
   it('allows for ids instead of names', async () => {
@@ -202,9 +198,9 @@ describe('configure-action tests', () => {
 
   it('fails properly with an unspecified project name', async () => {
     process.env['INPUT_PROJECT'] = ''
-    const spyFailed = jest.spyOn(core, 'setFailed')
     await run()
-    expect(spyFailed).toHaveBeenCalledWith(`Input required and not supplied: project`)
+    expect(process.exitCode).toBe(core.ExitCode.Failure)
+    assertWriteCalls([`::error::Input required and not supplied: project\n`])
   })
 
   it('fails properly with an unknown environment id', async () => {
@@ -230,8 +226,16 @@ describe('configure-action tests', () => {
 
   it('fails properly with a bad token', async () => {
     process.env['INPUT_APIKEY'] = 'decafc0ffee'
-    const spyFailed = jest.spyOn(core, 'setFailed')
     await run()
-    expect(spyFailed).toHaveBeenCalledWith(`Incorrect authentication credentials.`)
+    expect(process.exitCode).toBe(core.ExitCode.Failure)
+    assertWriteCalls([`::error::Incorrect authentication credentials.\n`])
   })
+
+  function assertWriteCalls(calls: string[]): void {
+    expect(process.stdout.write).toHaveBeenCalledTimes(calls.length)
+
+    for (let i = 0; i < calls.length; i++) {
+      expect(process.stdout.write).toHaveBeenNthCalledWith(i + 1, calls[i])
+    }
+  }
 })
