@@ -3,20 +3,16 @@
 //
 
 import * as core from '@actions/core'
-import * as github from '@actions/github'
 import {Api} from './gen/Api'
 import {LIB_VERSION} from './version'
 import {validate as uuidValidate} from 'uuid'
-import {PaginatedParameterList, Project, ProjectsParametersListParams} from './gen/data-contracts'
+import {PaginatedParameterList, Project} from './gen/data-contracts'
 import {HttpResponse} from './gen/http-client'
-
-import fetch from 'isomorphic-fetch'
-import {env} from 'process'
 
 const USER_AGENT = `configure-action/${LIB_VERSION}`
 
 export const configurefetch = (
-  url: RequestInfo,
+  url: RequestInfo | URL,
   /* istanbul ignore next */
   {headers, ...options}: RequestInit = {}
 ) => {
@@ -102,9 +98,6 @@ export async function run(): Promise<void> {
     const tag = core.getInput('tag') || undefined
 
     for (let page = 1; ; ++page) {
-      core.debug(
-        `Requesting parameter values for project='${project_id}' environment='${environment}' tag='${tag}' page=${page}`
-      )
       let page_size = undefined
       if (process.env.TESTING_REST_API_PAGE_SIZE) {
         page_size = parseInt(process.env.TESTING_REST_API_PAGE_SIZE)
