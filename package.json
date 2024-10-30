@@ -41,7 +41,7 @@
     "@jest/globals": "^29.0.0",
     "@scaleleap/jest-polly": "^1.6.17",
     "@types/jest": "^29.0.0",
-    "@types/node": "^18.0.0",
+    "@types/node": "^22.8.4",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/parser": "^8.12.2",
     "@vercel/ncc": "^0.38.2",
