@@ -66,7 +66,7 @@ function inject(response: HttpResponse<PaginatedParameterList>): void {
       core.info(`Setting environment variable "${parameterName}"`)
       core.exportVariable(parameterName, effectiveValue)
     } else {
-      core.warning(`Ignoring unset value for parameter "${parameterName}" (GitHub Actions does not support unsetting).`)
+      core.info(`Ignoring unset value for parameter "${parameterName}" (GitHub Actions does not support unsetting).`)
     }
   }
 }
