@@ -1,6 +1,6 @@
 {
   "name": "configure-action",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Securely deliver CloudTruth configuration and secrets into your GitHub Actions workflows.",
   "main": "lib/main.js",
   "scripts": {

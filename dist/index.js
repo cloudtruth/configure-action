@@ -2961,7 +2961,7 @@ async function run() {
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LIB_VERSION = void 0;
-exports.LIB_VERSION = "3.0.0";
+exports.LIB_VERSION = "3.0.1";
 
 
 /***/ }),
