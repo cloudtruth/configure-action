@@ -11,15 +11,15 @@ import * as core from '@actions/core'
 import * as process from 'process'
 import {jest, expect} from '@jest/globals'
 
-import {run} from '../src/run'
+import {syncConfig} from '../src/run'
 import {unitTestApiKey, setupRequestMocks} from './mocks/requests'
 
 function resetEnvVars() {
-  delete process.env['CTTEST_NOT_A_SECRET']
-  delete process.env['CTTEST_TOTALLY_A_SECRET']
-  delete process.env['CTTEST_HAS_NO_OVERRIDE']
+  delete process.env.CTTEST_NOT_A_SECRET
+  delete process.env.CTTEST_TOTALLY_A_SECRET
+  delete process.env.CTTEST_HAS_NO_OVERRIDE
   delete process.env['cttest.not.posix']
-  delete process.env['CTTEST_HAS_NO_VALUE']
+  delete process.env.CTTEST_HAS_NO_VALUE
 }
 
 let getInputMock: jest.SpiedFunction<typeof core.getInput>
@@ -74,7 +74,7 @@ describe('configure-action tests', () => {
     const spySetEnvvar = jest.spyOn(core, 'exportVariable')
     const spySetSecret = jest.spyOn(core, 'setSecret')
     const spySetFailed = jest.spyOn(core, 'setFailed')
-    await run()
+    await syncConfig()
     expect(spySetFailed).not.toHaveBeenCalled()
     expect(spySetSecret).toHaveBeenCalledWith('totally_a_secret_default')
     expect(spySetEnvvar).toHaveBeenNthCalledWith(1, 'CTTEST_NOT_A_SECRET', 'not_a_secret_default')
@@ -102,7 +102,7 @@ describe('configure-action tests', () => {
     const spySetEnvvar = jest.spyOn(core, 'exportVariable')
     const spySetSecret = jest.spyOn(core, 'setSecret')
     const spySetFailed = jest.spyOn(core, 'setFailed')
-    await run()
+    await syncConfig()
     expect(spySetFailed).not.toHaveBeenCalled()
     expect(spySetSecret).toHaveBeenCalledWith('totally_a_secret_default')
     expect(spySetEnvvar).toHaveBeenCalledWith('CTTEST_NOT_A_SECRET', 'not_a_secret_default')
@@ -112,13 +112,13 @@ describe('configure-action tests', () => {
   })
 
   it('prevents overwriting existing environment variables', async () => {
-    process.env['CTTEST_NOT_A_SECRET'] = 'foo'
+    process.env.CTTEST_NOT_A_SECRET = 'foo'
     const spyFailed = jest.spyOn(core, 'setFailed').mockImplementation(() => {})
-    await run()
+    await syncConfig()
     expect(spyFailed).toHaveBeenCalledWith(
       'The environment variable "CTTEST_NOT_A_SECRET" already exists and cannot be overwritten.'
     )
-    delete process.env['CTTEST_NOT_A_SECRET']
+    delete process.env.CTTEST_NOT_A_SECRET
   })
 
   it('configures the override environment', async () => {
@@ -141,7 +141,7 @@ describe('configure-action tests', () => {
     const spySetEnvvar = jest.spyOn(core, 'exportVariable')
     const spySetSecret = jest.spyOn(core, 'setSecret')
     const spySetFailed = jest.spyOn(core, 'setFailed')
-    await run()
+    await syncConfig()
     expect(spySetFailed).not.toHaveBeenCalled()
     expect(spySetSecret).toHaveBeenCalledWith('totally_a_secret_override')
     expect(spySetEnvvar).toHaveBeenCalledWith('CTTEST_NOT_A_SECRET', 'not_a_secret_override')
@@ -172,7 +172,7 @@ describe('configure-action tests', () => {
     const spySetEnvvar = jest.spyOn(core, 'exportVariable')
     const spySetSecret = jest.spyOn(core, 'setSecret')
     const spySetFailed = jest.spyOn(core, 'setFailed')
-    await run()
+    await syncConfig()
     expect(spySetFailed).not.toHaveBeenCalled()
     expect(spySetSecret).toHaveBeenCalledWith('totally_a_secret_override')
     expect(spySetEnvvar).toHaveBeenCalledWith('CTTEST_NOT_A_SECRET', 'not_a_secret_override_tag_one')
@@ -197,7 +197,7 @@ describe('configure-action tests', () => {
       }
     })
     const spyWarn = jest.spyOn(core, 'warning')
-    await run()
+    await syncConfig()
     expect(spyWarn).toHaveBeenCalled()
   })
 
@@ -217,7 +217,7 @@ describe('configure-action tests', () => {
       }
     })
     const spyFailed = jest.spyOn(core, 'setFailed').mockImplementation(() => {})
-    await run()
+    await syncConfig()
     expect(spyFailed).toHaveBeenCalledWith(`Project "39c58d99-ca5f-4802-8c2e-f3c060d57934": Not found.`)
   })
 
@@ -237,7 +237,7 @@ describe('configure-action tests', () => {
       }
     })
     const spyFailed = jest.spyOn(core, 'setFailed').mockImplementation(() => {})
-    await run()
+    await syncConfig()
     expect(spyFailed).toHaveBeenCalledWith(`Project "not_a_real_project_name": Not found.`)
   })
 
@@ -257,7 +257,7 @@ describe('configure-action tests', () => {
       }
     })
     const spyFailed = jest.spyOn(core, 'setFailed').mockImplementation(() => {})
-    await run()
+    await syncConfig()
     expect(spyFailed).toHaveBeenCalledWith(`Not found.`)
   })
 
@@ -277,7 +277,7 @@ describe('configure-action tests', () => {
       }
     })
     const spyFailed = jest.spyOn(core, 'setFailed').mockImplementation(() => {})
-    await run()
+    await syncConfig()
     expect(spyFailed).toHaveBeenCalledWith(`Not found.`)
   })
 
@@ -299,7 +299,7 @@ describe('configure-action tests', () => {
       }
     })
     const spyFailed = jest.spyOn(core, 'setFailed').mockImplementation(() => {})
-    await run()
+    await syncConfig()
     expect(spyFailed).toHaveBeenCalledWith('Tag `not_a_real_tag_name` could not be found in environment `default`.')
   })
 
@@ -319,7 +319,7 @@ describe('configure-action tests', () => {
       }
     })
     const spyFailed = jest.spyOn(core, 'setFailed').mockImplementation(() => {})
-    await run()
+    await syncConfig()
     expect(spyFailed).toHaveBeenCalledWith('Incorrect authentication credentials.')
   })
 })

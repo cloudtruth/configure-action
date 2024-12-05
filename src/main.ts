@@ -2,6 +2,8 @@
 // Copyright (C) 2021 CloudTruth, Inc.
 //
 
-import {run} from './run'
+import {syncConfig} from './run'
 
-run()
+export async function run(): Promise<void> {
+  await syncConfig()
+}

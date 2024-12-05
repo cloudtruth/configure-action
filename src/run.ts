@@ -6,16 +6,18 @@ import * as core from '@actions/core'
 import {Api} from './gen/Api'
 import {LIB_VERSION} from './version'
 import {validate as uuidValidate} from 'uuid'
+// eslint, are you ok? Project is used.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {PaginatedParameterList, Project} from './gen/data-contracts'
 import {HttpResponse} from './gen/http-client'
 
 const USER_AGENT = `configure-action/${LIB_VERSION}`
 
-export const configurefetch = (
+export const configurefetch = async (
   url: RequestInfo | URL,
   /* istanbul ignore next */
   {headers, ...options}: RequestInit = {}
-) => {
+): Promise<Response> => {
   return fetch(url, {
     headers: {
       'User-Agent': USER_AGENT,
@@ -25,7 +27,9 @@ export const configurefetch = (
   })
 }
 
-type SecurityDataType = {apikey: string}
+interface SecurityDataType {
+  apikey: string
+}
 
 export function api(): Api<SecurityDataType> {
   const api = new Api<SecurityDataType>({
@@ -34,7 +38,7 @@ export function api(): Api<SecurityDataType> {
     securityWorker: (securityData: SecurityDataType | null) => {
       return {
         headers: {
-          ['Authorization']: 'Api-Key ' + securityData!.apikey
+          ['Authorization']: 'Api-Key ' + securityData?.apikey
         },
         keepalive: true
       }
@@ -46,9 +50,9 @@ export function api(): Api<SecurityDataType> {
 
 function inject(response: HttpResponse<PaginatedParameterList>): void {
   const overwrite = core.getInput('overwrite') || false
-  for (const entry of response.data.results!) {
+  for (const entry of response.data.results ?? []) {
     const values = Object.values(entry.values)
-    const valueRecord = values[0]!
+    const valueRecord = values[0]
     const effectiveValue = valueRecord?.value
     const isSecret = entry.secret
     const parameterName = entry.name
@@ -77,20 +81,31 @@ async function resolve_project_id(project_name_or_id: string, api: Api<SecurityD
     try {
       const response = await api.projectsRetrieve(project_name_or_id)
       return response.data.id
-    } catch (error: HttpResponse<Project, any> | any) {
-      throw new Error(`Project "${project_name_or_id}": ${error.error.detail}`)
+    } catch (error: unknown) {
+      if (
+        error instanceof Object &&
+        'error' in error &&
+        error.error instanceof Object &&
+        'detail' in error.error &&
+        typeof error.error.detail === 'string'
+      ) {
+        throw new Error(`Project "${project_name_or_id}": ${error.error.detail}`)
+      }
     }
   }
 
   const response = await api.projectsList({name: project_name_or_id})
   if (response.data.count == 1) {
-    const result = response.data.results!
+    const result = response.data.results
+    if (!result) {
+      throw new Error(`Project "${project_name_or_id}": Not found.`)
+    }
     return result[0].id
   }
   throw new Error(`Project "${project_name_or_id}": Not found.`)
 }
 
-export async function run(): Promise<void> {
+export async function syncConfig(): Promise<void> {
   try {
     const client = api()
     const project_id = await resolve_project_id(core.getInput('project', {required: true}), client)
@@ -117,7 +132,18 @@ export async function run(): Promise<void> {
         break
       }
     }
-  } catch (error: any) {
-    core.setFailed(error.message || error.error.detail)
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      core.setFailed(error.message)
+    }
+    if (
+      error instanceof Object &&
+      'error' in error &&
+      error.error instanceof Object &&
+      'detail' in error.error &&
+      typeof error.error.detail === 'string'
+    ) {
+      core.setFailed(error.error.detail)
+    }
   }
 }
