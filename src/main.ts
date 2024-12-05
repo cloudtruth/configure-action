@@ -6,9 +6,7 @@ import * as core from '@actions/core'
 import {Api} from './gen/Api'
 import {LIB_VERSION} from './version'
 import {validate as uuidValidate} from 'uuid'
-// eslint, are you ok? Project is used.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {PaginatedParameterList, Project} from './gen/data-contracts'
+import {PaginatedParameterList} from './gen/data-contracts'
 import {HttpResponse} from './gen/http-client'
 
 const USER_AGENT = `configure-action/${LIB_VERSION}`
@@ -70,7 +68,7 @@ function inject(response: HttpResponse<PaginatedParameterList>): void {
       core.info(`Setting environment variable "${parameterName}"`)
       core.exportVariable(parameterName, effectiveValue)
     } else {
-      core.info(`Ignoring unset value for parameter "${parameterName}" (GitHub Actions does not support unsetting).`)
+      core.warning(`Ignoring unset value for parameter "${parameterName}" (GitHub Actions does not support unsetting).`)
     }
   }
 }
