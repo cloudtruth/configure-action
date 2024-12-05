@@ -2799,13 +2799,13 @@ exports.HttpClient = HttpClient;
 
 /***/ }),
 
-/***/ 8065:
+/***/ 5915:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
 //
-// Copyright (C) 2021 CloudTruth, Inc.
+// Copyright (C) 2021 - 2024 CloudTruth, Inc.
 //
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -2843,7 +2843,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.configurefetch = void 0;
 exports.api = api;
-exports.syncConfig = syncConfig;
+exports.run = run;
 const core = __importStar(__nccwpck_require__(7484));
 const Api_1 = __nccwpck_require__(5649);
 const version_1 = __nccwpck_require__(7992);
@@ -2928,7 +2928,7 @@ async function resolve_project_id(project_name_or_id, api) {
     }
     throw new Error(`Project "${project_name_or_id}": Not found.`);
 }
-async function syncConfig() {
+async function run() {
     try {
         const client = api();
         const project_id = await resolve_project_id(core.getInput('project', { required: true }), client);
@@ -2966,6 +2966,7 @@ async function syncConfig() {
             typeof error.error.detail === 'string') {
             core.setFailed(error.error.detail);
         }
+        core.setFailed(`Unknown error`);
     }
 }
 
@@ -31113,25 +31114,13 @@ exports["default"] = version;
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
-var exports = __webpack_exports__;
-
-//
-// Copyright (C) 2021 CloudTruth, Inc.
-//
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = run;
-const run_1 = __nccwpck_require__(8065);
-async function run() {
-    await (0, run_1.syncConfig)();
-}
-
-})();
-
-module.exports = __webpack_exports__;
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(5915);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;
 //# sourceMappingURL=index.js.map
