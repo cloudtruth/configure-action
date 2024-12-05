@@ -1,5 +1,0 @@
-dist/
-lib/
-node_modules/
-src/gen/
-jest.config.js

@@ -11,15 +11,15 @@ import * as core from '@actions/core'
 import * as process from 'process'
 import {jest, expect} from '@jest/globals'
 
-import {run} from '../src/run'
+import {run} from '../src/main'
 import {unitTestApiKey, setupRequestMocks} from './mocks/requests'
 
 function resetEnvVars() {
-  delete process.env['CTTEST_NOT_A_SECRET']
-  delete process.env['CTTEST_TOTALLY_A_SECRET']
-  delete process.env['CTTEST_HAS_NO_OVERRIDE']
+  delete process.env.CTTEST_NOT_A_SECRET
+  delete process.env.CTTEST_TOTALLY_A_SECRET
+  delete process.env.CTTEST_HAS_NO_OVERRIDE
   delete process.env['cttest.not.posix']
-  delete process.env['CTTEST_HAS_NO_VALUE']
+  delete process.env.CTTEST_HAS_NO_VALUE
 }
 
 let getInputMock: jest.SpiedFunction<typeof core.getInput>
@@ -112,13 +112,13 @@ describe('configure-action tests', () => {
   })
 
   it('prevents overwriting existing environment variables', async () => {
-    process.env['CTTEST_NOT_A_SECRET'] = 'foo'
+    process.env.CTTEST_NOT_A_SECRET = 'foo'
     const spyFailed = jest.spyOn(core, 'setFailed').mockImplementation(() => {})
     await run()
     expect(spyFailed).toHaveBeenCalledWith(
       'The environment variable "CTTEST_NOT_A_SECRET" already exists and cannot be overwritten.'
     )
-    delete process.env['CTTEST_NOT_A_SECRET']
+    delete process.env.CTTEST_NOT_A_SECRET
   })
 
   it('configures the override environment', async () => {

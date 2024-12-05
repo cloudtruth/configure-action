@@ -4,7 +4,7 @@ export const unitTestApiKey = 'deadb33fcafe'
 
 interface ResponseBody {
   count?: number;
-  results?: Array<Record<string, any>>;
+  results?: Record<string, any>[];
   detail?: string;
   name?: string;
   id?: string;
