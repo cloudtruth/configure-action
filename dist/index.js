@@ -2934,6 +2934,7 @@ async function run() {
         const project_id = await resolve_project_id(core.getInput('project', { required: true }), client);
         const environment = core.getInput('environment', { required: true });
         const tag = core.getInput('tag') || undefined;
+        let count = 0;
         for (let page = 1;; ++page) {
             let page_size = undefined;
             if (process.env.TESTING_REST_API_PAGE_SIZE) {
@@ -2947,6 +2948,7 @@ async function run() {
                 page_size: page_size
             });
             inject(response);
+            count += response.data.count ?? 0;
             if (response.data.next == null) {
                 if (page == 1 && response.data.count == 0) {
                     core.warning(`Project ${core.getInput('project')} has no parameters.`);
@@ -2954,6 +2956,7 @@ async function run() {
                 break;
             }
         }
+        core.info(`Injected ${count} parameters.`);
     }
     catch (error) {
         if (error instanceof Error) {
