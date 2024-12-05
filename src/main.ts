@@ -112,6 +112,7 @@ export async function run(): Promise<void> {
     const environment = core.getInput('environment', {required: true})
     const tag = core.getInput('tag') || undefined
 
+    let count = 0
     for (let page = 1; ; ++page) {
       let page_size = undefined
       if (process.env.TESTING_REST_API_PAGE_SIZE) {
@@ -125,6 +126,7 @@ export async function run(): Promise<void> {
         page_size: page_size
       })
       inject(response)
+      count += response.data.count ?? 0
       if (response.data.next == null) {
         if (page == 1 && response.data.count == 0) {
           core.warning(`Project ${core.getInput('project')} has no parameters.`)
@@ -132,6 +134,7 @@ export async function run(): Promise<void> {
         break
       }
     }
+    core.info(`Injected ${count} parameters.`)
   } catch (error: unknown) {
     if (error instanceof Error) {
       core.setFailed(error.message)
