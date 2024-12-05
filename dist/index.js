@@ -2897,7 +2897,7 @@ function inject(response) {
             core.exportVariable(parameterName, effectiveValue);
         }
         else {
-            core.info(`Ignoring unset value for parameter "${parameterName}" (GitHub Actions does not support unsetting).`);
+            core.warning(`Ignoring unset value for parameter "${parameterName}" (GitHub Actions does not support unsetting).`);
         }
     }
 }
