@@ -6,16 +6,16 @@ import * as core from '@actions/core'
 import {Api} from './gen/Api'
 import {LIB_VERSION} from './version'
 import {validate as uuidValidate} from 'uuid'
-import {PaginatedParameterList, Project} from './gen/data-contracts'
+import {PaginatedParameterList} from './gen/data-contracts'
 import {HttpResponse} from './gen/http-client'
 
 const USER_AGENT = `configure-action/${LIB_VERSION}`
 
-export const configurefetch = (
+export const configurefetch = async (
   url: RequestInfo | URL,
   /* istanbul ignore next */
   {headers, ...options}: RequestInit = {}
-) => {
+): Promise<Response> => {
   return fetch(url, {
     headers: {
       'User-Agent': USER_AGENT,
@@ -27,14 +27,14 @@ export const configurefetch = (
 
 type SecurityDataType = {apikey: string}
 
-export function api(): Api<SecurityDataType> {
+export function createApiClient(): Api<SecurityDataType> {
   const api = new Api<SecurityDataType>({
     baseUrl: core.getInput('server') || 'https://api.cloudtruth.io',
     customFetch: configurefetch,
     securityWorker: (securityData: SecurityDataType | null) => {
       return {
         headers: {
-          ['Authorization']: 'Api-Key ' + securityData!.apikey
+          ['Authorization']: `Api-Key ${securityData?.apikey}`
         },
         keepalive: true
       }
@@ -46,9 +46,9 @@ export function api(): Api<SecurityDataType> {
 
 function inject(response: HttpResponse<PaginatedParameterList>): void {
   const overwrite = core.getInput('overwrite') || false
-  for (const entry of response.data.results!) {
+  for (const entry of response.data.results ?? []) {
     const values = Object.values(entry.values)
-    const valueRecord = values[0]!
+    const valueRecord = values[0]
     const effectiveValue = valueRecord?.value
     const isSecret = entry.secret
     const parameterName = entry.name
@@ -71,53 +71,77 @@ function inject(response: HttpResponse<PaginatedParameterList>): void {
   }
 }
 
-async function resolve_project_id(project_name_or_id: string, api: Api<SecurityDataType>): Promise<string> {
-  if (uuidValidate(project_name_or_id)) {
+async function resolveProjectId(projectNameOrId: string, api: Api<SecurityDataType>): Promise<string> {
+  if (uuidValidate(projectNameOrId)) {
     // we look it up to make sure the id is good and we have permission to use it
     try {
-      const response = await api.projectsRetrieve(project_name_or_id)
+      const response = await api.projectsRetrieve(projectNameOrId)
       return response.data.id
-    } catch (error: HttpResponse<Project, any> | any) {
-      throw new Error(`Project "${project_name_or_id}": ${error.error.detail}`)
+    } catch (error: unknown) {
+      if (
+        error instanceof Object &&
+        'error' in error &&
+        error.error instanceof Object &&
+        'detail' in error.error &&
+        typeof error.error.detail === 'string'
+      ) {
+        throw new Error(`Project "${projectNameOrId}": ${error.error.detail}`)
+      }
     }
   }
 
-  const response = await api.projectsList({name: project_name_or_id})
-  if (response.data.count == 1) {
-    const result = response.data.results!
+  const response = await api.projectsList({name: projectNameOrId})
+  if (response.data.count === 1) {
+    const result = response.data.results
+    if (!result) {
+      throw new Error(`Project "${projectNameOrId}": Not found.`)
+    }
     return result[0].id
   }
-  throw new Error(`Project "${project_name_or_id}": Not found.`)
+  throw new Error(`Project "${projectNameOrId}": Not found.`)
 }
 
 export async function run(): Promise<void> {
   try {
-    const client = api()
-    const project_id = await resolve_project_id(core.getInput('project', {required: true}), client)
+    const client = createApiClient()
+    const projectId = await resolveProjectId(core.getInput('project', {required: true}), client)
     const environment = core.getInput('environment', {required: true})
     const tag = core.getInput('tag') || undefined
 
     for (let page = 1; ; ++page) {
-      let page_size = undefined
+      let pageSize = undefined
       if (process.env.TESTING_REST_API_PAGE_SIZE) {
-        page_size = parseInt(process.env.TESTING_REST_API_PAGE_SIZE)
+        pageSize = parseInt(process.env.TESTING_REST_API_PAGE_SIZE)
       }
       const response = await client.projectsParametersList({
-        projectPk: project_id,
-        environment: environment, // can be name or id
-        tag: tag,
-        page: page,
-        page_size: page_size
+        projectPk: projectId,
+        environment, // can be name or id
+        tag,
+        page,
+        // eslint-disable-next-line camelcase
+        page_size: pageSize
       })
       inject(response)
       if (response.data.next == null) {
-        if (page == 1 && response.data.count == 0) {
+        if (page === 1 && response.data.count === 0) {
           core.warning(`Project ${core.getInput('project')} has no parameters.`)
         }
         break
       }
     }
-  } catch (error: any) {
-    core.setFailed(error.message || error.error.detail)
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      core.setFailed(error.message)
+    }
+    if (
+      error instanceof Object &&
+      'error' in error &&
+      error.error instanceof Object &&
+      'detail' in error.error &&
+      typeof error.error.detail === 'string'
+    ) {
+      core.setFailed(error.error.detail)
+    }
+    core.setFailed(`Unknown error`)
   }
 }

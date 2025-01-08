@@ -4,12 +4,13 @@
   "description": "Securely deliver CloudTruth configuration and secrets into your GitHub Actions workflows.",
   "main": "lib/main.js",
   "scripts": {
-    "prebuild": "node -p \"'export const LIB_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
+    "prebuild": "node -p \"'export const LIB_VERSION = ' + JSON.stringify(require('./package.json').version).replaceAll('\\\"', \\\"'\\\")\" > src/version.ts",
     "build": "tsc",
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "generate-client": "npx swagger-typescript-api -p openapi.json -o ./src/gen --modular --responses --route-types --extract-request-params --extract-request-body",
     "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "package": "ncc build --source-map --license licenses.txt",
     "test": "jest -i --coverage --runInBand --detectOpenHandles",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
