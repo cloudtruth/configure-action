@@ -2842,14 +2842,14 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.configurefetch = void 0;
-exports.api = api;
+exports.createApiClient = createApiClient;
 exports.run = run;
 const core = __importStar(__nccwpck_require__(7484));
 const Api_1 = __nccwpck_require__(5649);
 const version_1 = __nccwpck_require__(7992);
 const uuid_1 = __nccwpck_require__(1914);
 const USER_AGENT = `configure-action/${version_1.LIB_VERSION}`;
-const configurefetch = (url, 
+const configurefetch = async (url, 
 /* istanbul ignore next */
 { headers, ...options } = {}) => {
     return fetch(url, {
@@ -2861,14 +2861,14 @@ const configurefetch = (url,
     });
 };
 exports.configurefetch = configurefetch;
-function api() {
+function createApiClient() {
     const api = new Api_1.Api({
         baseUrl: core.getInput('server') || 'https://api.cloudtruth.io',
         customFetch: exports.configurefetch,
         securityWorker: (securityData) => {
             return {
                 headers: {
-                    ['Authorization']: 'Api-Key ' + securityData.apikey
+                    ['Authorization']: `Api-Key ${securityData?.apikey}`
                 },
                 keepalive: true
             };
@@ -2879,7 +2879,7 @@ function api() {
 }
 function inject(response) {
     const overwrite = core.getInput('overwrite') || false;
-    for (const entry of response.data.results) {
+    for (const entry of response.data.results ?? []) {
         const values = Object.values(entry.values);
         const valueRecord = values[0];
         const effectiveValue = valueRecord?.value;
@@ -2901,45 +2901,55 @@ function inject(response) {
         }
     }
 }
-async function resolve_project_id(project_name_or_id, api) {
-    if ((0, uuid_1.validate)(project_name_or_id)) {
+async function resolveProjectId(projectNameOrId, api) {
+    if ((0, uuid_1.validate)(projectNameOrId)) {
         // we look it up to make sure the id is good and we have permission to use it
         try {
-            const response = await api.projectsRetrieve(project_name_or_id);
+            const response = await api.projectsRetrieve(projectNameOrId);
             return response.data.id;
         }
         catch (error) {
-            throw new Error(`Project "${project_name_or_id}": ${error.error.detail}`);
+            if (error instanceof Object &&
+                'error' in error &&
+                error.error instanceof Object &&
+                'detail' in error.error &&
+                typeof error.error.detail === 'string') {
+                throw new Error(`Project "${projectNameOrId}": ${error.error.detail}`);
+            }
         }
     }
-    const response = await api.projectsList({ name: project_name_or_id });
-    if (response.data.count == 1) {
+    const response = await api.projectsList({ name: projectNameOrId });
+    if (response.data.count === 1) {
         const result = response.data.results;
+        if (!result) {
+            throw new Error(`Project "${projectNameOrId}": Not found.`);
+        }
         return result[0].id;
     }
-    throw new Error(`Project "${project_name_or_id}": Not found.`);
+    throw new Error(`Project "${projectNameOrId}": Not found.`);
 }
 async function run() {
     try {
-        const client = api();
-        const project_id = await resolve_project_id(core.getInput('project', { required: true }), client);
+        const client = createApiClient();
+        const projectId = await resolveProjectId(core.getInput('project', { required: true }), client);
         const environment = core.getInput('environment', { required: true });
         const tag = core.getInput('tag') || undefined;
         for (let page = 1;; ++page) {
-            let page_size = undefined;
+            let pageSize = undefined;
             if (process.env.TESTING_REST_API_PAGE_SIZE) {
-                page_size = parseInt(process.env.TESTING_REST_API_PAGE_SIZE);
+                pageSize = parseInt(process.env.TESTING_REST_API_PAGE_SIZE);
             }
             const response = await client.projectsParametersList({
-                projectPk: project_id,
-                environment: environment, // can be name or id
-                tag: tag,
-                page: page,
-                page_size: page_size
+                projectPk: projectId,
+                environment, // can be name or id
+                tag,
+                page,
+                // eslint-disable-next-line camelcase
+                page_size: pageSize
             });
             inject(response);
             if (response.data.next == null) {
-                if (page == 1 && response.data.count == 0) {
+                if (page === 1 && response.data.count === 0) {
                     core.warning(`Project ${core.getInput('project')} has no parameters.`);
                 }
                 break;
@@ -2947,7 +2957,17 @@ async function run() {
         }
     }
     catch (error) {
-        core.setFailed(error.message || error.error.detail);
+        if (error instanceof Error) {
+            core.setFailed(error.message);
+        }
+        if (error instanceof Object &&
+            'error' in error &&
+            error.error instanceof Object &&
+            'detail' in error.error &&
+            typeof error.error.detail === 'string') {
+            core.setFailed(error.error.detail);
+        }
+        core.setFailed(`Unknown error`);
     }
 }
 
@@ -2961,7 +2981,7 @@ async function run() {
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LIB_VERSION = void 0;
-exports.LIB_VERSION = "3.0.1";
+exports.LIB_VERSION = '3.0.1';
 
 
 /***/ }),
