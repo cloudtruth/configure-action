@@ -32,7 +32,7 @@ jobs:
     if: ${{ needs.secrets-gate.outputs.ok == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: cloudtruth/configure-action@v2
+      - uses: cloudtruth/configure-action@v3
         with:
           apikey: "${{ secrets.CLOUDTRUTH_API_KEY }}"
           project: "${{ github.repository }}"
